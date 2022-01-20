@@ -15,9 +15,9 @@
 
 		<div class="panel">
 			<p>Skin:</p>
-		<? foreach(array('dark', 'light', 'minimal_dark', 'minimal_light', 'transparent_dark', 'transparent_light') as $s) {?>
+		<?php foreach(array('dark', 'light', 'minimal_dark', 'minimal_light', 'transparent_dark', 'transparent_light') as $s) {?>
 			<img width="32" class="skins" data-skin="<?=$s?>" src="skins/<?=$s?>/home.png">
-		<? } ?>
+		<?php } ?>
 
 		<hr/>
 

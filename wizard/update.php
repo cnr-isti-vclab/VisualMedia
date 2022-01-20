@@ -1,4 +1,4 @@
-<?
+<?php
 
 #$config = $_POST['config'];
 

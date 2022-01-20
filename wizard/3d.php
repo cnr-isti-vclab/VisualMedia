@@ -1,4 +1,4 @@
-<? $data = file_get_contents('options.json');
+<?php $data = file_get_contents('options.json');
 $options = json_decode($data);
 ?>
 
@@ -71,7 +71,7 @@ $options = json_decode($data);
 }
 
 #draw-canvas {
-<? 
+<?php 
 $type = $options->background->type;
 $color0 = $options->background->color0;
 $color1 = $options->background->color1;
@@ -88,7 +88,7 @@ switch($type) {
 html { overflow:hidden; }
 
 </style>
-<?
+<?php
 	$skin = $options->skin;
 	$tools = $options->tools;
 	$background = $options->background;
@@ -104,46 +104,46 @@ html { overflow:hidden; }
   <img id="zoomout"     title="Zoom Out"               src="skins/<?=$skin?>/zoomout.png"/><br/>
 <!--ZOOM-->
 <!--LIGHTING-->
-<? if(in_array('lighting', $tools)) { ?>
+<?php if(in_array('lighting', $tools)) { ?>
   <img id="lighting_off" title="Enable Lighting"       src="skins/<?=$skin?>/lighting_off.png" style="position:absolute; visibility:hidden;"/>
   <img id="lighting"     title="Disable Lighting"      src="skins/<?=$skin?>/lighting.png"/><br/>
-<? } ?>
+<?php } ?>
 <!--LIGHTING-->
 <!--LIGHT-->
-<? if(in_array('light', $tools)) { ?>
+<?php if(in_array('light', $tools)) { ?>
   <img id="light_on"    title="Disable Light Control"  src="skins/<?=$skin?>/lightcontrol_on.png" style="position:absolute; visibility:hidden;"/>
   <img id="light"       title="Enable Light Control"   src="skins/<?=$skin?>/lightcontrol.png"/><br/>
-<? } ?>
+<?php } ?>
 <!--LIGHT-->
 <!--MEASURE-->
-<? if(in_array('measure', $tools)) { ?>
+<?php if(in_array('measure', $tools)) { ?>
   <img id="measure_on"  title="Disable Measure Tool"   src="skins/<?=$skin?>/measure_on.png" style="position:absolute; visibility:hidden;"/>
   <img id="measure"     title="Enable Measure Tool"    src="skins/<?=$skin?>/measure.png"/><br/>
-<? } ?>
+<?php } ?>
 <!--MEASURE-->
 <!--POINT PICKING-->
-<? if(in_array('picking', $tools)) { ?>
+<?php if(in_array('picking', $tools)) { ?>
   <img id="pick_on"     title="Disable PickPoint Mode" src="skins/<?=$skin?>/pick_on.png" style="position:absolute; visibility:hidden;"/>
   <img id="pick"        title="Enable PickPoint Mode"  src="skins/<?=$skin?>/pick.png"/><br/>
-<? } ?>
+<?php } ?>
 <!--POINT PICKING-->
 <!--SECTIONS-->
-<? if(in_array('sections', $tools)) { ?>
+<?php if(in_array('sections', $tools)) { ?>
   <img id="sections_on" title="Disable Plane Sections" src="skins/<?=$skin?>/sections_on.png" style="position:absolute; visibility:hidden;"/>
   <img id="sections"    title="Enable Plane Sections"  src="skins/<?=$skin?>/sections.png"/><br/>
-<? } ?>
+<?php } ?>
 <!--SECTIONS-->
 <!--COLOR-->
-<? if(in_array('color', $tools)) { ?>
+<?php if(in_array('color', $tools)) { ?>
   <img id="color_on"    title="Disable Solid Color"    src="skins/<?=$skin?>/color_on.png" style="position:absolute; visibility:hidden;"/>
   <img id="color"       title="Enable Solid Color"     src="skins/<?=$skin?>/color.png"/><br/>
-<? } ?>
+<?php } ?>
 <!--COLOR-->
 <!--CAMERA-->
-<? if(in_array('orthographic', $tools)) { ?>
+<?php if(in_array('orthographic', $tools)) { ?>
   <img id="perspective"  title="Perspective Camera"    src="skins/<?=$skin?>/perspective.png" style="position:absolute; visibility:hidden;"/>
   <img id="orthographic" title="Orthographic Camera"   src="skins/<?=$skin?>/orthographic.png"/><br/>
-<? } ?>
+<?php } ?>
 <!--CAMERA-->
 <!--FULLSCREEN-->
   <img id="full_on"     title="Exit Full Screen"       src="skins/<?=$skin?>/full_on.png" style="position:absolute; visibility:hidden;"/>
