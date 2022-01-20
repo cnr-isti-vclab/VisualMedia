@@ -3,8 +3,8 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link rel="stylesheet" href="/css/bootstrap.min.css">
-<link rel="stylesheet" href="/css/fontawesome-all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+
 <link rel="stylesheet" href="stylesheet/style.css">
 
 </head>
@@ -50,7 +50,7 @@
 		<hr/>
 
 			<div class="row">
-				<div class="col-6"><button class="btn btn-sm btn-block" name="reset"> Reset everything </button></div>
+				<div class="col-6"><button class="btn btn-secondary btn-sm btn-block" name="reset"> Reset everything </button></div>
 			</div>
 
 		</div>
