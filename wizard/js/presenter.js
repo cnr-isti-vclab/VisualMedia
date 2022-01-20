@@ -23,15 +23,13 @@ SpiderGL.openNamespace();
 // CONSTANTS
 //----------------------------------------------------------------------------------------
 // version
-const HOP_VERSION             = "4.2.14";
+const HOP_VERSION             = "4.3.5";
 // selectors
 const HOP_ALL                 = 256;
 // starting debug mode
 const HOP_DEBUGMODE           = false;
 // default light direction
 const HOP_DEFAULTLIGHT        = [0, 0, -1];
-// default points size
-const HOP_DEFAULTPOINTSIZE    = 1.0;
 // sgltrackball
 const SGL_TRACKBALL_NO_ACTION = 0;
 const SGL_TRACKBALL_ROTATE    = 1;
@@ -220,9 +218,10 @@ _parseConfig : function (options) {
 		clippingBorderSize  : 0.5,
 		clippingBorderColor : [0.0, 1.0, 1.0],
 		pointSize           : 1.0,
-		pointSizeMinMax     : [1.0, 5.0],
+		pointSizeMinMax     : [0.0, 2.0],
 		autoSaveScreenshot  : true,
 		screenshotBaseName  : "screenshot",
+		screenshotTime      : true,
 	}, options);
 	return r;
 },
@@ -372,7 +371,7 @@ _createStandardPointsProgram : function () {
 				if( uClipAxis[2] * (vModelPos[2] - uClipPoint[2] + (uClipAxis[2]*uClipColorSize)) > 0.0) renderColor = uClipColor;	\n\
 			}																	\n\
 																				\n\
-			gl_FragColor  = vec4(renderColor, uAlpha);							\n\
+			gl_FragColor = vec4(renderColor, uAlpha);							\n\
 			gl_FragDepthEXT = gl_FragCoord.z + 0.0001*(pow(r, 2.0));			\n\
 		}																		\n\
 	");
@@ -513,7 +512,7 @@ _createStandardFacesProgram : function () {
 			}																	\n\
 																				\n\
 			renderColor = (diffuse * lambert) + specular;						\n\
-			if(!gl_FrontFacing)													\n\
+			if(gl_FrontFacing==false)											\n\
 			{																	\n\
 				if (uBackFaceColor[3]==0.0) renderColor = renderColor * uBackFaceColor.rgb;	\n\
 				else if(uBackFaceColor[3]==1.0) renderColor = uBackFaceColor.rgb;			\n\
@@ -530,7 +529,7 @@ _createStandardFacesProgram : function () {
 				if( uClipAxis[2] * (vModelPos[2] - uClipPoint[2] + (uClipAxis[2]*uClipColorSize)) > 0.0) renderColor = uClipColor;	\n\
 			}																	\n\
 																				\n\
-			gl_FragColor  = vec4(renderColor, uAlpha);							\n\
+			gl_FragColor = vec4(renderColor, uAlpha);							\n\
 		}																		\n\
 	");
 	if(this._isDebugging)
@@ -631,7 +630,7 @@ _createUtilsProgram : function () {
 				if( uClipAxis[1] * (vModelPos[1] - uClipPoint[1]) > 0.0) discard;	\n\
 				if( uClipAxis[2] * (vModelPos[2] - uClipPoint[2]) > 0.0) discard;	\n\
 			}																	\n\
-			if((!gl_FrontFacing) &&	(uBackFaceColor[3]==2.0)) discard;			\n\
+			if((gl_FrontFacing==false) && (uBackFaceColor[3]==2.0)) discard;	\n\
 																				\n\
 			vec4 outColor;														\n\
 			if(uMode == 1.0)	//xyx picking									\n\
@@ -639,7 +638,7 @@ _createUtilsProgram : function () {
 			else if(uMode == 2.0)	//color coded								\n\
 				outColor = uColorID;											\n\
 																				\n\
-			gl_FragColor  = outColor;											\n\
+			gl_FragColor = outColor;											\n\
 		}																		\n\
 	");
 	if(this._isDebugging)
@@ -721,7 +720,7 @@ _createColorShadedProgram : function () {
 																			  \n\
 				diffuse = (diffuse * 0.5) + (diffuse * lambert * 0.5);        \n\
 			}                                                                 \n\
-			gl_FragColor  = vec4(diffuse, uColorID[3]);                       \n\
+			gl_FragColor = vec4(diffuse, uColorID[3]);                       \n\
 		}                                                                     \n\
 	");
 	if(this._isDebugging)
@@ -899,7 +898,7 @@ _createSimpleLinetechnique : function () {
 																				  \n\
 			void main(void)                                                       \n\
 			{                                                                     \n\
-				gl_FragColor    = uLineColor;                                     \n\
+				gl_FragColor = uLineColor;                                     \n\
 			}                                                                     \n\
 		",
 		vertexStreams : {
@@ -993,9 +992,7 @@ _objectLoaded : function () {
 
 _testReady : function () {
 	if (this._objectsToLoad != 0) return;
-
 	this._sceneReady = this._scenePrepare();
-
 	this.repaint();
 },
 
@@ -1529,7 +1526,7 @@ _drawScene : function () {
 	gl.clearColor(bkg[0], bkg[1], bkg[2], bkg[3]);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
 	gl.enable(gl.DEPTH_TEST);
-	
+
 	// draw non-transparent geometries
 	for (var inst in instances) {
 		var instance = instances[inst];
@@ -1814,10 +1811,10 @@ _drawScene : function () {
 		
 		var entityUniforms = {
 			"uWorldViewProjectionMatrix" : xform.modelViewProjectionMatrix,
-			"uPointSize"                 : 8.0,//config.pointSize,
+			"uPointSize"                 : entity.pointSize,
 			"uColorID"                   : entity.color,
 			"uZOff"                      : entity.zOff,
-		};		
+		};
 
 		if(entity.useTransparency)
 		{
@@ -2058,15 +2055,33 @@ _drawScene : function () {
 	// saving image, if necessary
 	if(this.isCapturingScreenshot){
 	    this.isCapturingScreenshot = false;
-		this.screenshotData = this.ui._canvas.toDataURL('image/png',1);
+		this.screenshotData = this.ui._canvas.toDataURL('image/png',1).replace("image/png", "image/octet-stream");
 		if(this._scene.config.autoSaveScreenshot)
 		{
-			var currentdate = new Date();			
-			var a  = document.createElement('a');
-			a.href = this.screenshotData;
-			a.download = this._scene.config.screenshotBaseName + currentdate.getHours() + currentdate.getMinutes() + currentdate.getSeconds() + ".png";
-			a.click();
+			var currentdate = new Date();
+			var fName = this._scene.config.screenshotBaseName;
+			if(this._scene.config.screenshotTime) fName += "_" + String(currentdate.getHours()).padStart(2, '0') + String(currentdate.getMinutes()).padStart(2, '0') + String(currentdate.getSeconds()).padStart(2, '0');
+			fName += ".png";
+			
+			this._saveImage(fName);
 		}
+	}
+},
+
+_saveImage : function(fName){
+	if(this.ui._canvas.msToBlob) // IE or EDGEhtml
+	{
+		console.error("IE and EDGEhtml cannot save images");
+		var blob = this.ui._canvas.msToBlob();
+		window.navigator.msSaveBlob(blob, fName);
+	}
+	else // every other browser
+	{
+		var a  = document.createElement('a');
+		a.href = this.screenshotData;
+		a.download = fName;
+		a.target="_blank";
+		a.click();
 	}
 },
 
@@ -2571,9 +2586,6 @@ _createQuadModels : function () {
 onInitialize : function () {
 	var gl = this.ui.gl;
 
-	// debug mode
-	this._isDebugging = HOP_DEBUGMODE;
-
 	gl.getExtension('EXT_frag_depth');
 	gl.clearColor(0.5, 0.5, 0.5, 1.0);
 	gl.clearStencil(0);
@@ -2590,17 +2602,20 @@ onInitialize : function () {
 	this.xform      = new SglTransformationStack();
 	this.viewMatrix = SglMat4.identity();
 
-	// screenshot support
-	this.isCapturingScreenshot = false;
-	this.screenshotData = null;
-	
 	// nexus parameters
-	this._nexusTargetFps   = 15.0;
-	this._nexusTargetError = 1.0;
-	this._nexusCacheSize   = 50000000;
+	this.setNexusTargetError(1.0);
+	this.setNexusMinFps(15.0);
+	this.setNexusMaxCacheSize(512*(1<<20)); //512MB
+
+	// debug mode
+	this._isDebugging = HOP_DEBUGMODE;
 
 	// shaders
 	this.installDefaultShaders();
+
+	// screenshot support
+	this.isCapturingScreenshot = false;
+	this.screenshotData = null;
 
 	// handlers
 	this._onPickedInstance  = 0;
@@ -2615,13 +2630,13 @@ onInitialize : function () {
 	// animation
 	this.ui.animateRate = 0;
 
-	// current cursor XY position
-	this.x 			= 0.0;
-	this.y 			= 0.0;
-
-	this._keycombo = false;
-
-	// SCENE DATA
+	// current cursor XY position normalized [-1 1] on canvas size, and delta
+	this.x	= 0.0;
+	this.y	= 0.0;
+	this.dx	= 0.0;
+	this.dy	= 0.0;
+	
+	// scene data
 	this._scene         = null;
 	this._sceneParsed   = false;
 	this._sceneReady    = false;
@@ -2655,6 +2670,8 @@ onInitialize : function () {
 	this._lastInstanceID = 0;
 	this._lastSpotID     = 0;
 	this._pickpoint      = [1, 1];
+
+	this._keycombo = false;
 
 	// global measurement data
 	this._isMeasuring = false;
@@ -2698,21 +2715,21 @@ installDefaultShaders : function () {
 
 onDrag : function (button, x, y, e) {
 	var ui = this.ui;
+	this.x = (x / (ui.width  - 1)) * 2.0 - 1.0;
+	this.y = (y / (ui.height - 1)) * 2.0 - 1.0;
 
 	if(this._clickable) this._clickable = false;
 
 	if(this._movingLight && ui.isMouseButtonDown(0)){
-		var dxl = (x / (ui.width  - 1)) * 2.0 - 1.0;
-		var dyl = (y / (ui.height - 1)) * 2.0 - 1.0;
-		this.rotateLight(dxl/2, dyl/2);
+		this.rotateLight(this.x/2.0, this.y/2.0);
 		return;
 	}
 
 	// if locked trackball, just return. we check AFTER the light-trackball test
 	if (this._scene.trackball.locked) return;
 
-	if(ui.dragDeltaX(button) != 0) this.x += (ui.cursorDeltaX/500);
-	if(ui.dragDeltaY(button) != 0) this.y += (ui.cursorDeltaY/500);
+	if(ui.dragDeltaX(button) != 0) this.dx += (ui.cursorDeltaX/ui.width);
+	if(ui.dragDeltaY(button) != 0) this.dy += (ui.cursorDeltaY/ui.height);
 
 	var action = SGL_TRACKBALL_NO_ACTION;
 	if ((ui.isMouseButtonDown(0) && ui.isKeyDown(17)) || ui.isMouseButtonDown(1) || ui.isMouseButtonDown(2)) {
@@ -2725,13 +2742,17 @@ onDrag : function (button, x, y, e) {
 	var testMatrix = this.trackball._matrix.slice();
 
 	this.trackball.action = action;
-	this.trackball.track(this.viewMatrix, this.x, this.y, 0.0);
+	this.trackball.track(this.viewMatrix, this.dx, this.dy, 0.0);
 
 	var diff;
 	for(var i=0; i<testMatrix.length; i++) {
 		if(testMatrix[i]!=this.trackball._matrix[i]) {diff=true; break;}
 	}
 	if(diff) this.repaint();
+},
+
+onMouseButtonUp : function (x, y, e) {
+	this.trackball.action = SGL_TRACKBALL_NO_ACTION;	
 },
 
 onMouseMove : function (x, y, e) {
@@ -2787,7 +2808,7 @@ onKeyDown : function (key, e) {
 	if (e.ctrlKey) {
 		if (e.key == 'p') // ctrl-p to save screenshot
 		{
-			e.preventDefault();
+			if(e.preventDefault) e.preventDefault();
 			this.isCapturingScreenshot = true;
 			this.repaint();
 		}
@@ -2811,7 +2832,7 @@ onKeyPress : function (key, e) {
 
 onKeyUp : function (key, e) {
 	if(this._keycombo && e.keyCode == '18') {
-		e.preventDefault();
+		if(e.preventDefault) e.preventDefault();
 		this._keycombo = false;
 	}
 },
@@ -2905,15 +2926,8 @@ setScene : function (options) {
 
 	// trackball creation
 	this.trackball  = new scene.trackball.type();
-	this.trackball.setup(scene.trackball.trackOptions);
+	this.trackball.setup(scene.trackball.trackOptions, this);
 	this.trackball.track(SglMat4.identity(), 0.0, 0.0, 0.0);
-
-	var gl = this.ui.gl;
-
-	// nexus parameters init
-	Nexus.setTargetError(gl, this._nexusTargetError);
-	Nexus.setTargetFps(gl, this._nexusTargetFps);
-	Nexus.setMaxCacheSize(gl, this._nexusCacheSize);
 
 	// mesh models creation
 	this._createMeshModels();
@@ -2946,8 +2960,13 @@ repaint : function () {
 	this.ui.postDrawEvent();
 },
 
+saveScreenshot : function () {
+	this.isCapturingScreenshot = true;
+	this.repaint();
+},
+
 //------entities-------------------
-createEntity : function (eName, type, positionList) {
+createEntity : function (eName, type, verticesList) {
 	// type "points", "lines", "triangles"
 	var nEntity = {};
 	nEntity.visible = true;
@@ -2957,6 +2976,7 @@ createEntity : function (eName, type, positionList) {
 	nEntity.transform.matrix = SglMat4.identity();
 	nEntity.color = [1.0, 0.0, 1.0, 1.0];
 	nEntity.useTransparency = false;
+	nEntity.pointSize = 6.0;
 	nEntity.zOff = 0.0;
 
 	var modelDescriptor = {};
@@ -2970,13 +2990,13 @@ createEntity : function (eName, type, positionList) {
 	modelDescriptor.vertices.position = [];
 	modelDescriptor.vertices.normal = [];
 	modelDescriptor.vertices.color = {value : [ 1.0, 0.0, 1.0, 1.0 ]};
-	var numVerts = positionList.length;
+	var numVerts = verticesList.length;
 
 	for (vInd = 0; vInd < numVerts; vInd++)
 	{
-		modelDescriptor.vertices.position.push(positionList[vInd][0]);
-		modelDescriptor.vertices.position.push(positionList[vInd][1]);
-		modelDescriptor.vertices.position.push(positionList[vInd][2]);
+		modelDescriptor.vertices.position.push(verticesList[vInd][0]);
+		modelDescriptor.vertices.position.push(verticesList[vInd][1]);
+		modelDescriptor.vertices.position.push(verticesList[vInd][2]);
 		
 		modelDescriptor.vertices.normal.push(0.0);
 		modelDescriptor.vertices.normal.push(0.0);
@@ -2989,40 +3009,44 @@ createEntity : function (eName, type, positionList) {
 	this._scene.entities[eName] = {};
 	this._scene.entities[eName] = nEntity;
 	return this._scene.entities[eName];
+	this.repaint();	
 },
 
 deleteEntity : function (eName) {
 	delete this._scene.entities[eName];
+	this.repaint();	
+},
+
+clearEntities : function () {
+	this._scene.entities = {};
+	this.repaint();
 },
 
 //-----------------------------------------------------------------------------
 // nexus
 
-setNexusTargetFps: function(fps) {
-	this._nexusTargetFps = fps;
-	Nexus.setTargetFps(this.ui.gl, fps);
-},
-
-getNexusTargetFps: function() {
-	return this._nexusTargetFps;
-},
-
 setNexusTargetError: function(error) {
-	this._nexusTargetError = error;
 	Nexus.setTargetError(this.ui.gl, error);
 },
 
 getNexusTargetError: function() {
-	return this._nexusTargetError;
+	return Nexus.getTargetError(this.ui.gl);
 },
 
-setNexusCacheSize: function(size) {
-	this._nexusCacheSize = size;
+setNexusMinFps: function(fps) {
+	Nexus.setMinFps(this.ui.gl, fps);
+},
+
+getNexusMinFps: function() {
+	return Nexus.getMinFps(this.ui.gl);
+},
+
+setNexusMaxCacheSize: function(size) {
 	Nexus.setMaxCacheSize(this.ui.gl, size);
 },
 
-getNexusCacheSize: function() {
-	return this._nexusCacheSize;
+getNexusMaxCacheSize: function() {
+	return Nexus.getMaxCacheSize(this.ui.gl);
 },
 
 //-----------------------------------------------------------------------------
@@ -3935,9 +3959,7 @@ rotateLight: function(x, y) {
 
 enableLightTrackball: function(on) {
 	this._movingLight = on;
-
 	if(on && !this._scene.space.sceneLighting) this._scene.space.sceneLighting = on;
-
 	this.repaint();
 },
 
