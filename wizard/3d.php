@@ -263,7 +263,7 @@ function setup3dhop() {
 
 	presenter.setScene({
 		meshes: {
-			"mesh_1" : { url: "gargoyle.nxs" }
+			"mesh_1" : { url: "models/gargoyle.nxs" }
 		},
 		modelInstances : {
 			"model_1" : { 

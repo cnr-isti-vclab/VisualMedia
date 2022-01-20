@@ -16,7 +16,7 @@
 		<div class="panel">
 			<p>Skin:</p>
 		<? foreach(array('dark', 'light', 'minimal_dark', 'minimal_light', 'transparent_dark', 'transparent_light') as $s) {?>
-			<img width="32" class="skins" data-skin="<?=$s?>" src="/skins/<?=$s?>/home.png">
+			<img width="32" class="skins" data-skin="<?=$s?>" src="skins/<?=$s?>/home.png">
 		<? } ?>
 
 		<hr/>
@@ -39,13 +39,13 @@
 		<hr/>
 
 			<p>Buttons:</p>
-			<input type="checkbox" name="tools[]" value="lighting"> <img src="/3d/skins/dark/lighting.png" width="24px"> Light on/off</br>
-			<input type="checkbox" name="tools[]" value="light"> <img src="/3d/skins/dark/light.png" width="24px"> Light direction</br>
-			<input type="checkbox" name="tools[]" value="color"> <img src="/3d/skins/dark/color.png" width="24px"> Color</br>
-			<input type="checkbox" name="tools[]" value="measure"> <img src="/3d/skins/dark/measure.png" width="24px"> Measure</br>
-			<input type="checkbox" name="tools[]" value="pick"> <img src="/3d/skins/dark/pick.png" width="24px"> Picking</br>
-			<input type="checkbox" name="tools[]" value="sections"> <img src="/3d/skins/dark/sections.png" width="24px"> Sections</br>
-			<input type="checkbox" name="tools[]" value="orthographic"> <img src="/3d/skins/dark/orthographic.png" width="24px"> Orthographic</br>
+			<input type="checkbox" name="tools[]" value="lighting"> <img src="skins/dark/lighting.png" width="24px"> Light on/off</br>
+			<input type="checkbox" name="tools[]" value="light"> <img src="skins/dark/light.png" width="24px"> Light direction</br>
+			<input type="checkbox" name="tools[]" value="color"> <img src="skins/dark/color.png" width="24px"> Color</br>
+			<input type="checkbox" name="tools[]" value="measure"> <img src="skins/dark/measure.png" width="24px"> Measure</br>
+			<input type="checkbox" name="tools[]" value="pick"> <img src="skins/dark/pick.png" width="24px"> Picking</br>
+			<input type="checkbox" name="tools[]" value="sections"> <img src="skins/dark/sections.png" width="24px"> Sections</br>
+			<input type="checkbox" name="tools[]" value="orthographic"> <img src="skins/dark/orthographic.png" width="24px"> Orthographic</br>
 
 		<hr/>
 
