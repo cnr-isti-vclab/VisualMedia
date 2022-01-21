@@ -203,7 +203,7 @@ html { overflow:hidden; }
 <script type="text/javascript">
 
 
-let presenter = null;
+var presenter = null;
 let options = <?=json_encode($options, JSON_PRETTY_PRINT)?>;
 
 let trackball = options.trackball;
