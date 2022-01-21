@@ -69,6 +69,8 @@ var default_ariadne = {
 	"tools": [ "home", "zoomin", "zoomout", "lighting", "light", "color", "measure", 
 		"pick", "sections", "orthographic", "full", "help" ],
 	"space": {
+		"centerMode": "scene",
+		"radiusMode": "scene",		
 		"cameraFOV": 60,
 		"sceneLighting": true
 	}, 
@@ -77,16 +79,16 @@ var default_ariadne = {
 		"trackOptions": {
 			"startPhi": 0,
 			"startTheta": 0,
-			"startDistance": 2.5,
+			"startDistance": 2.0,
 			"startPanX": 0,
 			"startPanY": 0,
 			"startPanZ": 0,
 			"minMaxPhi": [-180, 180],
-			"minMaxTheta": [-70, 70],
-			"minMaxDist": [0.2, 5],
-			"minMaxPanX": [-1, 1],
-			"minMaxPanY": [-1, 1],
-			"minMaxPanZ": [-1, 1]
+			"minMaxTheta": [-90, 90],
+			"minMaxDist": [0.1, 3],
+			"minMaxPanX": [-1.0, 1.0],
+			"minMaxPanY": [-1.0, 1.0],
+			"minMaxPanZ": [-1.0, 1.0]
 		}
 	}, 
 	 "scene": [{
