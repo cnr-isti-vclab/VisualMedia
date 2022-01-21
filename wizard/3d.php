@@ -26,7 +26,7 @@ $options = json_decode($data);
 <!--UTILITY-->
 <script type="text/javascript" src="js/init.js"></script>
 
-<!--BOOTSTRAP-->
+<!--BOOTSTRAP STYLE-->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
 
 <style>
@@ -272,7 +272,7 @@ function setup3dhop() {
 			"model_1" : { 
 				mesh  : "mesh_1",
 				color : [0.8, 0.7, 0.75],
-				transform: options.transform
+				transform: options.scene[0].matrix? {matrix : options.scene[0].matrix} : null
 			}
 		},
 		trackball: trackball,

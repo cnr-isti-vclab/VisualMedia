@@ -94,7 +94,7 @@ var default_ariadne = {
 	 "scene": [{
 		"id": "mesh",
 		"url": "",
-		"transform": null
+		"matrix": null
 		}
 	],
 	"spots": {
