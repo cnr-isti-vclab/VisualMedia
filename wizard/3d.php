@@ -100,75 +100,76 @@ html { overflow:hidden; }
 </head>
 <body>
 <div id="3dhop" class="tdhop" onmousedown="if (event.preventDefault) event.preventDefault()"><div id="tdhlg"></div>
- <div id="toolbar">
-  <img id="home"        title="Home"                   src="skins/<?=$skin?>/home.png"/><br/>
+<div id="toolbar">
+	<img id="home"        title="Home"                   src="skins/<?=$skin?>/home.png"/><br/>
 <!--ZOOM-->
-  <img id="zoomin"      title="Zoom In"                src="skins/<?=$skin?>/zoomin.png"/><br/>
-  <img id="zoomout"     title="Zoom Out"               src="skins/<?=$skin?>/zoomout.png"/><br/>
+	<img id="zoomin"      title="Zoom In"                src="skins/<?=$skin?>/zoomin.png"/><br/>
+	<img id="zoomout"     title="Zoom Out"               src="skins/<?=$skin?>/zoomout.png"/><br/>
 <!--ZOOM-->
 <!--LIGHTING-->
 <?php if(in_array('lighting', $tools)) { ?>
-  <img id="lighting_off" title="Enable Lighting"       src="skins/<?=$skin?>/lighting_off.png" style="position:absolute; visibility:hidden;"/>
-  <img id="lighting"     title="Disable Lighting"      src="skins/<?=$skin?>/lighting.png"/><br/>
+	<img id="lighting_off" title="Enable Lighting"       src="skins/<?=$skin?>/lighting_off.png" style="position:absolute; visibility:hidden;"/>
+	<img id="lighting"     title="Disable Lighting"      src="skins/<?=$skin?>/lighting.png"/><br/>
 <?php } ?>
 <!--LIGHTING-->
 <!--LIGHT-->
 <?php if(in_array('light', $tools)) { ?>
-  <img id="light_on"    title="Disable Light Control"  src="skins/<?=$skin?>/lightcontrol_on.png" style="position:absolute; visibility:hidden;"/>
-  <img id="light"       title="Enable Light Control"   src="skins/<?=$skin?>/lightcontrol.png"/><br/>
+	<img id="light_on"    title="Disable Light Control"  src="skins/<?=$skin?>/lightcontrol_on.png" style="position:absolute; visibility:hidden;"/>
+	<img id="light"       title="Enable Light Control"   src="skins/<?=$skin?>/lightcontrol.png"/><br/>
 <?php } ?>
 <!--LIGHT-->
 <!--MEASURE-->
 <?php if(in_array('measure', $tools)) { ?>
-  <img id="measure_on"  title="Disable Measure Tool"   src="skins/<?=$skin?>/measure_on.png" style="position:absolute; visibility:hidden;"/>
-  <img id="measure"     title="Enable Measure Tool"    src="skins/<?=$skin?>/measure.png"/><br/>
+	<img id="measure_on"  title="Disable Measure Tool"   src="skins/<?=$skin?>/measure_on.png" style="position:absolute; visibility:hidden;"/>
+	<img id="measure"     title="Enable Measure Tool"    src="skins/<?=$skin?>/measure.png"/><br/>
 <?php } ?>
 <!--MEASURE-->
 <!--POINT PICKING-->
 <?php if(in_array('picking', $tools)) { ?>
-  <img id="pick_on"     title="Disable PickPoint Mode" src="skins/<?=$skin?>/pick_on.png" style="position:absolute; visibility:hidden;"/>
-  <img id="pick"        title="Enable PickPoint Mode"  src="skins/<?=$skin?>/pick.png"/><br/>
+	<img id="pick_on"     title="Disable PickPoint Mode" src="skins/<?=$skin?>/pick_on.png" style="position:absolute; visibility:hidden;"/>
+	<img id="pick"        title="Enable PickPoint Mode"  src="skins/<?=$skin?>/pick.png"/><br/>
 <?php } ?>
 <!--POINT PICKING-->
 <!--SECTIONS-->
 <?php if(in_array('sections', $tools)) { ?>
-  <img id="sections_on" title="Disable Plane Sections" src="skins/<?=$skin?>/sections_on.png" style="position:absolute; visibility:hidden;"/>
-  <img id="sections"    title="Enable Plane Sections"  src="skins/<?=$skin?>/sections.png"/><br/>
+	<img id="sections_on" title="Disable Plane Sections" src="skins/<?=$skin?>/sections_on.png" style="position:absolute; visibility:hidden;"/>
+	<img id="sections"    title="Enable Plane Sections"  src="skins/<?=$skin?>/sections.png"/><br/>
 <?php } ?>
 <!--SECTIONS-->
 <!--COLOR-->
 <?php if(in_array('color', $tools)) { ?>
-  <img id="color_on"    title="Disable Solid Color"    src="skins/<?=$skin?>/color_on.png" style="position:absolute; visibility:hidden;"/>
-  <img id="color"       title="Enable Solid Color"     src="skins/<?=$skin?>/color.png"/><br/>
+	<img id="color_on"    title="Disable Solid Color"    src="skins/<?=$skin?>/color_on.png" style="position:absolute; visibility:hidden;"/>
+	<img id="color"       title="Enable Solid Color"     src="skins/<?=$skin?>/color.png"/><br/>
 <?php } ?>
 <!--COLOR-->
 <!--CAMERA-->
 <?php if(in_array('orthographic', $tools)) { ?>
-  <img id="perspective"  title="Perspective Camera"    src="skins/<?=$skin?>/perspective.png" style="position:absolute; visibility:hidden;"/>
-  <img id="orthographic" title="Orthographic Camera"   src="skins/<?=$skin?>/orthographic.png"/><br/>
+	<img id="perspective"  title="Perspective Camera"    src="skins/<?=$skin?>/perspective.png" style="position:absolute; visibility:hidden;"/>
+	<img id="orthographic" title="Orthographic Camera"   src="skins/<?=$skin?>/orthographic.png"/><br/>
 <?php } ?>
 <!--CAMERA-->
 <!--FULLSCREEN-->
-  <img id="full_on"     title="Exit Full Screen"       src="skins/<?=$skin?>/full_on.png" style="position:absolute; visibility:hidden;"/>
-  <img id="full"        title="Full Screen"            src="skins/<?=$skin?>/full.png"/><br/>
+	<img id="full_on"     title="Exit Full Screen"       src="skins/<?=$skin?>/full_on.png" style="position:absolute; visibility:hidden;"/>
+	<img id="full"        title="Full Screen"            src="skins/<?=$skin?>/full.png"/><br/>
 <!--FULLSCREEN-->
-
-  <img id="help_on"     title="Info about the media"  src="skins/<?=$skin?>/help.png" style="position:absolute; visibility:hidden;"/>
-  <img id="help"     title="Info about the media"  src="skins/<?=$skin?>/help.png"/><br/>
- </div>
+	<img id="help_on"     title="Info about the media"  src="skins/<?=$skin?>/help.png" style="position:absolute; visibility:hidden;"/>
+	<img id="help"     title="Info about the media"  src="skins/<?=$skin?>/help.png"/><br/>
+</div>
 
 <!--MEASURE-->
- <div id="measure-box" class="output-box">Measured length<hr/><span id="measure-output" class="output-text" onmousedown="event.stopPropagation()">0.0</span></div>
+<div id="measure-box" class="output-box">Measured length<hr/><span id="measure-output" class="output-text" onmousedown="event.stopPropagation()">0.0</span></div>
 <!--MEASURE-->
 
 <!--POINT PICKING-->
- <div id="pickpoint-box" class="output-box">XYZ picked point<hr/><span id="pickpoint-output" class="output-text" onmousedown="event.stopPropagation()">[ 0 , 0 , 0 ]</span></div>
+<div id="pickpoint-box" class="output-box">XYZ picked point<hr/><span id="pickpoint-output" class="output-text" onmousedown="event.stopPropagation()">[ 0 , 0 , 0 ]</span></div>
 <!--POINT PICKING-->
 
 <!--SECTIONS-->
- <div id="sections-box" class="output-box">
-  <table class="output-table" onmousedown="event.stopPropagation()">
-	<tr><td>Plane</td><td>Position</td><td>Flip</td></tr>
+<div id="sections-box" class="output-box">
+	<table class="output-table" onmousedown="event.stopPropagation()">
+	<tr>
+		<td>Plane</td><td>Position</td><td>Flip</td>
+	</tr>
 	<tr>
 		<td><img   id="xplane_on"    title="Disable X Axis Section" src="skins/icons/sectionX_on.png" onclick="sectionxSwitch()" style="position:absolute; visibility:hidden; border:1px inset;"/>
 			<img   id="xplane"       title="Enable X Axis Section"  src="skins/icons/sectionX.png"  onclick="sectionxSwitch()"/><br/></td>
@@ -183,23 +184,27 @@ html { overflow:hidden; }
 		<td><img   id="zplane_on"    title="Disable Z Axis Section" src="skins/icons/sectionZ_on.png" onclick="sectionzSwitch()" style="position:absolute; visibility:hidden; border:1px inset;"/>
 			<img   id="zplane"       title="Enable Z Axis Section"  src="skins/icons/sectionZ.png"  onclick="sectionzSwitch()"/><br/></td>
 		<td><input id="zplaneSlider" class="output-input"  type="range"    title="Move Y Axis Section Position"/></td>
-		<td><input id="zplaneFlip"   class="output-input"  type="checkbox" title="Flip Z Axis Section Direction"/></td></tr></table>
-  <table class="output-table" onmousedown="event.stopPropagation()" style="text-align:right;">
+		<td><input id="zplaneFlip"   class="output-input"  type="checkbox" title="Flip Z Axis Section Direction"/></td>
+	</tr>
+	</table>
+	<table class="output-table" onmousedown="event.stopPropagation()" style="text-align:right;">
 	<tr>
-	 <td>Show planes<input id="showPlane" class="output-input" type="checkbox" title="Show Section Planes" style="bottom:-3px;"/></td>
-	 <td>Show edges<input  id="showBorder" class="output-input" type="checkbox" title="Show Section Edges" style="bottom:-3px;"/></td></tr></table>
- </div>
+		<td>Show planes<input id="showPlane" class="output-input" type="checkbox" title="Show Section Planes" style="bottom:-3px;"/></td>
+		<td>Show edges<input  id="showBorder" class="output-input" type="checkbox" title="Show Section Edges" style="bottom:-3px;"/></td>
+	</tr>
+	</table>
+</div>
 <!--SECTIONS-->
 
 <!-- INFO -->
- <div class="panel" id="help_pane" cellspacing="5">
+<div class="panel" id="help_pane" cellspacing="5">
 	<h3 style="text-align:center"><img class="close" id="close_on" src="skins/minimal_light/close_on.png" onclick="helpSwitch();$('#toolbar img').css('opacity','0.5');" style="display:none;"/>
         <img class="close" id="close" src="skins/minimal_light/close.png"/>Info</h3>
 <hr/>
-    <p>
- </div>
+	<p></p>
+</div>
 
- <canvas id="draw-canvas"></canvas>
+<canvas id="draw-canvas"></canvas>
 </div>
 </body>
 
@@ -330,7 +335,7 @@ function actionsToolbar(action) {
 function onEndMeasure(measure) {
 	// measure.toFixed(2) sets the number of decimals when displaying the measure
 	// depending on the model measure units, use "mm","m","km" or whatever you have
-	$('#measure-output').html(measure.toFixed(2) + "mm"); 
+	$('#measure-output').html(measure.toFixed(2) + " "); 
 }
 //--MEASURE--
 
@@ -382,7 +387,6 @@ function helpSwitch() {
 
 $(document).ready(function(){
 	init3dhop();
-
 	setup3dhop();
 	setHelpPanel();
 });
