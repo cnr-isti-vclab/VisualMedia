@@ -77,9 +77,9 @@ var default_ariadne = {
 	"trackball": {
 		"type": "TurntablePanTrackball",
 		"trackOptions": {
-			"startPhi": 0,
-			"startTheta": 0,
-			"startDistance": 2.0,
+			"startPhi": 30,
+			"startTheta": 25,
+			"startDistance": 1.5,
 			"startPanX": 0,
 			"startPanY": 0,
 			"startPanZ": 0,
@@ -97,6 +97,12 @@ var default_ariadne = {
 		"matrix": null
 		}
 	],
+	"widgets": {
+		"grid" : {
+			"step" : 0.0,	
+			"atStartup" : true
+		}
+	},
 	"spots": {
 		"ID": {
 			"pos": [0.0, 0.0, 0.0],

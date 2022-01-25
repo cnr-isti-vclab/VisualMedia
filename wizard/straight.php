@@ -4,8 +4,9 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-<!--BOOTSTRAP STYLE-->
+<!--BOOTSTRAP-->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <!--STYLE-->
 <link rel="stylesheet" href="stylesheet/style.css">
 
@@ -33,71 +34,170 @@
 		<div class="panel">
 			
 
-
-			<p>Straightening:</p>
-			
-			<button class="btn btn-secondary btn-block" id="smStart" onclick="startStraightMode()">Straighten your model</button>
-			<div class="border d-none" id="smControls">
-				<div class="m-1 row">
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-				</div>
-				<div class="m-1">
+			<div id="Straightening_panel">
+				<h5>Straightening:</h5>
 				
-				<center>
+				<button class="btn btn-secondary btn-block" id="smStart" onclick="startStraightMode()">Straighten your model</button>
+				<div class="border d-none" id="smControls">
 					<div class="m-1">
-					<table border="1">
-					 <tr>
-					 <td align="center"><button onclick="rotView('z', 5.0);"><span><<-</span></button></td>
-					 <td align="center"><button onclick="rotView('x',-5.0);"><span>V+</span></button></td>
-					 <td align="center"><button onclick="rotView('z',-5.0);"><span>->></span></button></td>
-					 </tr>
-					  <tr>
-					 <td align="center"><button onclick="rotView('y',-5.0);"><span>H-</span></button></td>
-					 <td align="center"></td>
-					 <td align="center"><button onclick="rotView('y', 5.0);"><span>H+</span></button></td>
-					 </tr>
-					  <tr>
-					 <td align="center"></td>
-					 <td align="center"><button onclick="rotView('x', 5.0);"><span>V-</span></button></td>
-					 <td align="center"></td>
-					 </tr>
-					</table>
+					Select a view using the buttons.</br>
+					Orient the model to match the chosen view by clicking and dragging in the 3D panel or by using the buttons below.</br>
+					Apply when satisfied; Cancel to revert changes. Reset to inital pose removes all transformations, and returns to the original pose in the 3D file.
 					</div>
-				</center>	
-				
+					<div class="m-1">
+					
+					<center>
+					<table border="0">
+						<tr>
+						<div class="btn-group" role="group">
+							<button class="btn btn-secondary btn-sm" onclick="rotView('y',-90.0);">90</button></td>
+							<button class="btn btn-secondary btn-sm" onclick="rotView('y',-15.0);">15</button></td>
+							<button class="btn btn-secondary btn-sm" onclick="rotView('y', -5.0);">5<img width="20px" src="skins/icons/lf.png"/></button></td>
+						</div>
+						<img width="40px" src="skins/icons/roty.png" title="HORIZONTAL"/>					
+						<div class="btn-group" role="group">
+							<button class="btn btn-secondary btn-sm" onclick="rotView('y',  5.0);"><img width="20px" src="skins/icons/rt.png"/>5</button></td>
+							<button class="btn btn-secondary btn-sm" onclick="rotView('y', 15.0);">15</button></td>
+							<button class="btn btn-secondary btn-sm" onclick="rotView('y', 90.0);">90</button></td>
+						</div>					
+						</tr>
+						<tr>
+						<div class="btn-group" role="group">
+							<button class="btn btn-secondary btn-sm" onclick="rotView('x',-90.0);">90</button></td>
+							<button class="btn btn-secondary btn-sm" onclick="rotView('x',-15.0);">15</button></td>
+							<button class="btn btn-secondary btn-sm" onclick="rotView('x', -5.0);">5<img width="20px" src="skins/icons/up.png"/></button></td>
+						</div>
+						<img width="40px" src="skins/icons/rotx.png" title="VERTICAL"/>
+						<div class="btn-group" role="group">
+							<button class="btn btn-secondary btn-sm" onclick="rotView('x',  5.0);"><img width="20px" src="skins/icons/dn.png"/>5</button></td>
+							<button class="btn btn-secondary btn-sm" onclick="rotView('x', 15.0);">15</button></td>
+							<button class="btn btn-secondary btn-sm" onclick="rotView('x', 90.0);">90</button></td>
+						</div>
+						</tr>
+						<tr>
+						<div class="btn-group" role="group">
+							<button class="btn btn-secondary btn-sm" onclick="rotView('z', 90.0);">90</button></td>
+							<button class="btn btn-secondary btn-sm" onclick="rotView('z', 15.0);">15</button></td>
+							<button class="btn btn-secondary btn-sm" onclick="rotView('z',  5.0);">5<img width="20px" src="skins/icons/rl.png"/></button></td>
+						</div>
+						<img width="40px" src="skins/icons/rotz.png" title="ROLL"/>
+						<div class="btn-group" role="group">
+							<button class="btn btn-secondary btn-sm" onclick="rotView('z', -5.0);"><img width="20px" src="skins/icons/rr.png"/>5</button></td>
+							<button class="btn btn-secondary btn-sm" onclick="rotView('z',-15.0);">15</button></td>
+							<button class="btn btn-secondary btn-sm" onclick="rotView('z',-90.0);">90</button></td>
+						</div>
+						</tr>					
+					</table>			
+					</center>
+					</hr>
+					<center>
+					<table border="0">
+						<tr>
+						<td align="center"><button class="btn btn-secondary btn-sm" onclick="rotView('y',-90.0);">-90</button></td>
+						<td align="center"><button class="btn btn-secondary btn-sm" onclick="rotView('y',-15.0);">-15</button></td>				 
+						<td align="center"><img width="50px" src="skins/icons/roty.png" title="HORIZONTAL"/></td>			 
+						<td align="center"><button class="btn btn-secondary btn-sm" onclick="rotView('y', 15.0);">+15</button></td>
+						<td align="center"><button class="btn btn-secondary btn-sm" onclick="rotView('y', 90.0);">+90</button></td>	 
+						</tr>
+						<tr>
+						<td align="center"><button class="btn btn-secondary btn-sm" onclick="rotView('x',-90.0);">-90</button></td>
+						<td align="center"><button class="btn btn-secondary btn-sm" onclick="rotView('x',-15.0);">-15</button></td>
+						<td align="center"><img width="50px" src="skins/icons/rotx.png" title="VERTICAL"/></td>
+						<td align="center"><button class="btn btn-secondary btn-sm" onclick="rotView('x', 15.0);">+15</button></td>
+						<td align="center"><button class="btn btn-secondary btn-sm" onclick="rotView('x', 90.0);">+90</button></td>	 
+						</tr>
+						<tr>
+						<td align="center"><button class="btn btn-secondary btn-sm" onclick="rotView('z', 90.0);">-90</button></td>
+						<td align="center"><button class="btn btn-secondary btn-sm" onclick="rotView('z', 15.0);">-15</button></td>
+						<td align="center"><img width="50px" src="skins/icons/rotz.png" title="ROLL"/></td>
+						<td align="center"><button class="btn btn-secondary btn-sm" onclick="rotView('z',-15.0);">+15</button></td>
+						<td align="center"><button class="btn btn-secondary btn-sm" onclick="rotView('z',-90.0);">+90</button></td>	 
+						</tr>
+					</table>			
+					</center>
+					
 					<!--
-					<div class="m-1">					
-					<table border="1">
-					 <tr>
-					 <td align="center"><button style="cursor:hand;" onclick="rotAbs('z', 5.0);">Z-</button></td>
-					 <td align="center"><button style="cursor:hand;" onclick="rotAbs('x',-5.0);">X+</button></td>
-					 <td align="center"><button style="cursor:hand;" onclick="rotAbs('z',-5.0);">Z+</button></td>
-					 </tr>
-					  <tr>
-					 <td align="center"><button style="cursor:hand;" onclick="rotAbs('y',-5.0);">Y-</button></td>
-					 <td align="center"></td>
-					 <td align="center"><button style="cursor:hand;" onclick="rotAbs('y', 5.0);">Y+</button></td>
-					 </tr>
-					  <tr>
-					 <td align="center"></td>
-					 <td align="center"><button style="cursor:hand;" onclick="rotAbs('x', 5.0);">X-</button></td>
-					 <td align="center"></td>
-					 </tr>
-					</table>
+					<center>
+						<div class="m-1">
+						<table border="1">
+						 <tr>
+						 <td align="center"><button class="btn btn-secondary btn-sm" onclick="rotView('z', 5.0);"><<-</span></button></td>
+						 <td align="center"><button class="btn btn-secondary btn-sm" onclick="rotView('x',-5.0);">V+</span></button></td>
+						 <td align="center"><button class="btn btn-secondary btn-sm" onclick="rotView('z',-5.0);">->></span></button></td>
+						 </tr>
+						  <tr>
+						 <td align="center"><button class="btn btn-secondary btn-sm" onclick="rotView('y',-5.0);">H-</button></td>
+						 <td align="center"></td>
+						 <td align="center"><button class="btn btn-secondary btn-sm" onclick="rotView('y', 5.0);">+</button></td>
+						 </tr>
+						  <tr>
+						 <td align="center"></td>
+						 <td align="center"><button class="btn btn-secondary btn-sm" onclick="rotView('x', 5.0);">V-</button></td>
+						 <td align="center"></td>
+						 </tr>
+						</table>
+						</div>
+					</center>	
+						-->
+						
+						<!--
+						<div class="m-1">					
+						<table border="1">
+						 <tr>
+						 <td align="center"><button style="cursor:hand;" onclick="rotAbs('z', 5.0);">Z-</button></td>
+						 <td align="center"><button style="cursor:hand;" onclick="rotAbs('x',-5.0);">X+</button></td>
+						 <td align="center"><button style="cursor:hand;" onclick="rotAbs('z',-5.0);">Z+</button></td>
+						 </tr>
+						  <tr>
+						 <td align="center"><button style="cursor:hand;" onclick="rotAbs('y',-5.0);">Y-</button></td>
+						 <td align="center"></td>
+						 <td align="center"><button style="cursor:hand;" onclick="rotAbs('y', 5.0);">Y+</button></td>
+						 </tr>
+						  <tr>
+						 <td align="center"></td>
+						 <td align="center"><button style="cursor:hand;" onclick="rotAbs('x', 5.0);">X-</button></td>
+						 <td align="center"></td>
+						 </tr>
+						</table>
+						</div>
+						-->
+						
 					</div>
-					-->
-				</div>
-				<div class="m-1">
-					<button class="btn btn-sm btn-danger" onclick="rotReset()">Reset to initial pose</button>					
-				</div>				
-				<div class="m-1 text-right">
-					<button class="btn btn-sm btn-danger" onclick="cancelStraightMode()">CANCEL</button>
-					<button class="btn btn-sm btn-success" onclick="applyStraightMode()">APPLY</button>
+					<div class="m-1">
+						<button class="btn btn-sm btn-danger" onclick="rotReset()">Reset to initial pose</button>					
+					</div>				
+					<div class="m-1 text-right">
+						<button class="btn btn-sm btn-danger" onclick="cancelStraightMode()">CANCEL</button>
+						<button class="btn btn-sm btn-success" onclick="applyStraightMode()">APPLY</button>
+					</div>
 				</div>
 			</div>
-		<hr/>
+			
+			<hr/>
+			
+			<div id="Measure_panel">
+				<h5>Model:</h5>
+				<p>still not working</p>
+				<input type="checkbox" id="i_ignoreUnits" checked> Ignore Scale</input></br>
+				<input type="number" id="i_amount" min="1" max="1000" value="1" style="width:60px">
+				is equal to 1
+				<select id="i_unit">
+					<option value="mm">mm</option>
+					<option value="m">m</option>
+				</select>
 
-			<div class="row">
+			</div>
+			
+			<hr/>
+			
+			<div id="Material_panel">
+				<h5>Rendering:</h5>
+				
+			</div>			
+			
+			<hr/>
+			
+			<div class="row" id="Reset_panel">
 				<div class="col-6"><button class="btn btn-secondary btn-sm btn-block" name="reset"> Reset everything </button></div>
 			</div>
 
@@ -148,6 +248,7 @@ function startStraightMode(){
 	//drag
 	window.frames[0].document.getElementById("draw-canvas").addEventListener('mousemove', onDrag3D);
 	presenter.setTrackballLock(true);
+	window.frames[0].removeGrid(); // remove base grid, if any	
 }
 function applyStraightMode(){
 	document.getElementById("smStart").classList.remove("d-none");
@@ -199,8 +300,8 @@ function onDrag3D(e){
 
 function rotReset(){
 	var newmatrix = SglMat4.identity();
-	presenter._scene.modelInstances["model_1"].transform.matrix = newmatrix;
-	presenter.repaint();
+	presenter._scene.modelInstances["model_1"].transform.matrix = newmatrix;	
+	presenter.repaint();	
 }
 
 function rotView(axis,delta){
@@ -236,6 +337,7 @@ function rotAbs(axis,delta){
 	presenter._scene.modelInstances["model_1"].transform.matrix = newmatrix;	
 	presenter.repaint();
 }
+
 
 //-------------------------------------------------------------------------
 function showReference(){
@@ -360,7 +462,7 @@ function viewFrom(direction){
 	document.querySelectorAll('.vbutton').forEach(el => {el.classList.remove('btn-primary'); el.classList.add('btn-secondary');});
 	
 	let presenter = window.frames[0].presenter; // get current presenter instance
-	var distance = 1.6;
+	var distance = 1.4;
     switch(direction) {
         case "front":
 			presenter.animateToTrackballPosition([0.0, 0.0, 0.0, 0.0, 0.0, distance]);
