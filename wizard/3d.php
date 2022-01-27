@@ -121,7 +121,7 @@ html { overflow:hidden; }
 <?php } ?>
 <!--MEASURE-->
 <!--POINT PICKING-->
-<?php if(in_array('picking', $tools)) { ?>
+<?php if(in_array('pick', $tools)) { ?>
 	<img id="pick_on"     title="Disable PickPoint Mode" src="skins/<?=$skin?>/pick_on.png" style="position:absolute; visibility:hidden;"/>
 	<img id="pick"        title="Enable PickPoint Mode"  src="skins/<?=$skin?>/pick.png"/><br/>
 <?php } ?>
@@ -148,7 +148,7 @@ html { overflow:hidden; }
 	<img id="full_on"     title="Exit Full Screen"       src="skins/<?=$skin?>/full_on.png" style="position:absolute; visibility:hidden;"/>
 	<img id="full"        title="Full Screen"            src="skins/<?=$skin?>/full.png"/><br/>
 <!--FULLSCREEN-->
-	<img id="help_on"     title="Info about the media"  src="skins/<?=$skin?>/help.png" style="position:absolute; visibility:hidden;"/>
+	<img id="help_on"     title="Info about the media"  src="skins/<?=$skin?>/help_on.png" style="position:absolute; visibility:hidden;"/>
 	<img id="help"     title="Info about the media"  src="skins/<?=$skin?>/help.png"/><br/>
 </div>
 
@@ -223,7 +223,7 @@ let tools = {
 	zoomin:   { title: "Zoom In",               icon: "zoomin.png"},
 	zoomout:  { title: "Zoom Out",              icon: "zoomout.png"},
 	lighting: { title: "Enable Lighting",       icon: "lighting.png", 
-	            title_on: "Disable Lighting",   icon_on: "lighting_off.png", id_on: "lighting_on"},
+	            title_on: "Disable Lighting",   icon_on: "lighting_off.png", id_on: "lighting_off"},
 	light:    { title: "Enable Light Control",  icon: "lightcontrol.png", 
 				title_on: "Disable Light Control", icon_on: "lightcontrol_on.png"},
 	measure:  { title: "Enable Measure Tool",   icon: "measure.png", 
@@ -239,26 +239,33 @@ let tools = {
 	full:     { title: "Full Screen", icon: "full_on.png", 
 				title_on: "it Full Screen",icon_on: "full.png"},
 	help:     { title: "Info about the media", icon: "help.png", 
-				title_on: "Info about the media",icon_on: "help.png"},
+				title_on: "Info about the media",icon_on: "help_on.png"},
 };
 
+/*
 let toolbar = document.querySelector('#toolbar');
-for(let id in options.tool) {
-	let tool = tools[id];
-	let img = document.createElement('img');
-	img.id = id;
+for(let id in options.tools) {
+	let tool = tools[options.tools[id]];
+	let img=null;
+	
+	if(tool.title_on) {
+		img = document.createElement('img');
+		img.id = tool.id_on? tool.id_on : options.tools[id] + '_on';
+		img.setAttribute('title', tool.title_on);
+		img.setAttribute('style', 'position:absolute; visibility:hidden;');		
+		img.src = `skins/${options.skin}/${tool.icon_on}`;
+		toolbar.appendChild(img);
+	}	
+	
+	img = document.createElement('img');
+	img.id = options.tools[id];
 	img.setAttribute('title', tool.title);
 	img.src = `skins/${options.skin}/${tool.icon}`;
 	toolbar.appendChild(img);
 
-	if(tool.title_on) {
-		img = document.createElement('img');
-		img.id = tool.id_on? tool.id_on : id + '_on';
-		img.setAttribute('title', tool.title_on);
-		img.src = `skins/${options.skin}/${tool.icon_on}`;
-		toolbar.appendChild(img);
-	}
+	toolbar.appendChild(document.createElement("br"));
 }
+*/
 
 function setup3dhop() {
 	presenter = new Presenter("draw-canvas");
@@ -297,32 +304,40 @@ function setup3dhop() {
 function actionsToolbar(action) {
 	if(action=='home') presenter.resetTrackball();
 //--FULLSCREEN--
-	else if(action=='full'  || action=='full_on') fullscreenSwitch();
+	else if(action=='full') enterFullscreen();
+	else if(action=='full_on') exitFullscreen();	
 //--FULLSCREEN--
 //--ZOOM--
 	else if(action=='zoomin') presenter.zoomIn();
 	else if(action=='zoomout') presenter.zoomOut();
 //--ZOOM--
 //--LIGHTING--
-	else if(action=='lighting' || action=='lighting_off') { presenter.enableSceneLighting(!presenter.isSceneLightingEnabled()); lightingSwitch(); }
+	else if(action=='lighting') { presenter.enableSceneLighting(false); lightingSwitch(); }
+	else if(action=='lighting_off') { presenter.enableSceneLighting(true); lightingSwitch(); }
 //--LIGHTING--
 //--LIGHT--
-	else if(action=='light' || action=='light_on') { presenter.enableLightTrackball(!presenter.isLightTrackballEnabled()); lightSwitch(); }
+	else if(action=='light') { presenter.enableLightTrackball(true); lightSwitch(); }
+	else if(action=='light_on') { presenter.enableLightTrackball(false); lightSwitch(); }
 //--LIGHT--
 //--CAMERA--
-	else if(action=='perspective' || action=='orthographic') { presenter.toggleCameraType(); cameraSwitch(); }
+	else if(action=='perspective') { presenter.setCameraPerspective(); cameraSwitch(); }
+	else if(action=='orthographic') { presenter.setCameraOrthographic(); cameraSwitch(); }	
 //--CAMERA--
 //--COLOR--
-	else if(action=='color' || action=='color_on') { presenter.toggleInstanceSolidColor(HOP_ALL, true); colorSwitch(); }
+	else if(action=='color') { presenter.setInstanceSolidColor(HOP_ALL, true, true); colorSwitch(); }
+	else if(action=='color_on') { presenter.setInstanceSolidColor(HOP_ALL, false, true); colorSwitch(); }
 //--COLOR--
 //--MEASURE--
-	else if(action=='measure' || action=='measure_on') { presenter.enableMeasurementTool(!presenter.isMeasurementToolEnabled()); measureSwitch(); }
+	else if(action=='measure') { presenter.enableMeasurementTool(true); measureSwitch(); }
+	else if(action=='measure_on') { presenter.enableMeasurementTool(false); measureSwitch(); }
 //--MEASURE--
 //--POINT PICKING--
-	else if(action=='pick' || action=='pick_on') { presenter.enablePickpointMode(!presenter.isPickpointModeEnabled()); pickpointSwitch(); }
+	else if(action=='pick') { presenter.enablePickpointMode(true); pickpointSwitch(); }
+	else if(action=='pick_on') { presenter.enablePickpointMode(false); pickpointSwitch(); }
 //--POINT PICKING--
 //--SECTIONS--
-	else if(action=='sections' || action=='sections_on') { sectiontoolReset(); sectiontoolSwitch(); }
+	else if(action=='sections') { sectiontoolReset(); sectiontoolSwitch(); }
+	else if(action=='sections_on') { sectiontoolReset(); sectiontoolSwitch(); }	
 //--SECTIONS--
 	else if(action=='help') { helpSwitch(); } 
 }
