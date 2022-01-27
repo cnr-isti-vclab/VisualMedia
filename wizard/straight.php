@@ -38,7 +38,9 @@
 			
 
 			<div id="Straightening_panel">
-				<h5>Straightening:</h5>
+				<h5>
+				<img class="m-1" width="25px" src="skins/icons/restore.png" onclick="resetOrientation();"> Model Orientation
+				</h5>			
 				
 				<button class="btn btn-secondary btn-block" id="smStart" onclick="startStraightMode()">Straighten your model</button>
 				<div class="border d-none" id="smControls">
@@ -165,10 +167,7 @@
 						</div>
 						-->
 						
-					</div>
-					<div class="m-1">
-						<button class="btn btn-sm btn-danger" onclick="rotReset()">Reset to initial pose</button>					
-					</div>				
+					</div>			
 					<div class="m-1 text-right">
 						<button class="btn btn-sm btn-danger" onclick="cancelStraightMode()">CANCEL</button>
 						<button class="btn btn-sm btn-success" onclick="applyStraightMode()">APPLY</button>
@@ -199,10 +198,6 @@
 			</div>			
 			
 			<hr/>
-			
-			<div class="row" id="Reset_panel">
-				<div class="col-6"><button class="btn btn-secondary btn-sm btn-block" name="reset"> Reset everything </button></div>
-			</div>
 
 		</div>
 
@@ -252,27 +247,30 @@ function startStraightMode(){
 	window.frames[0].document.getElementById("draw-canvas").addEventListener('mousedown', onDown);
 	window.frames[0].document.getElementById("draw-canvas").addEventListener('mousemove', onMove);
 }
-function applyStraightMode(){
-	document.getElementById("smStart").classList.remove("d-none");
-	document.getElementById("smControls").classList.add("d-none");
-	document.getElementById("viewControls").classList.add("d-none");	
-	var newmatrix = window.frames[0].presenter._scene.modelInstances["model_1"].transform.matrix;
-	presenter = null;
-	straight.options.scene[0].matrix = newmatrix;
-	straight.save();
-	//remove mini sphere-trackball manipulator
-	window.frames[0].document.getElementById("draw-canvas").removeEventListener('mousedown', onDown);
-	window.frames[0].document.getElementById("draw-canvas").removeEventListener('mousemove', onMove);
-}
-function cancelStraightMode(){
+function endStraightInterface(){
 	document.getElementById("smStart").classList.remove("d-none");
 	document.getElementById("smControls").classList.add("d-none");
 	document.getElementById("viewControls").classList.add("d-none");
 	presenter = null;
-	straight.refresh();
 	//remove mini sphere-trackball manipulator
 	window.frames[0].document.getElementById("draw-canvas").removeEventListener('mousedown', onDown);
-	window.frames[0].document.getElementById("draw-canvas").removeEventListener('mousemove', onMove);
+	window.frames[0].document.getElementById("draw-canvas").removeEventListener('mousemove', onMove);	
+}
+function applyStraightMode(){
+	endStraightInterface();	
+	var newmatrix = window.frames[0].presenter._scene.modelInstances["model_1"].transform.matrix;
+	straight.options.scene[0].matrix = newmatrix;
+	straight.save();	
+}
+function cancelStraightMode(){
+	endStraightInterface();
+	straight.refresh();	
+}
+function resetOrientation(){
+	endStraightInterface();	
+	var newmatrix = SglMat4.identity();
+	straight.options.scene[0].matrix = newmatrix;
+	straight.save();
 }
 
 //-------------------------------------------------------------------------
@@ -322,12 +320,6 @@ function projectPoint(x,y){
 	return [v[0],v[1],v[2]];
 }
 //-------------------------------------------------------------------------
-
-function rotReset(){
-	var newmatrix = SglMat4.identity();
-	presenter._scene.modelInstances["model_1"].transform.matrix = newmatrix;	
-	presenter.repaint();	
-}
 
 function rotView(axis,delta){
 	var track = presenter.getTrackballPosition();
