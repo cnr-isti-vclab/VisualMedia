@@ -29,6 +29,9 @@
 			</center>
 		</div>
 		
+		<div id="debug" style="position:absolute; left:10px; top:10;">
+		</div>
+		
 		<iframe id="media" allowfullscreen allow="fullscreen" style="border-width:0px" class="relight" src="3d.php"></iframe>
 		
 		<div class="panel">
@@ -232,8 +235,6 @@ class Straight extends Config {
 var presenter = null;	// current presenter instance from iframe
 //------------------------------------------
 
-
-
 //-------------------------------------------------------------------------
 function startStraightMode(){
 	presenter = window.frames[0].presenter; // get current presenter instance
@@ -245,10 +246,11 @@ function startStraightMode(){
 	window.frames[0].onTrackballUpdate = updateReference;
 	showReference();
 	viewFrom("front");
-	//drag
-	window.frames[0].document.getElementById("draw-canvas").addEventListener('mousemove', onDrag3D);
+	window.frames[0].removeGrid(); // remove base grid, if any
 	presenter.setTrackballLock(true);
-	window.frames[0].removeGrid(); // remove base grid, if any	
+	//setup mini sphere-trackball manipulator
+	window.frames[0].document.getElementById("draw-canvas").addEventListener('mousedown', onDown);
+	window.frames[0].document.getElementById("draw-canvas").addEventListener('mousemove', onMove);
 }
 function applyStraightMode(){
 	document.getElementById("smStart").classList.remove("d-none");
@@ -258,8 +260,9 @@ function applyStraightMode(){
 	presenter = null;
 	straight.options.scene[0].matrix = newmatrix;
 	straight.save();
-	//drag
-	window.frames[0].document.getElementById("draw-canvas").removeEventListener('mousemove', onDrag3D);
+	//remove mini sphere-trackball manipulator
+	window.frames[0].document.getElementById("draw-canvas").removeEventListener('mousedown', onDown);
+	window.frames[0].document.getElementById("draw-canvas").removeEventListener('mousemove', onMove);
 }
 function cancelStraightMode(){
 	document.getElementById("smStart").classList.remove("d-none");
@@ -267,35 +270,57 @@ function cancelStraightMode(){
 	document.getElementById("viewControls").classList.add("d-none");
 	presenter = null;
 	straight.refresh();
-	//drag
-	window.frames[0].document.getElementById("draw-canvas").removeEventListener('mousemove', onDrag3D);
-
+	//remove mini sphere-trackball manipulator
+	window.frames[0].document.getElementById("draw-canvas").removeEventListener('mousedown', onDown);
+	window.frames[0].document.getElementById("draw-canvas").removeEventListener('mousemove', onMove);
 }
 
 //-------------------------------------------------------------------------
+// mini sphere-trackball 
 
+var trackV1, trackV2;
 
-function onDrag3D(e){
-	if(e.buttons != 1)
-		return;
-
-	rotView("y", 0.06 * e.movementX);
-	rotView("x", 0.06 * e.movementY);
-
-	
-	/*
-	var EX = (e.clientX / e.target.width) - 0.5;
-	var EY = (e.clientY / e.target.height) - 0.5;
-	console.log(EX + " " + EY);
-	
-	var central = (0.16 - ((EX*EX)+(EY*EY)))/0.16;
-		
-	rotView("y", 0.06 * e.movementX * central);
-	rotView("x", 0.06 * e.movementY * central);
-	rotView("z", 0.06 * (e.movementX) * (1.0-central))
-	*/
+function onDown(e){
+	let minSize = Math.min(e.target.width,e.target.height)
+	let mx = (e.clientX - (e.target.width/2.0)) / minSize;
+	let my = ((e.target.height-e.clientY) - (e.target.height/2.0)) / minSize;
+	trackV1 = projectPoint(mx,my);
 }
+function onMove(e){
+	if(e.buttons != 1) return;
 
+	let minSize = Math.min(e.target.width,e.target.height);		
+	let mx = (e.clientX - (e.target.width/2.0)) / minSize;
+	let my = ((e.target.height-e.clientY) - (e.target.height/2.0)) / minSize;
+	trackV2 = projectPoint(mx,my);
+
+	var axis   = SglVec3.cross(trackV1, trackV2); //axis of rotation
+	var angle  = SglVec3.length(axis); //angle of rotation
+	var rotMat = SglMat4.rotationAngleAxis(angle*2.0, axis); // *2.0 makes it spin faster :)
+	var newmatrix = SglMat4.mul(rotMat, presenter._scene.modelInstances["model_1"].transform.matrix);
+	presenter._scene.modelInstances["model_1"].transform.matrix = newmatrix;
+	presenter.repaint();
+
+	trackV1 = trackV2;
+}
+function projectPoint(x,y){
+		var r = 0.5;
+		var z = 0.0;
+		var d = Math.sqrt(x*x + y*y);
+
+		if (d < (r * 0.70710678118654752440)) { /* Inside sphere */
+			z = Math.sqrt(r*r - d*d);
+		}
+		else { /* On hyperbola */
+			let t = r / 1.41421356237309504880;
+			z = t*t / d;
+		}
+	var v = [x, y, z, 1.0];
+	var track = presenter.getTrackballPosition();	
+	v = SglMat4.mul4(SglMat4.rotationAngleAxis(sglDegToRad(track[1]), [-1.0, 0.0, 0.0]), v);
+	v = SglMat4.mul4(SglMat4.rotationAngleAxis(sglDegToRad(track[0]), [0.0, 1.0, 0.0]), v);		
+	return [v[0],v[1],v[2]];
+}
 //-------------------------------------------------------------------------
 
 function rotReset(){
