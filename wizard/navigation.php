@@ -100,12 +100,12 @@ function resetFOV(){
 //----------------------------------------------------------------------------------
 function useCurrentView(){
 	var track = window.frames[0].presenter.getTrackballPosition();
-	navigation.options.trackball.trackOptions.startPhi      = track[0].toFixed(4);
-	navigation.options.trackball.trackOptions.startTheta    = track[1].toFixed(4);
-	navigation.options.trackball.trackOptions.startPanX     = track[2].toFixed(4);
-	navigation.options.trackball.trackOptions.startPanY     = track[3].toFixed(4);
-	navigation.options.trackball.trackOptions.startPanZ     = track[4].toFixed(4);
-	navigation.options.trackball.trackOptions.startDistance = track[5].toFixed(4);
+	navigation.options.trackball.trackOptions.startPhi      = track[0];
+	navigation.options.trackball.trackOptions.startTheta    = track[1];
+	navigation.options.trackball.trackOptions.startPanX     = track[2];
+	navigation.options.trackball.trackOptions.startPanY     = track[3];
+	navigation.options.trackball.trackOptions.startPanZ     = track[4];
+	navigation.options.trackball.trackOptions.startDistance = track[5];
 	navigation.save();
 	navigation.update();	
 }
