@@ -74,8 +74,14 @@ class Navigation extends Config {
 	}
 }
 
-//----------------------------------------------------------------------------------
+//------------------------------------------
+// config object
+//------------------------------------------
+let navigation = new Navigation('#media', 'update.php'); //'options.json'); 
+//------------------------------------------
 
+
+//----------------------------------------------------------------------------------
 function updatingFOV(newVal){
 	document.querySelector('#labelFOV').innerHTML = newVal + "°";
 	window.frames[0].presenter._scene.space.cameraFOV = newVal;
@@ -92,18 +98,14 @@ function resetFOV(){
 	navigation.update();
 }
 //----------------------------------------------------------------------------------
-
 function useCurrentView(){
-	
 	var track = window.frames[0].presenter.getTrackballPosition();
-	
 	navigation.options.trackball.trackOptions.startPhi      = track[0].toFixed(4);
 	navigation.options.trackball.trackOptions.startTheta    = track[1].toFixed(4);
 	navigation.options.trackball.trackOptions.startPanX     = track[2].toFixed(4);
 	navigation.options.trackball.trackOptions.startPanY     = track[3].toFixed(4);
 	navigation.options.trackball.trackOptions.startPanZ     = track[4].toFixed(4);
 	navigation.options.trackball.trackOptions.startDistance = track[5].toFixed(4);
-	
 	navigation.save();
 	navigation.update();	
 }
@@ -111,20 +113,13 @@ function resetInitialView(){
 	navigation.options.trackball.trackOptions.startPhi      = default_ariadne.trackball.trackOptions.startPhi;
 	navigation.options.trackball.trackOptions.startTheta    = default_ariadne.trackball.trackOptions.startTheta;
 	navigation.options.trackball.trackOptions.startPanX     = default_ariadne.trackball.trackOptions.startPanX;
-	navigation.options.trackball.trackOptions.startPanY     = default_ariadne.trackball.trackOptions.startPany;
+	navigation.options.trackball.trackOptions.startPanY     = default_ariadne.trackball.trackOptions.startPanY;
 	navigation.options.trackball.trackOptions.startPanZ     = default_ariadne.trackball.trackOptions.startPanZ;
 	navigation.options.trackball.trackOptions.startDistance = default_ariadne.trackball.trackOptions.startDistance;
-
 	navigation.save();
 	navigation.update();	
 }
-
-let navigation = new Navigation('#media', 'update.php'); //'options.json'); 
-
-
-let reset = document.querySelector('button[name=reset]');
-reset.addEventListener('click', () => navigation.reset());
-
+//----------------------------------------------------------------------------------
 
 
 </script>

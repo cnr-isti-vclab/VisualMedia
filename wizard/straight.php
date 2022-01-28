@@ -225,6 +225,11 @@ class Straight extends Config {
 	}
 }
 
+//------------------------------------------
+// config object
+//------------------------------------------
+let straight = new Straight('#media', 'update.php'); //'options.json'); 
+//------------------------------------------
 
 //------------------------------------------
 var presenter = null;	// current presenter instance from iframe
@@ -517,12 +522,6 @@ function viewFrom(direction){
 //-------------------------------------------------------------------------
 
 
-
-let straight = new Straight('#media', 'update.php'); //'options.json'); 
-
-
-let reset = document.querySelector('button[name=reset]');
-reset.addEventListener('click', () => straight.reset());
 
 
 
