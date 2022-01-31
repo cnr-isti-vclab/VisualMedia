@@ -89,79 +89,26 @@ switch($type) {
 }
 
 html { overflow:hidden; }
-
 </style>
-<?php
-	$skin = $options->skin;
-	$tools = $options->tools;
-	$background = $options->background;
-?>
 
 </head>
 <body>
 <div id="3dhop" class="tdhop" onmousedown="if (event.preventDefault) event.preventDefault()"><div id="tdhlg"></div>
-<div id="toolbar">
-	<img id="home"        title="Home"                   src="skins/<?=$skin?>/home.png"/><br/>
-<!--LIGHTING-->
-<?php if(in_array('lighting', $tools)) { ?>
-	<img id="lighting_off" title="Enable Lighting"       src="skins/<?=$skin?>/lighting_off.png" style="position:absolute; visibility:hidden;"/>
-	<img id="lighting"     title="Disable Lighting"      src="skins/<?=$skin?>/lighting.png"/><br/>
-<?php } ?>
-<!--LIGHTING-->
-<!--LIGHT-->
-<?php if(in_array('light', $tools)) { ?>
-	<img id="light_on"    title="Disable Light Control"  src="skins/<?=$skin?>/lightcontrol_on.png" style="position:absolute; visibility:hidden;"/>
-	<img id="light"       title="Enable Light Control"   src="skins/<?=$skin?>/lightcontrol.png"/><br/>
-<?php } ?>
-<!--LIGHT-->
-<!--MEASURE-->
-<?php if(in_array('measure', $tools)) { ?>
-	<img id="measure_on"  title="Disable Measure Tool"   src="skins/<?=$skin?>/measure_on.png" style="position:absolute; visibility:hidden;"/>
-	<img id="measure"     title="Enable Measure Tool"    src="skins/<?=$skin?>/measure.png"/><br/>
-<?php } ?>
-<!--MEASURE-->
-<!--POINT PICKING-->
-<?php if(in_array('pick', $tools)) { ?>
-	<img id="pick_on"     title="Disable PickPoint Mode" src="skins/<?=$skin?>/pick_on.png" style="position:absolute; visibility:hidden;"/>
-	<img id="pick"        title="Enable PickPoint Mode"  src="skins/<?=$skin?>/pick.png"/><br/>
-<?php } ?>
-<!--POINT PICKING-->
-<!--SECTIONS-->
-<?php if(in_array('sections', $tools)) { ?>
-	<img id="sections_on" title="Disable Plane Sections" src="skins/<?=$skin?>/sections_on.png" style="position:absolute; visibility:hidden;"/>
-	<img id="sections"    title="Enable Plane Sections"  src="skins/<?=$skin?>/sections.png"/><br/>
-<?php } ?>
-<!--SECTIONS-->
-<!--COLOR-->
-<?php if(in_array('color', $tools)) { ?>
-	<img id="color_on"    title="Disable Solid Color"    src="skins/<?=$skin?>/color_on.png" style="position:absolute; visibility:hidden;"/>
-	<img id="color"       title="Enable Solid Color"     src="skins/<?=$skin?>/color.png"/><br/>
-<?php } ?>
-<!--COLOR-->
-<!--CAMERA-->
-<?php if(in_array('orthographic', $tools)) { ?>
-	<img id="perspective"  title="Perspective Camera"    src="skins/<?=$skin?>/perspective.png" style="position:absolute; visibility:hidden;"/>
-	<img id="orthographic" title="Orthographic Camera"   src="skins/<?=$skin?>/orthographic.png"/><br/>
-<?php } ?>
-<!--CAMERA-->
-<!--FULLSCREEN-->
-	<img id="full_on"     title="Exit Full Screen"       src="skins/<?=$skin?>/full_on.png" style="position:absolute; visibility:hidden;"/>
-	<img id="full"        title="Full Screen"            src="skins/<?=$skin?>/full.png"/><br/>
-<!--FULLSCREEN-->
-	<img id="help_on"     title="Info about the media"  src="skins/<?=$skin?>/help_on.png" style="position:absolute; visibility:hidden;"/>
-	<img id="help"     title="Info about the media"  src="skins/<?=$skin?>/help.png"/><br/>
-</div>
+
+<!--TOOLBAR-->
+ <div id="toolbar"></div>
+<!--TOOLBAR-->
 
 <!--MEASURE-->
-<div id="measure-box" class="output-box">Measured length<hr/><span id="measure-output" class="output-text" onmousedown="event.stopPropagation()">0.0</span></div>
+ <div id="measure-box" class="output-box">Measured length<hr/><span id="measure-output" class="output-text" onmousedown="event.stopPropagation()">0.0</span></div>
 <!--MEASURE-->
 
 <!--POINT PICKING-->
-<div id="pickpoint-box" class="output-box">XYZ picked point<hr/><span id="pickpoint-output" class="output-text" onmousedown="event.stopPropagation()">[ 0 , 0 , 0 ]</span></div>
+ <div id="pickpoint-box" class="output-box">XYZ picked point<hr/><span id="pickpoint-output" class="output-text" onmousedown="event.stopPropagation()">[ 0 , 0 , 0 ]</span></div>
 <!--POINT PICKING-->
 
 <!--SECTIONS-->
-<div id="sections-box" class="output-box">
+ <div id="sections-box" class="output-box">
 	<table class="output-table" onmousedown="event.stopPropagation()">
 	<tr>
 		<td>Plane</td><td>Position</td><td>Flip</td>
@@ -189,18 +136,19 @@ html { overflow:hidden; }
 		<td>Show edges<input  id="showBorder" class="output-input" type="checkbox" title="Show Section Edges" style="bottom:-3px;"/></td>
 	</tr>
 	</table>
-</div>
+ </div>
 <!--SECTIONS-->
 
 <!-- INFO -->
-<div class="panel" id="help_pane" cellspacing="5">
+ <div class="panel" id="help_pane" cellspacing="5">
 	<h3 style="text-align:center"><img class="close" id="close_on" src="skins/minimal_light/close_on.png" onclick="helpSwitch();$('#toolbar img').css('opacity','0.5');" style="display:none;"/>
         <img class="close" id="close" src="skins/minimal_light/close.png"/>Info</h3>
-<hr/>
-	<p></p>
-</div>
+  <hr/>
+  <p></p>
+ </div>
+<!-- INFO -->
 
-<canvas id="draw-canvas"></canvas>
+ <canvas id="draw-canvas"></canvas>
 </div>
 </body>
 
@@ -218,54 +166,72 @@ switch(trackball.type) {
 	case 'TurntablePanTrackball': trackball.type = TurntablePanTrackball; break;
 }
 
+let spots = {};
+if(options.spots) {
+	for (let id in options.spots) {
+		spots[id] = {
+			mesh            : "sphere",
+			color           : options.spots[id].color,
+			alpha           : 0.7,
+			alphaHigh       : 0.9,
+			transform : { 
+				translation : options.spots[id].pos,
+				scale : [options.spots[id].radius, options.spots[id].radius, options.spots[id].radius],
+				},
+			visible         : false,
+		}
+	}
+}
+
 let tools = { 
 	home:     { title: "Home",                  icon: "home.png"},
 	zoomin:   { title: "Zoom In",               icon: "zoomin.png"},
 	zoomout:  { title: "Zoom Out",              icon: "zoomout.png"},
-	lighting: { title: "Enable Lighting",       icon: "lighting.png", 
-	            title_on: "Disable Lighting",   icon_on: "lighting_off.png", id_on: "lighting_off"},
+	lighting: { title: "Disable Lighting",       icon: "lighting.png", 
+				title_on: "Enable Lighting",   icon_on: "lighting_off.png", id_on: "lighting_off"},
 	light:    { title: "Enable Light Control",  icon: "lightcontrol.png", 
 				title_on: "Disable Light Control", icon_on: "lightcontrol_on.png"},
 	measure:  { title: "Enable Measure Tool",   icon: "measure.png", 
-	            title_on: "Disable Measure Tool", icon_on: "measure_on.png"},
+				title_on: "Disable Measure Tool", icon_on: "measure_on.png"},
 	pick:     { title: "Enable PickPoint Mode", icon: "pick.png", 
-	            title_on: "Disable PickPoint Mod",icon_on: "pick_on.png"},
+				title_on: "Disable PickPoint Mod",icon_on: "pick_on.png"},
 	sections: { title: "Enable Plane Sections", icon: "sections.png", 
-	            title_on: "Disable Plane Section", icon_on: "sections_on.png"},
+				title_on: "Disable Plane Section", icon_on: "sections_on.png"},
 	color:    { title: "Enable Solid Color",    icon: "color.png", 
-	            title_on: "Disable Solid Color",icon_on: "color_on.png"},
+				title_on: "Disable Solid Color",icon_on: "color_on.png"},
 	orthographic: { title: "Orthographic Camera", icon: "orthographic.png", 
-	                title_on: "Perspective Camera",icon_on: "perspective.png", id_on: "perspective"},
-	full:     { title: "Full Screen", icon: "full_on.png", 
-				title_on: "it Full Screen",icon_on: "full.png"},
+				title_on: "Perspective Camera",icon_on: "perspective.png", id_on: "perspective"},
+	hotspot: { title: "Show Hotspots", icon: "pin.png", 
+				title_on: "Hide Hotspots",icon_on: "pin_on.png"},
+	full:     { title: "Full Screen", icon: "full.png", 
+				title_on: "Exit Full Screen",icon_on: "full_on.png"},
 	help:     { title: "Info about the media", icon: "help.png", 
-				title_on: "Info about the media",icon_on: "help_on.png"},
+				title_on: "Info about the media",icon_on: "help.png"},
 };
 
-/*
 let toolbar = document.querySelector('#toolbar');
-for(let id in options.tools) {
-	let tool = tools[options.tools[id]];
-	let img=null;
-	
-	if(tool.title_on) {
-		img = document.createElement('img');
-		img.id = tool.id_on? tool.id_on : options.tools[id] + '_on';
-		img.setAttribute('title', tool.title_on);
-		img.setAttribute('style', 'position:absolute; visibility:hidden;');		
-		img.src = `skins/${options.skin}/${tool.icon_on}`;
+for(let id in tools) { 
+	if(options.tools.includes(id)) {
+		let tool = tools[id];
+		if(tool.title_on) {
+			let img_on = document.createElement('img');
+			img_on = document.createElement('img');
+			img_on.id = tool.id_on? tool.id_on : id + '_on';
+			img_on.setAttribute('title', tool.title_on);
+			img_on.style.position = 'absolute';
+			img_on.style.visibility = 'hidden';
+			img_on.src = `skins/${options.skin}/${tool.icon_on}`;
+			toolbar.appendChild(img_on);
+		}
+		let img = document.createElement('img');
+		img.id = id;
+		img.setAttribute('title', tool.title);
+		img.src = `skins/${options.skin}/${tool.icon}`;
 		toolbar.appendChild(img);
-	}	
-	
-	img = document.createElement('img');
-	img.id = options.tools[id];
-	img.setAttribute('title', tool.title);
-	img.src = `skins/${options.skin}/${tool.icon}`;
-	toolbar.appendChild(img);
-
-	toolbar.appendChild(document.createElement("br"));
+		let br = document.createElement('br');
+		toolbar.appendChild(br);
+	}
 }
-*/
 
 function setup3dhop() {
 	presenter = new Presenter("draw-canvas");
@@ -274,7 +240,8 @@ function setup3dhop() {
 
 	presenter.setScene({
 		meshes: {
-			"mesh_1" : { url: "models/gargoyle.nxs" }
+			"mesh_1" : { url: "models/gargoyle.nxs" },
+			"sphere" : { url: "models/sphere.ply" },
 		},
 		modelInstances : {
 			"model_1" : { 
@@ -283,6 +250,7 @@ function setup3dhop() {
 				transform: options.scene[0].matrix? {matrix : options.scene[0].matrix} : null
 			}
 		},
+		spots: spots,
 		trackball: trackball,
 		space: options.space
 	});
@@ -305,7 +273,7 @@ function actionsToolbar(action) {
 	if(action=='home') presenter.resetTrackball();
 //--FULLSCREEN--
 	else if(action=='full') enterFullscreen();
-	else if(action=='full_on') exitFullscreen();	
+	else if(action=='full_on') exitFullscreen();
 //--FULLSCREEN--
 //--ZOOM--
 	else if(action=='zoomin') presenter.zoomIn();
@@ -321,7 +289,7 @@ function actionsToolbar(action) {
 //--LIGHT--
 //--CAMERA--
 	else if(action=='perspective') { presenter.setCameraPerspective(); cameraSwitch(); }
-	else if(action=='orthographic') { presenter.setCameraOrthographic(); cameraSwitch(); }	
+	else if(action=='orthographic') { presenter.setCameraOrthographic(); cameraSwitch(); }
 //--CAMERA--
 //--COLOR--
 	else if(action=='color') { presenter.setInstanceSolidColor(HOP_ALL, true, true); colorSwitch(); }
@@ -337,8 +305,12 @@ function actionsToolbar(action) {
 //--POINT PICKING--
 //--SECTIONS--
 	else if(action=='sections') { sectiontoolReset(); sectiontoolSwitch(); }
-	else if(action=='sections_on') { sectiontoolReset(); sectiontoolSwitch(); }	
+	else if(action=='sections_on') { sectiontoolReset(); sectiontoolSwitch(); }
 //--SECTIONS--
+//--HOTSPOTS--
+	else if(action=='hotspot') { presenter.setSpotVisibility(HOP_ALL, true, true); presenter.enableOnHover(true); hotspotSwitch(); }
+	else if(action=='hotspot_on') { presenter.setSpotVisibility(HOP_ALL, false, true); presenter.enableOnHover(false); hotspotSwitch(); }
+//--HOTSPOTS--
 	else if(action=='help') { helpSwitch(); } 
 }
 
@@ -356,9 +328,9 @@ function onEndPick(point) {
 	var x = point[0].toFixed(2);
 	var y = point[1].toFixed(2);
 	var z = point[2].toFixed(2);
-    $('#pickpoint-output').html("[ "+x+" , "+y+" , "+z+" ]");
+	$('#pickpoint-output').html("[ "+x+" , "+y+" , "+z+" ]");
 } 
-//--PICKPOINT--	
+//--PICKPOINT--
 
 //-- HELP PANEL
 function setHelpPanel() {
@@ -420,7 +392,7 @@ function addGrid(instance, step) {
 			linesBuffer.push([XC + (gg*gStep), YC, ZC + (-gStep*gStepNum)]);
 			linesBuffer.push([XC + (gg*gStep), YC, ZC + ( gStep*gStepNum)]);
 			linesBuffer.push([XC + (-gStep*gStepNum), YC, ZC + (gg*gStep)]);
-			linesBuffer.push([XC + ( gStep*gStepNum), YC, ZC + (gg*gStep)]);		
+			linesBuffer.push([XC + ( gStep*gStepNum), YC, ZC + (gg*gStep)]);
 	}
 	grid = presenter.createEntity("baseGrid", "lines", linesBuffer);
 	grid.color = [0.9, 0.9, 0.9, 0.3];
@@ -429,12 +401,12 @@ function addGrid(instance, step) {
 	presenter.repaint();
 }
 function removeGrid() {
-	presenter.deleteEntity("baseGrid");	
+	presenter.deleteEntity("baseGrid");
 }
 
 function getBBox(instance) {
 	var mname = presenter._scene.modelInstances[instance].mesh;
-	var vv = presenter._scene.meshes[mname].renderable.mesh.basev;	
+	var vv = presenter._scene.meshes[mname].renderable.mesh.basev;
 	var bbox = [-Number.MAX_VALUE, -Number.MAX_VALUE, -Number.MAX_VALUE, Number.MAX_VALUE, Number.MAX_VALUE, Number.MAX_VALUE];	
 	var point,tpoint;
 	
@@ -446,7 +418,7 @@ function getBBox(instance) {
 		if(tpoint[2] > bbox[2]) bbox[2] = tpoint[2];
 		if(tpoint[0] < bbox[3]) bbox[3] = tpoint[0];
 		if(tpoint[1] < bbox[4]) bbox[4] = tpoint[1];
-		if(tpoint[2] < bbox[5]) bbox[5] = tpoint[2];	
+		if(tpoint[2] < bbox[5]) bbox[5] = tpoint[2];
 	}		
 	return bbox;
 }
@@ -467,7 +439,7 @@ $(document).ready(function(){
 	init3dhop();
 	setup3dhop();
 	setHelpPanel();
-	
+
 	if(options.widgets.grid.atStartup)
 		setTimeout(startupGrid, 100);	// grid shows up at startup
 

@@ -13,6 +13,5 @@ if(!$config) {
 $config = json_decode($config, true);
 $config = json_encode($config, JSON_PRETTY_PRINT );
 
-
 file_put_contents('options.json', $config);
 ?>
