@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html>
 <head>
@@ -40,13 +39,19 @@
 		<hr/>
 
 			<p>Buttons:</p>
-			<input type="checkbox" name="tools[]" value="lighting"> <img src="skins/dark/lighting.png" width="24px"> Light on/off</br>
-			<input type="checkbox" name="tools[]" value="light"> <img src="skins/dark/light.png" width="24px"> Light direction</br>
-			<input type="checkbox" name="tools[]" value="color"> <img src="skins/dark/color.png" width="24px"> Color</br>
+			<input type="checkbox" name="tools[]" value="home" style="display:none">
+			<input type="checkbox" name="tools[]" value="zoomin" style="display:none">
+			<input type="checkbox" name="tools[]" value="zoomout" style="display:none">
+			<input type="checkbox" name="tools[]" value="lighting"> <img src="skins/dark/lighting.png" width="24px"> Lighting</br>
+			<input type="checkbox" name="tools[]" value="light"> <img src="skins/dark/light.png" width="24px"> Light Direction</br>
 			<input type="checkbox" name="tools[]" value="measure"> <img src="skins/dark/measure.png" width="24px"> Measure</br>
 			<input type="checkbox" name="tools[]" value="pick"> <img src="skins/dark/pick.png" width="24px"> Picking</br>
 			<input type="checkbox" name="tools[]" value="sections"> <img src="skins/dark/sections.png" width="24px"> Sections</br>
+			<input type="checkbox" name="tools[]" value="color"> <img src="skins/dark/color.png" width="24px"> Solid Color</br>
 			<input type="checkbox" name="tools[]" value="orthographic"> <img src="skins/dark/orthographic.png" width="24px"> Orthographic</br>
+			<input type="checkbox" name="tools[]" value="hotspot" style="display:none">
+			<input type="checkbox" name="tools[]" value="full" style="display:none">
+			<input type="checkbox" name="tools[]" value="help" style="display:none">
 
 		<hr/>
 
@@ -61,7 +66,6 @@
 
 <script src="config.js"></script>
 <script>
-
 class Look extends Config {
 	constructor(frame, options) {
 		super(frame, options);
@@ -95,13 +99,11 @@ class Look extends Config {
 
 		for(let tool of this.tools) {
 			let value = tool.value;
-			tool.addEventListener('change', 
-				() => { this.set('tools',
-					this.tools.filter(t => t.checked).map(i => i.value));
-				}
-			);
-
+			tool.addEventListener('change', () => { 
+				this.set('tools', this.tools.filter(t => t.checked).map(i => i.value));
+			});
 		}
+
 	}
 
 	update() {
@@ -112,7 +114,7 @@ class Look extends Config {
 		for(let input of this.types)
 			input.checked = input.value == type;
 
-		this.image.value = background.value;
+		this.image.value = background.image;
 		this.color0.value = background.color0;
 		this.color1.value = background.color1;
 
@@ -127,16 +129,10 @@ class Look extends Config {
 	}
 }
 
-
-
-
 let look = new Look('#media', 'update.php'); //'options.json'); 
-
 
 let reset = document.querySelector('button[name=reset]');
 reset.addEventListener('click', () => look.reset());
-
-
 
 </script>
 </html>

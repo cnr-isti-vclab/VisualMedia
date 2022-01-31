@@ -39,7 +39,7 @@ class Config {
 		var json = JSON.stringify(this.options);
 		var xhr = new XMLHttpRequest();
 		xhr.open('POST', this.url, true);
-		xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+		xhr.setRequestHeader('Content-Type', 'application/json');
 		xhr.send(json);
 
 		xhr.onreadystatechange = (event) => {
@@ -63,14 +63,13 @@ var default_ariadne = {
         "type": "linear",
         "color0": "#aaaaaa",
         "color1": "#000000",
-        "image": "light.png"
+        "image": "light.jpg"
     },
 	"skin": "light", 
-	"tools": [ "home", "zoomin", "zoomout", "lighting", "light", "color", "measure", 
-		"pick", "sections", "orthographic", "full", "help" ],
+	"tools": [ "home", "lighting", "light", "color", "measure", "pick", "sections", "orthographic", "full", "help" ],
 	"space": {
 		"centerMode": "scene",
-		"radiusMode": "scene",		
+		"radiusMode": "scene",
 		"cameraFOV": 60,
 		"sceneLighting": true
 	}, 
@@ -99,24 +98,10 @@ var default_ariadne = {
 	],
 	"widgets": {
 		"grid" : {
-			"step" : 0.0,	
+			"step" : 0,
 			"atStartup" : true
 		}
 	},
-	"spots": {
-		"ID": {
-			"pos": [0.0, 0.0, 0.0],
-			"title": "",
-			"text": "",
-			"visible": true,
-			"radius": 3,
-			"color": [0.9, 0.2, 0.2],
-			"alpha": 0.2,
-			"alphaHigh" : 0.5,
-			"tags": []
-		},
-		"spotNewIndex": 2
-	}, 
 	"bookmark": {
 		"ID": {
 			"view": {

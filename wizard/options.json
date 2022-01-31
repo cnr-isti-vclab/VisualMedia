@@ -3,19 +3,17 @@
         "type": "linear",
         "color0": "#aaaaaa",
         "color1": "#000000",
-        "image": "light.png"
+        "image": "light.jpg"
     },
     "skin": "light",
     "tools": [
         "home",
-        "zoomin",
-        "zoomout",
         "lighting",
         "light",
-        "color",
         "measure",
         "pick",
         "sections",
+        "color",
         "orthographic",
         "full",
         "help"
@@ -87,31 +85,9 @@
     ],
     "widgets": {
         "grid": {
-            "step": 0.0,
+            "step": 0,
             "atStartup": true
         }
-    },
-    "spots": {
-        "ID": {
-            "pos": [
-                0,
-                0,
-                0
-            ],
-            "title": "",
-            "text": "",
-            "visible": true,
-            "radius": 3,
-            "color": [
-                0.9,
-                0.2,
-                0.2
-            ],
-            "alpha": 0.2,
-            "alphaHigh": 0.5,
-            "tags": []
-        },
-        "spotNewIndex": 2
     },
     "bookmark": {
         "ID": {
