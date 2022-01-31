@@ -8,6 +8,9 @@
 <!--STYLE-->
 <link rel="stylesheet" href="stylesheet/style.css">
 
+<!--SPIDERGL-->
+<script type="text/javascript" src="js/spidergl.js"></script>
+
 </head>
 
 <body>
@@ -15,6 +18,21 @@
 		<iframe id="media" allowfullscreen allow="fullscreen" style="border-width:0px" class="relight" src="3d.php"></iframe>
 
 		<div class="panel">
+
+		<hr/>
+		
+			<h5>
+			Object Manipulation
+			</h5>
+			<div class="m-1">
+			<center>
+			<span id="trackname"></span>
+			<center>
+			<center>
+				<button class="btn btn-primary m-1" onclick="setTurntable();">TURNTABLE</button>
+				<button class="btn btn-primary m-1" onclick="setSphere();">SPHERE</button>				
+			</center>
+			</div>	
 
 		<hr/>
 		
@@ -57,11 +75,21 @@ class Navigation extends Config {
 	constructor(frame, options) {
 		super(frame, options);
 
-
+		SpiderGL.openNamespace();
 	}
 
 	update() {
 		let options = this.options;
+		
+		// trackball
+		let tname = "error";
+		switch(options.trackball.type) {
+        case "TurntablePanTrackball": tname = "Turntable with Panning";
+            break;
+        case "SphereTrackball": tname = "Spherical Trackball";
+            break;
+		}
+		document.querySelector('#trackname').innerHTML = tname;
 		
 		//fov
 		document.querySelector('#rangeFOV').value = options.space.cameraFOV;
@@ -79,6 +107,43 @@ class Navigation extends Config {
 //------------------------------------------
 let navigation = new Navigation('#media', 'update.php'); //'options.json'); 
 //------------------------------------------
+
+
+function setTurntable(){
+	if(navigation.options.trackball.type === "TurntablePanTrackball") return;	//ignore if same type
+	
+	navigation.options.trackball.type = default_ariadne.trackball.type;
+	navigation.options.trackball.trackOptions = default_ariadne.trackball.trackOptions;
+	
+	// turntable trackball must re-enable some components disabled by sphere, just in case
+	navigation.options.widgets.grid.atStartup = true;
+	
+	navigation.save();
+	navigation.update();
+}
+function setSphere(){
+	if(navigation.options.trackball.type === "SphereTrackball") return;	//ignore if same type
+	
+	navigation.options.trackball.type = "SphereTrackball";
+	navigation.options.trackball.trackOptions = {};
+	navigation.options.trackball.trackOptions.startMatrix = SglMat4.identity();
+	navigation.options.trackball.trackOptions.startDistance = 1.5;
+	
+	// sphere trackball must disable some components
+	navigation.options.widgets.grid.atStartup = false;
+/*	
+
+	"widgets": {
+		"grid" : {
+			"step" : 0.0,	
+			"atStartup" : true
+		}
+	},	
+*/
+
+	navigation.save();
+	navigation.update();
+}
 
 
 //----------------------------------------------------------------------------------
@@ -100,22 +165,35 @@ function resetFOV(){
 //----------------------------------------------------------------------------------
 function useCurrentView(){
 	var track = window.frames[0].presenter.getTrackballPosition();
-	navigation.options.trackball.trackOptions.startPhi      = track[0];
-	navigation.options.trackball.trackOptions.startTheta    = track[1];
-	navigation.options.trackball.trackOptions.startPanX     = track[2];
-	navigation.options.trackball.trackOptions.startPanY     = track[3];
-	navigation.options.trackball.trackOptions.startPanZ     = track[4];
-	navigation.options.trackball.trackOptions.startDistance = track[5];
+	
+	if(navigation.options.trackball.type === "TurntablePanTrackball") {
+		navigation.options.trackball.trackOptions.startPhi      = track[0];
+		navigation.options.trackball.trackOptions.startTheta    = track[1];
+		navigation.options.trackball.trackOptions.startPanX     = track[2];
+		navigation.options.trackball.trackOptions.startPanY     = track[3];
+		navigation.options.trackball.trackOptions.startPanZ     = track[4];
+		navigation.options.trackball.trackOptions.startDistance = track[5];
+	}
+	else if(navigation.options.trackball.type === "SphereTrackball") {
+		navigation.options.trackball.trackOptions.startMatrix = track;
+		navigation.options.trackball.trackOptions.startDistance = window.frames[0].presenter.trackball._distance;		
+	}
 	navigation.save();
 	navigation.update();	
 }
 function resetInitialView(){
-	navigation.options.trackball.trackOptions.startPhi      = default_ariadne.trackball.trackOptions.startPhi;
-	navigation.options.trackball.trackOptions.startTheta    = default_ariadne.trackball.trackOptions.startTheta;
-	navigation.options.trackball.trackOptions.startPanX     = default_ariadne.trackball.trackOptions.startPanX;
-	navigation.options.trackball.trackOptions.startPanY     = default_ariadne.trackball.trackOptions.startPanY;
-	navigation.options.trackball.trackOptions.startPanZ     = default_ariadne.trackball.trackOptions.startPanZ;
-	navigation.options.trackball.trackOptions.startDistance = default_ariadne.trackball.trackOptions.startDistance;
+	
+	if(navigation.options.trackball.type === "TurntablePanTrackball") {	
+		navigation.options.trackball.trackOptions.startPhi      = default_ariadne.trackball.trackOptions.startPhi;
+		navigation.options.trackball.trackOptions.startTheta    = default_ariadne.trackball.trackOptions.startTheta;
+		navigation.options.trackball.trackOptions.startPanX     = default_ariadne.trackball.trackOptions.startPanX;
+		navigation.options.trackball.trackOptions.startPanY     = default_ariadne.trackball.trackOptions.startPanY;
+		navigation.options.trackball.trackOptions.startPanZ     = default_ariadne.trackball.trackOptions.startPanZ;
+		navigation.options.trackball.trackOptions.startDistance = default_ariadne.trackball.trackOptions.startDistance;
+	}
+	else if(navigation.options.trackball.type === "SphereTrackball") {
+		
+	}	
 	navigation.save();
 	navigation.update();	
 }
