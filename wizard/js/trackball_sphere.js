@@ -29,6 +29,7 @@ SphereTrackball.prototype = {
 	setup : function (options,myPresenter) {
 		options = options || {};
 		var opt = sglGetDefaultObject({
+			startMatrix   : [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ],
 			startCenter   : [ 0.0, 0.0, 0.0 ],
 			startDistance : 2.0,
 			minMaxDist    : [0.2, 4.0],
@@ -37,14 +38,15 @@ SphereTrackball.prototype = {
 		this._action = SGL_TRACKBALL_NO_ACTION;
 		this._new_action = true;
 		this._matrix = SglMat4.identity();
-		this._sphereMatrix = SglMat4.identity();
 
 		this.myPresenter = myPresenter;// parent presenter
 
 		// starting/default parameters
+		this._startMatrix = opt.startMatrix; //matrix
 		this._startDistance = opt.startDistance; //distance
-
+		
 		// current parameters
+		this._sphereMatrix = this._startMatrix;		
 		this._distance = this._startDistance;
 
 		//limits
@@ -160,7 +162,7 @@ SphereTrackball.prototype = {
 
 	reset : function () {
 		this._matrix = SglMat4.identity();
-		this._sphereMatrix = SglMat4.identity();
+		this._sphereMatrix = this._startMatrix;
 		this._action = SGL_TRACKBALL_NO_ACTION;
 		this._new_action = true;
 
