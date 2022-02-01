@@ -14,8 +14,8 @@
 </head>
 
 <body>
-	<div class="container1">
-		<iframe id="media" allowfullscreen allow="fullscreen" style="border-width:0px" class="relight" src="3d.php"></iframe>
+	<div class="vms_container">
+		<iframe id="media" allowfullscreen allow="fullscreen" style="border-width:0px" class="vms" src="3d.php"></iframe>
 
 		<div class="panel">
 
