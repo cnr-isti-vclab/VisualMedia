@@ -127,6 +127,9 @@ function setSphere(){
 	navigation.options.trackball.type = "SphereTrackball";
 	navigation.options.trackball.trackOptions = {};
 	navigation.options.trackball.trackOptions.startMatrix = SglMat4.identity();
+	navigation.options.trackball.trackOptions.startPanX = 0.0;
+	navigation.options.trackball.trackOptions.startPanY = 0.0;
+	navigation.options.trackball.trackOptions.startPanZ = 0.0;
 	navigation.options.trackball.trackOptions.startDistance = 1.5;
 	
 	// sphere trackball must disable some components
@@ -175,14 +178,16 @@ function useCurrentView(){
 		navigation.options.trackball.trackOptions.startDistance = track[5];
 	}
 	else if(navigation.options.trackball.type === "SphereTrackball") {
-		navigation.options.trackball.trackOptions.startMatrix = track;
-		navigation.options.trackball.trackOptions.startDistance = window.frames[0].presenter.trackball._distance;		
+		navigation.options.trackball.trackOptions.startMatrix = track[0];
+		navigation.options.trackball.trackOptions.startPanX = track[1];
+		navigation.options.trackball.trackOptions.startPanY = track[2];
+		navigation.options.trackball.trackOptions.startPanZ = track[3];		
+		navigation.options.trackball.trackOptions.startDistance = track[4];
 	}
 	navigation.save();
 	navigation.update();	
 }
 function resetInitialView(){
-	
 	if(navigation.options.trackball.type === "TurntablePanTrackball") {	
 		navigation.options.trackball.trackOptions.startPhi      = default_ariadne.trackball.trackOptions.startPhi;
 		navigation.options.trackball.trackOptions.startTheta    = default_ariadne.trackball.trackOptions.startTheta;
@@ -193,7 +198,10 @@ function resetInitialView(){
 	}
 	else if(navigation.options.trackball.type === "SphereTrackball") {
 		navigation.options.trackball.trackOptions.startMatrix = SglMat4.identity();
-		navigation.options.trackball.trackOptions.startDistance = 1.5;		
+		navigation.options.trackball.trackOptions.startPanX = 0.0;
+		navigation.options.trackball.trackOptions.startPanY = 0.0;
+		navigation.options.trackball.trackOptions.startPanZ = 0.0;
+		navigation.options.trackball.trackOptions.startDistance = 1.5;
 	}	
 	navigation.save();
 	navigation.update();	

@@ -29,10 +29,16 @@ SphereTrackball.prototype = {
 	setup : function (options,myPresenter) {
 		options = options || {};
 		var opt = sglGetDefaultObject({
+			startCenter   : [ 0.0, 0.0, 0.0 ],			
 			startMatrix   : [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ],
-			startCenter   : [ 0.0, 0.0, 0.0 ],
+			startPanX     : 0.0,
+			startPanY     : 0.0,
+			startPanZ     : 0.0,
 			startDistance : 2.0,
 			minMaxDist    : [0.2, 4.0],
+			minMaxPanX    : [-1.0, 1.0],
+			minMaxPanY    : [-1.0, 1.0],
+			minMaxPanZ    : [-1.0, 1.0]
 		}, options);
 
 		this._action = SGL_TRACKBALL_NO_ACTION;
@@ -41,23 +47,35 @@ SphereTrackball.prototype = {
 
 		this.myPresenter = myPresenter;// parent presenter
 
+		// trackball center
+		this._center = opt.startCenter;
+		
 		// starting/default parameters
 		this._startMatrix = opt.startMatrix; //matrix
+		this._startPanX = opt.startPanX; //panX
+		this._startPanY = opt.startPanY; //panY
+		this._startPanZ = opt.startPanZ; //panZ
 		this._startDistance = opt.startDistance; //distance
 		
 		// current parameters
-		this._sphereMatrix = this._startMatrix;		
+		this._rotMatrix = this._startMatrix;
+		this._panX = this._startPanX;
+		this._panY = this._startPanY;
+		this._panZ = this._startPanZ;
 		this._distance = this._startDistance;
 
 		//limits
 		this._minMaxDist  = opt.minMaxDist;
-
+		this._minMaxPanX  = opt.minMaxPanX;
+		this._minMaxPanY  = opt.minMaxPanY;
+		this._minMaxPanZ  = opt.minMaxPanZ;
+		
 		this._pts    = [ [0.0, 0.0], [0.0, 0.0] ];
 		this._past = [0.0, 0.0];
 		this.reset();
 	},
 
-	clamp : function(value, low, high) {
+	_clamp : function(value, low, high) {
 		if(value < low) return low;
 		if(value > high) return high;
 		return value;
@@ -66,10 +84,14 @@ SphereTrackball.prototype = {
 	_computeMatrix: function() {
 		var m = SglMat4.identity();
 
+		// centering
+		m = SglMat4.mul(m, SglMat4.translation([-this._center[0], -this._center[1], -this._center[2]]));
 		// zoom
 		m = SglMat4.mul(m, SglMat4.translation([0.0, 0.0, -this._distance]));
-		// spheretrack
-		m = SglMat4.mul(m, this._sphereMatrix);
+		// 3-axis rotation
+		m = SglMat4.mul(m, this._rotMatrix);
+		// panning
+		m = SglMat4.mul(m, SglMat4.translation([-this._panX, -this._panY, -this._panZ]));
 
 		this._matrix = m;
 	  
@@ -104,47 +126,41 @@ SphereTrackball.prototype = {
 	},
 
 	_translate : function(offset, f) {
-		var invMat = SglMat4.inverse(this._sphereMatrix);
+		var invMat = SglMat4.inverse(this._rotMatrix);
 		var t = SglVec3.to4(offset, 0.0);
 		t = SglMat4.mul4(invMat, t);
 		t = SglVec4.muls(t, f);
 		var trMat = SglMat4.translation(t);
-		this._sphereMatrix = SglMat4.mul(this._sphereMatrix, trMat);
+		this._rotMatrix = SglMat4.mul(this._rotMatrix, trMat);
 	},
 
 	getState : function () {
-		return this._sphereMatrix;
+		return [this._rotMatrix, this._panX, this._panY, this._panZ, this._distance];
 	},
 
 	setState : function (newstate) {
-		this._sphereMatrix = newstate;
+		this._rotMatrix = newstate[0];	
+		this._panX = this._clamp(newstate[1], this._minMaxPanX[0], this._minMaxPanX[1]);
+		this._panY = this._clamp(newstate[2], this._minMaxPanY[0], this._minMaxPanY[1]);
+		this._panZ = this._clamp(newstate[3], this._minMaxPanZ[0], this._minMaxPanZ[1]);
+		this._distance = this._clamp(newstate[4], this._minMaxDist[0], this._minMaxDist[1]);
 		this._computeMatrix();
 	},
 
 	animateToState : function (newstate) {
-		this._sphereMatrix = newstate;
-		this._computeMatrix();
+		this.setState(newstate);	//no animation for sphere, just set
 	},
 
 	recenter : function (newpoint) {
-		var newPan=[0.0, 0.0, 0.0, 0.0];
-		newPan[0] = (newpoint[0]-this.myPresenter.sceneCenter[0]) * this.myPresenter.sceneRadiusInv;
-		newPan[1] = (newpoint[1]-this.myPresenter.sceneCenter[1]) * this.myPresenter.sceneRadiusInv;
-		newPan[2] = (newpoint[2]-this.myPresenter.sceneCenter[2]) * this.myPresenter.sceneRadiusInv;
-		newPan[3] = 0.0;
-		
-		this._sphereMatrix[12] = 0;
-		this._sphereMatrix[13] = 0;
-		this._sphereMatrix[14] = 0;
-		
-		newPan = SglMat4.mul4(this._sphereMatrix, newPan);
-
-		this._sphereMatrix[12] = -newPan[0];
-		this._sphereMatrix[13] = -newPan[1];
-		this._sphereMatrix[14] = -newPan[2];
+		this._panX = (newpoint[0]-this.myPresenter.sceneCenter[0]) * this.myPresenter.sceneRadiusInv;
+		this._panY = (newpoint[1]-this.myPresenter.sceneCenter[1]) * this.myPresenter.sceneRadiusInv;
+		this._panZ = (newpoint[2]-this.myPresenter.sceneCenter[2]) * this.myPresenter.sceneRadiusInv;
+		this._panX = this._clamp(this._panX, this._minMaxPanX[0], this._minMaxPanX[1]);
+		this._panY = this._clamp(this._panY, this._minMaxPanY[0], this._minMaxPanY[1]);
+		this._panZ = this._clamp(this._panZ, this._minMaxPanZ[0], this._minMaxPanZ[1]);
 
 		this._distance *= 0.6;
-		this._distance = this.clamp(this._distance, this._minMaxDist[0], this._minMaxDist[1]);
+		this._distance = this._clamp(this._distance, this._minMaxDist[0], this._minMaxDist[1]);
 		this._computeMatrix();
 	},
 
@@ -162,13 +178,15 @@ SphereTrackball.prototype = {
 
 	reset : function () {
 		this._matrix = SglMat4.identity();
-		this._sphereMatrix = this._startMatrix;
 		this._action = SGL_TRACKBALL_NO_ACTION;
 		this._new_action = true;
-
-		this._distance = this._startDistance;
-
 		this._pts    = [ [0.0, 0.0], [0.0, 0.0] ];
+		
+		this._rotMatrix = this._startMatrix;
+		this._panX = this._startPanX;
+		this._panY = this._startPanY;
+		this._panZ = this._startPanZ;
+		this._distance = this._startDistance;
 
 		this._computeMatrix();
 	},
@@ -198,10 +216,6 @@ SphereTrackball.prototype = {
 				this.pan(m);
 			break;
 
-			case SGL_TRACKBALL_DOLLY:
-				this.dolly(m, z);
-			break;
-
 			case SGL_TRACKBALL_SCALE:
 				this.scale(m, z);
 			break;
@@ -223,29 +237,35 @@ SphereTrackball.prototype = {
 		var angle  = SglVec3.length(axis); //angle of rotation
 		var rotMat = SglMat4.rotationAngleAxis(angle, axis);
 
-		this._sphereMatrix = SglMat4.mul(rotMat, this._sphereMatrix);
+		this._rotMatrix = SglMat4.mul(rotMat, this._rotMatrix);
 		this._computeMatrix();
 	},
 
 	pan : function(m) {
-		var mInv = SglMat4.inverse(m);
-		var v0 = this._transform(mInv, this._pts[0][0], this._pts[0][1], -1.0);
-		var v1 = this._transform(mInv, this._pts[1][0], this._pts[1][1], -1.0);
-		var offset = SglVec3.sub(v1, v0);
-		this._translate(offset, 2.0);
-		this._computeMatrix();
-	},
+		var dx = this._pts[0][0] - this._pts[1][0];
+		var dy = this._pts[0][1] - this._pts[1][1];		
+		
+		//determining current X, Y and Z axis
+		var Xvec = SglMat4.mul4(this._rotMatrix, [1.0, 0.0, 0.0, 1.0]);
+		var Yvec = SglMat4.mul4(this._rotMatrix, [0.0, 1.0, 0.0, 1.0]);
+		var Zvec = SglMat4.mul4(this._rotMatrix, [0.0, 0.0, 1.0, 1.0]);
 
-	dolly : function(m, dz) {
-		var mInv = SglMat4.inverse(m);
-		var offset = this._transform(mInv, 0.0, 0.0, dz);
-		this._translate(offset, 1.0);
-		this._computeMatrix();
+		var panSpeed = Math.max(Math.min(1.5, this._distance),0.05);
+		this._panX += ((dx * Xvec[0]) + (dy * Xvec[1])) * panSpeed;
+		this._panY += ((dx * Yvec[0]) + (dy * Yvec[1])) * panSpeed;
+		this._panZ += ((dx * Zvec[0]) + (dy * Zvec[1])) * panSpeed;
+
+		//clamping
+		this._panX = this._clamp(this._panX, this._minMaxPanX[0], this._minMaxPanX[1]);
+		this._panY = this._clamp(this._panY, this._minMaxPanY[0], this._minMaxPanY[1]);
+		this._panZ = this._clamp(this._panZ, this._minMaxPanZ[0], this._minMaxPanZ[1]);
+
+		this._computeMatrix();	
 	},
 
 	scale : function(m, s) {
 		this._distance *= s;
-		this._distance = this.clamp(this._distance, this._minMaxDist[0], this._minMaxDist[1]);
+		this._distance = this._clamp(this._distance, this._minMaxDist[0], this._minMaxDist[1]);
 		this._computeMatrix();
 	}
 };

@@ -326,7 +326,7 @@ function projectPoint(x,y){
 		v = SglMat4.mul4(SglMat4.rotationAngleAxis(sglDegToRad(track[0]), [0.0, 1.0, 0.0]), v);		
 	}		
 	else if (straight.options.trackball.type === "SphereTrackball"){
-		v = SglMat4.mul4(SglMat4.inverse(track), v);		
+		v = SglMat4.mul4(SglMat4.inverse(track[0]), v);		
 	}
 	return [v[0],v[1],v[2]];
 }
@@ -350,7 +350,7 @@ function rotView(axis,delta){
 		rotAxis = SglMat4.mul4(SglMat4.rotationAngleAxis(sglDegToRad(track[0]), [0.0, 1.0, 0.0]), rotAxis);
 	}		
 	else if (straight.options.trackball.type === "SphereTrackball"){
-		rotAxis = SglMat4.mul4(SglMat4.inverse(track), rotAxis);		
+		rotAxis = SglMat4.mul4(SglMat4.inverse(track[0]), rotAxis);		
 	}	
 	var rotMat = SglMat4.rotationAngleAxis(sglDegToRad(delta), rotAxis);
 	var newmatrix = SglMat4.mul(rotMat, presenter._scene.modelInstances["model_1"].transform.matrix);
@@ -500,68 +500,53 @@ function viewFrom(direction){
 	var distance = 1.4;
 	
 	let trackType = straight.options.trackball.type;
-	
-	//"SphereTrackball"
-	//"TurntablePanTrackball"
-	
+		
     switch(direction) {
         case "front":
 			if(trackType === "TurntablePanTrackball")
 				presenter.animateToTrackballPosition([0.0, 0.0, 0.0, 0.0, 0.0, distance]);
-			else if (trackType === "SphereTrackball"){
-				presenter.trackball._distance = distance;
-				presenter.animateToTrackballPosition([ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ]);
-			}
+			else if (trackType === "SphereTrackball")
+				presenter.animateToTrackballPosition([[ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ], 0.0, 0.0, 0.0, distance]);
 			document.querySelector('#vfront').classList.remove("btn-secondary");
 			document.querySelector('#vfront').classList.add("btn-primary");
             break;
         case "back":
 			if(trackType === "TurntablePanTrackball")		
 				presenter.animateToTrackballPosition([180.0, 0.0, 0.0, 0.0, 0.0, distance]);
-			else if (trackType === "SphereTrackball"){
-				presenter.trackball._distance = distance;
-				presenter.animateToTrackballPosition([-1, 0, 0, 0, 0, 1, 0, 0, 0, 0,-1, 0, 0, 0, 0, 1 ]);
-			}
+			else if (trackType === "SphereTrackball")
+				presenter.animateToTrackballPosition([[-1, 0, 0, 0, 0, 1, 0, 0, 0, 0,-1, 0, 0, 0, 0, 1 ], 0.0, 0.0, 0.0, distance]);
 			document.querySelector('#vback').classList.remove("btn-secondary");			
 			document.querySelector('#vback').classList.add("btn-primary");			
             break;			
         case "top":
 			if(trackType === "TurntablePanTrackball")		
 				presenter.animateToTrackballPosition([0.0, 90.0, 0.0, 0.0, 0.0, distance]);
-			else if (trackType === "SphereTrackball"){
-				presenter.trackball._distance = distance;
-				presenter.animateToTrackballPosition([ 1, 0, 0, 0, 0, 0, 1, 0, 0,-1, 0, 0, 0, 0, 0, 1 ]);
-			}
+			else if (trackType === "SphereTrackball")
+				presenter.animateToTrackballPosition([[ 1, 0, 0, 0, 0, 0, 1, 0, 0,-1, 0, 0, 0, 0, 0, 1 ], 0.0, 0.0, 0.0, distance]);
 			document.querySelector('#vtop').classList.remove("btn-secondary");
 			document.querySelector('#vtop').classList.add("btn-primary");
             break;
         case "bottom":
 			if(trackType === "TurntablePanTrackball")
 				presenter.animateToTrackballPosition([0.0, -90.0, 0.0, 0.0, 0.0, distance]);
-			else if (trackType === "SphereTrackball"){
-				presenter.trackball._distance = distance;
-				presenter.animateToTrackballPosition([ 1, 0, 0, 0, 0, 0,-1, 0, 0, 1, 0, 0, 0, 0, 0, 1 ]);				
-			}
+			else if (trackType === "SphereTrackball")
+				presenter.animateToTrackballPosition([[ 1, 0, 0, 0, 0, 0,-1, 0, 0, 1, 0, 0, 0, 0, 0, 1 ], 0.0, 0.0, 0.0, distance]);				
 			document.querySelector('#vbottom').classList.remove("btn-secondary");
 			document.querySelector('#vbottom').classList.add("btn-primary");
             break;
         case "left":
 			if(trackType === "TurntablePanTrackball")		
 				presenter.animateToTrackballPosition([270.0, 0.0, 0.0, 0.0, 0.0, distance]);
-			else if (trackType === "SphereTrackball"){
-				presenter.trackball._distance = distance;
-				presenter.animateToTrackballPosition([ 0, 0,-1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1 ]);				
-			}
+			else if (trackType === "SphereTrackball")
+				presenter.animateToTrackballPosition([[ 0, 0,-1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1 ], 0.0, 0.0, 0.0, distance]);				
 			document.querySelector('#vleft').classList.remove("btn-secondary");
 			document.querySelector('#vleft').classList.add("btn-primary");
             break;
         case "right":
 			if(trackType === "TurntablePanTrackball")		
 				presenter.animateToTrackballPosition([90.0, 0.0, 0.0, 0.0, 0.0, distance]);
-			else if (trackType === "SphereTrackball"){
-				presenter.trackball._distance = distance;				
-				presenter.animateToTrackballPosition([ 0, 0, 1, 0, 0, 1, 0, 0,-1, 0, 0, 0, 0, 0, 0, 1 ]);
-			}
+			else if (trackType === "SphereTrackball")				
+				presenter.animateToTrackballPosition([[ 0, 0, 1, 0, 0, 1, 0, 0,-1, 0, 0, 0, 0, 0, 0, 1 ], 0.0, 0.0, 0.0, distance]);
 			document.querySelector('#vright').classList.remove("btn-secondary");
 			document.querySelector('#vright').classList.add("btn-primary");
             break;			
