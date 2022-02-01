@@ -9,6 +9,7 @@ $options = json_decode($data);
 <title>3DHOP</title>
 <!--STYLESHEET-->
 <link type="text/css" rel="stylesheet" href="stylesheet/3dhop.css"/>
+<link type="text/css" rel="stylesheet" href="stylesheet/3dhop_panels.css"/>
 <!--SPIDERGL-->
 <script type="text/javascript" src="js/spidergl.js"></script>
 <!--JQUERY-->
@@ -30,48 +31,7 @@ $options = json_decode($data);
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
 
 <style>
-.panel {
-	visibility				:hidden;
-	position				:absolute;
-	z-index					:1;
-	width					:600px; 
-	font-size				:12px; 
-	font-family				:verdana; 
-	color					:#f8f8f8; 
-	padding					:10px;
-	background-color		:rgba(50, 50, 50, 0.9); 
-	border					:2px solid #f8f8f8; 
-	border-radius			:10px;
-	box-shadow				:1px 1px 10px black;
-	-webkit-box-shadow		:1px 1px 10px black;
-	-moz-box-shadow			:1px 1px 10px black;
-}
-.panel a:link, .panel a:visited {
-  color: #f8f8f8; decoration:none;
-}
-
-.a:hover, .panel a:active {
-  color: #ffffff;  decoration:none;
-}
-
-
-.close {
-	position				:relative;
-	margin-left				:98%; 
-	margin-top				:-30px;
-	width					:25px; 
-	height					:25px;
-	background-color		:rgba(50, 50, 50, 1.0); 
-	border					:2px solid #f8f8f8; 
-	border-radius			:50%; 
-	box-shadow				:1px 1px 10px black;
-	-webkit-box-shadow		:1px 1px 10px black;
-	-moz-box-shadow			:1px 1px 10px black;
-}
-
-.close:hover {
-	cursor:pointer; 
-}
+html { overflow:hidden; }
 
 #draw-canvas {
 <?php 
@@ -87,8 +47,6 @@ switch($type) {
 }
 ?>
 }
-
-html { overflow:hidden; }
 </style>
 
 </head>
@@ -140,11 +98,27 @@ html { overflow:hidden; }
 <!--SECTIONS-->
 
 <!-- INFO -->
- <div class="panel" id="help_pane" cellspacing="5">
-	<h3 style="text-align:center"><img class="close" id="close_on" src="skins/minimal_light/close_on.png" onclick="helpSwitch();$('#toolbar img').css('opacity','0.5');" style="display:none;"/>
-        <img class="close" id="close" src="skins/minimal_light/close.png"/>Info</h3>
-  <hr/>
-  <p></p>
+ <div id="cover" onclick="$('#cover').css('display', 'none'); helpSwitch(false);">
+  <div class="h-100 row align-items-center">
+	 <div class="panel my-0 mx-auto" id="help_panel">
+	  <h5 class="mt-3">Info</h5>
+	  <hr/>
+	  <h6 class="mb-3">Controls</h6>
+	  <div class="row my-2">
+		<div class="col">Rotate</div>
+		<div class="col">Zoom</div>
+		<div class="col">Pan</div>
+		<div class="w-100 my-2"></div>
+		<div class="col"><img src="skins/icons/left.png" width="30"/></div>
+		<div class="col"><img src="skins/icons/wheel.png" width="30"/></div>
+		<div class="col"><img src="skins/icons/right.png" width="30"/></div>
+		<div class="w-100 my-2"></div>
+		<div class="col">Left Button<br/> + Move</div>
+		<div class="col">Mouse Wheel</div>
+		<div class="col">Right Button<br/> + Move</div>
+	  </div>
+	 </div>
+  </div>
  </div>
 <!-- INFO -->
 
@@ -153,8 +127,6 @@ html { overflow:hidden; }
 </body>
 
 <script type="text/javascript">
-
-
 var presenter = null;
 let options = <?=json_encode($options, JSON_PRETTY_PRINT)?>;
 
@@ -206,7 +178,7 @@ let tools = {
 	full:     { title: "Full Screen", icon: "full.png", 
 				title_on: "Exit Full Screen",icon_on: "full_on.png"},
 	help:     { title: "Info about the media", icon: "help.png", 
-				title_on: "Info about the media",icon_on: "help.png"},
+				title_on: "Info about the media",icon_on: "help_on.png"},
 };
 
 let toolbar = document.querySelector('#toolbar');
@@ -311,7 +283,7 @@ function actionsToolbar(action) {
 	else if(action=='hotspot') { presenter.setSpotVisibility(HOP_ALL, true, true); presenter.enableOnHover(true); hotspotSwitch(); }
 	else if(action=='hotspot_on') { presenter.setSpotVisibility(HOP_ALL, false, true); presenter.enableOnHover(false); hotspotSwitch(); }
 //--HOTSPOTS--
-	else if(action=='help') { helpSwitch(); } 
+	else if(action=='help') { showPanel('help_panel'); helpSwitch(); } 
 }
 
 //--MEASURE--
@@ -331,40 +303,6 @@ function onEndPick(point) {
 	$('#pickpoint-output').html("[ "+x+" , "+y+" , "+z+" ]");
 } 
 //--PICKPOINT--
-
-//-- HELP PANEL
-function setHelpPanel() {
-	$('#help_pane')
-		.css('margin-left', ($('#draw-canvas').width()/2 - 190))
-		.css('margin-top', ($('#draw-canvas').height()/2 - 175));
-
-	$('#title').css('width',$('#title').width());
-
-	$('.close').hover(
-	  function() {
-		$('#close').css("display", "none");
-		$('#close_on').css("display", "inline");
-	  }, function() {
-		$('#close_on').css("display", "none");
-		$('#close').css("display", "inline");
-	  }
-	);
-} 
-
-function helpSwitch() {
-  if($('#help_on').css("visibility")=='hidden') {
-    $('#help').css("visibility", "hidden");
-    $('#help_on').css("visibility", "visible");
-    $('#help_on').css("opacity","1.0");
-    $('#help_pane').css("visibility", "visible");
-  }
-  else{
-    $('#help_on').css("visibility", "hidden");
-    $('#help').css("visibility", "visible");
-    $('#help').css("opacity","1.0");
-    $('#help_pane').css("visibility", "hidden");
-  }
-}
 
 //--GRID
 function addGrid(instance, step) {
@@ -430,7 +368,7 @@ function startupGrid(){
 		setTimeout(startupGrid, 50);
 	}
 	else {
-		addGrid("model_1",options.widgets.grid.step);	
+		addGrid("model_1",options.widgets.grid.step);
 	}
 }
 
@@ -438,7 +376,6 @@ function startupGrid(){
 $(document).ready(function(){
 	init3dhop();
 	setup3dhop();
-	setHelpPanel();
 
 	if(options.widgets.grid.atStartup)
 		setTimeout(startupGrid, 100);	// grid shows up at startup

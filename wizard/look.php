@@ -43,7 +43,7 @@
 			<input type="checkbox" name="tools[]" value="zoomin" style="display:none">
 			<input type="checkbox" name="tools[]" value="zoomout" style="display:none">
 			<input type="checkbox" name="tools[]" value="lighting"> <img src="skins/dark/lighting.png" width="24px"> Lighting</br>
-			<input type="checkbox" name="tools[]" value="light"> <img src="skins/dark/light.png" width="24px"> Light Direction</br>
+			<input type="checkbox" name="tools[]" value="light"> <img src="skins/dark/lightcontrol.png" width="24px"> Light Direction</br>
 			<input type="checkbox" name="tools[]" value="measure"> <img src="skins/dark/measure.png" width="24px"> Measure</br>
 			<input type="checkbox" name="tools[]" value="pick"> <img src="skins/dark/pick.png" width="24px"> Picking</br>
 			<input type="checkbox" name="tools[]" value="sections"> <img src="skins/dark/sections.png" width="24px"> Sections</br>
@@ -55,7 +55,7 @@
 
 		<hr/>
 
-			<div class="row">
+			<div class="row no-gutters">
 				<div class="col-6"><button class="btn btn-secondary btn-sm btn-block" name="reset"> Reset everything </button></div>
 			</div>
 
