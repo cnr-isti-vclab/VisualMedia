@@ -192,7 +192,8 @@ function resetInitialView(){
 		navigation.options.trackball.trackOptions.startDistance = default_ariadne.trackball.trackOptions.startDistance;
 	}
 	else if(navigation.options.trackball.type === "SphereTrackball") {
-		
+		navigation.options.trackball.trackOptions.startMatrix = SglMat4.identity();
+		navigation.options.trackball.trackOptions.startDistance = 1.5;		
 	}	
 	navigation.save();
 	navigation.update();	
