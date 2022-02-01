@@ -16,7 +16,7 @@
 </head>
 
 <body>
-	<div class="container1">
+	<div class="vms_container">
 		
 		<div id="viewControls" class="d-none" style="position:absolute; right:400px; top:0;">
 			<h5>View Scene From:</h5>			
@@ -32,7 +32,7 @@
 		<div id="debug" style="position:absolute; left:10px; top:10;">
 		</div>
 		
-		<iframe id="media" allowfullscreen allow="fullscreen" style="border-width:0px" class="relight" src="3d.php"></iframe>
+		<iframe id="media" allowfullscreen allow="fullscreen" style="border-width:0px" class="vms" src="3d.php"></iframe>
 		
 		<div class="panel">
 			
