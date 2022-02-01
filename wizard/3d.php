@@ -342,6 +342,68 @@ function removeGrid() {
 	presenter.deleteEntity("baseGrid");
 }
 
+//--TRACK SPHERE
+function addTrackSphere(instance) {
+	var rad = 0.7 / presenter.sceneRadiusInv;
+	var bb = getBBox(instance);
+	
+	var XC = (bb[0] + bb[3]) / 2.0;
+	var YC = (bb[1] + bb[4]) / 2.0;
+	var ZC = (bb[2] + bb[5]) / 2.0;
+	/*
+	var gStep,gStepNum;
+	if(step===0.0) {
+		gStepNum = 15;
+		gStep = rad/gStepNum;
+	}
+	else {
+		gStep = step;
+		gStepNum = Math.ceil(rad/gStep);
+	}
+	
+	var linesBuffer, grid, gg;
+	linesBuffer = [];
+	for (gg = -gStepNum; gg <= gStepNum; gg+=1)
+	{
+			linesBuffer.push([XC + (gg*gStep), YC, ZC + (-gStep*gStepNum)]);
+			linesBuffer.push([XC + (gg*gStep), YC, ZC + ( gStep*gStepNum)]);
+			linesBuffer.push([XC + (-gStep*gStepNum), YC, ZC + (gg*gStep)]);
+			linesBuffer.push([XC + ( gStep*gStepNum), YC, ZC + (gg*gStep)]);
+	}
+	grid = presenter.createEntity("baseGrid", "lines", linesBuffer);
+	grid.color = [0.9, 0.9, 0.9, 0.3];
+	grid.zOff = 0.0;
+	grid.useTransparency = true;
+	presenter.repaint();
+	*/
+	var sStep,sStepNum;	
+	sStepNum = 32;
+	sStep = (2 * Math.PI) / sStepNum;
+	
+	var linesBuffer, sphere, ii;
+	linesBuffer = [];
+	for (ii = 0; ii < sStepNum; ii+=1)
+	{
+		linesBuffer.push([XC + (Math.cos(ii*sStep) * rad), YC, ZC + (Math.sin(ii*sStep) * rad)]);
+		linesBuffer.push([XC + (Math.cos((ii+1)*sStep) * rad), YC, ZC + (Math.sin((ii+1)*sStep) * rad)]);
+		
+		linesBuffer.push([XC , YC + (Math.cos(ii*sStep) * rad), ZC + (Math.sin(ii*sStep) * rad)]);
+		linesBuffer.push([XC , YC + (Math.cos((ii+1)*sStep) * rad), ZC + (Math.sin((ii+1)*sStep) * rad)]);
+		
+		linesBuffer.push([XC + (Math.cos(ii*sStep) * rad), YC + (Math.sin(ii*sStep) * rad), ZC]);
+		linesBuffer.push([XC + (Math.cos((ii+1)*sStep) * rad), YC + (Math.sin((ii+1)*sStep) * rad), ZC]);
+	}	
+	
+	sphere = presenter.createEntity("trackSphere", "lines", linesBuffer);
+	sphere.color = [0.9, 0.9, 0.9, 0.1];
+	sphere.zOff = 0.0;
+	sphere.useTransparency = true;
+	presenter.repaint();	
+}
+function removeTrackSphere() {
+	presenter.deleteEntity("trackSphere");
+}
+
 function getBBox(instance) {
 	var mname = presenter._scene.modelInstances[instance].mesh;
 	var vv = presenter._scene.meshes[mname].renderable.mesh.basev;
@@ -363,15 +425,21 @@ function getBBox(instance) {
 
 function startupGrid(){
 	var vv = presenter._scene.meshes[presenter._scene.modelInstances["model_1"].mesh].renderable.mesh.basev;
-
-	if (typeof vv === 'undefined') {
+	if (typeof vv === 'undefined')
 		setTimeout(startupGrid, 50);
-	}
 	else {
 		addGrid("model_1",options.widgets.grid.step);
 	}
 }
 
+function startupTrackSphere(){
+	var vv = presenter._scene.meshes[presenter._scene.modelInstances["model_1"].mesh].renderable.mesh.basev;
+	if (typeof vv === 'undefined')
+		setTimeout(startupTrackSphere, 50);
+	else {
+		addTrackSphere("model_1");
+	}
+}
 
 $(document).ready(function(){
 	init3dhop();
@@ -379,7 +447,8 @@ $(document).ready(function(){
 
 	if(options.widgets.grid.atStartup)
 		setTimeout(startupGrid, 100);	// grid shows up at startup
-
+	if(options.widgets.trackSphere.atStartup)
+		setTimeout(startupTrackSphere, 100);	// track sphere shows up at startup
 });
 </script>
 </html>

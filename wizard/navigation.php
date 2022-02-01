@@ -115,8 +115,9 @@ function setTurntable(){
 	navigation.options.trackball.type = default_ariadne.trackball.type;
 	navigation.options.trackball.trackOptions = default_ariadne.trackball.trackOptions;
 	
-	// turntable trackball must re-enable some components disabled by sphere, just in case
+	// enabling/disabling visual components
 	navigation.options.widgets.grid.atStartup = true;
+	navigation.options.widgets.trackSphere.atStartup = false;
 	
 	navigation.save();
 	navigation.update();
@@ -131,19 +132,11 @@ function setSphere(){
 	navigation.options.trackball.trackOptions.startPanY = 0.0;
 	navigation.options.trackball.trackOptions.startPanZ = 0.0;
 	navigation.options.trackball.trackOptions.startDistance = 1.5;
-	
-	// sphere trackball must disable some components
+
+	// enabling/disabling visual components
 	navigation.options.widgets.grid.atStartup = false;
-/*	
-
-	"widgets": {
-		"grid" : {
-			"step" : 0.0,	
-			"atStartup" : true
-		}
-	},	
-*/
-
+	navigation.options.widgets.trackSphere.atStartup = true;
+	
 	navigation.save();
 	navigation.update();
 }

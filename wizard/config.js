@@ -100,7 +100,10 @@ var default_ariadne = {
 		"grid" : {
 			"step" : 0,
 			"atStartup" : true
-		}
+		},
+		"trackSphere" : {
+			"atStartup" : false
+		}		
 	},
 	"bookmark": {
 		"ID": {
