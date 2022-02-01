@@ -2786,7 +2786,7 @@ onClick : function (button, x, y, e) {
 		this._pickingRefresh(x, y);
 
 		if(clickDeltaDist <= 30 && clickDeltaTime <= 250) {
-			if(this.trackball.recenter){
+			if((this.trackball.recenter)&&(!this._scene.trackball.locked)){
 				var ppoint = this._drawScenePickingXYZ();
 				if (ppoint!=null) {
 					this.ui.animateRate = 30;
