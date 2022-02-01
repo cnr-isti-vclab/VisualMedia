@@ -71,7 +71,7 @@
 <script src="config.js"></script>
 <script>
 
-class Navigation extends Config {
+class NavigationConfig extends Config {
 	constructor(frame, options) {
 		super(frame, options);
 
@@ -105,40 +105,40 @@ class Navigation extends Config {
 //------------------------------------------
 // config object
 //------------------------------------------
-let navigation = new Navigation('#media', 'update.php'); //'options.json'); 
+let navigation_config = new NavigationConfig('#media', 'update.php'); //'options.json'); 
 //------------------------------------------
 
 
 function setTurntable(){
-	if(navigation.options.trackball.type === "TurntablePanTrackball") return;	//ignore if same type
+	if(model_config.options.trackball.type === "TurntablePanTrackball") return;	//ignore if same type
 	
-	navigation.options.trackball.type = default_ariadne.trackball.type;
-	navigation.options.trackball.trackOptions = default_ariadne.trackball.trackOptions;
+	model_config.options.trackball.type = default_ariadne.trackball.type;
+	model_config.options.trackball.trackOptions = default_ariadne.trackball.trackOptions;
 	
 	// enabling/disabling visual components
-	navigation.options.widgets.grid.atStartup = true;
-	navigation.options.widgets.trackSphere.atStartup = false;
+	model_config.options.widgets.grid.atStartup = true;
+	model_config.options.widgets.trackSphere.atStartup = false;
 	
-	navigation.save();
-	navigation.update();
+	model_config.save();
+	model_config.update();
 }
 function setSphere(){
-	if(navigation.options.trackball.type === "SphereTrackball") return;	//ignore if same type
+	if(model_config.options.trackball.type === "SphereTrackball") return;	//ignore if same type
 	
-	navigation.options.trackball.type = "SphereTrackball";
-	navigation.options.trackball.trackOptions = {};
-	navigation.options.trackball.trackOptions.startMatrix = SglMat4.identity();
-	navigation.options.trackball.trackOptions.startPanX = 0.0;
-	navigation.options.trackball.trackOptions.startPanY = 0.0;
-	navigation.options.trackball.trackOptions.startPanZ = 0.0;
-	navigation.options.trackball.trackOptions.startDistance = 1.5;
+	model_config.options.trackball.type = "SphereTrackball";
+	model_config.options.trackball.trackOptions = {};
+	model_config.options.trackball.trackOptions.startMatrix = SglMat4.identity();
+	model_config.options.trackball.trackOptions.startPanX = 0.0;
+	model_config.options.trackball.trackOptions.startPanY = 0.0;
+	model_config.options.trackball.trackOptions.startPanZ = 0.0;
+	model_config.options.trackball.trackOptions.startDistance = 1.5;
 
 	// enabling/disabling visual components
-	navigation.options.widgets.grid.atStartup = false;
-	navigation.options.widgets.trackSphere.atStartup = true;
+	model_config.options.widgets.grid.atStartup = false;
+	model_config.options.widgets.trackSphere.atStartup = true;
 	
-	navigation.save();
-	navigation.update();
+	model_config.save();
+	model_config.update();
 }
 
 
@@ -149,55 +149,55 @@ function updatingFOV(newVal){
 	window.frames[0].presenter.repaint();	
 }
 function changedFOV(newVal){
-	navigation.options.space.cameraFOV = newVal;
-	navigation.save();
-	navigation.update();	
+	model_config.options.space.cameraFOV = newVal;
+	model_config.save();
+	model_config.update();	
 }
 function resetFOV(){
-	navigation.options.space.cameraFOV = default_ariadne.space.cameraFOV;
-	navigation.save();
-	navigation.update();
+	model_config.options.space.cameraFOV = default_ariadne.space.cameraFOV;
+	model_config.save();
+	model_config.update();
 }
 //----------------------------------------------------------------------------------
 function useCurrentView(){
 	var track = window.frames[0].presenter.getTrackballPosition();
 	
-	if(navigation.options.trackball.type === "TurntablePanTrackball") {
-		navigation.options.trackball.trackOptions.startPhi      = track[0];
-		navigation.options.trackball.trackOptions.startTheta    = track[1];
-		navigation.options.trackball.trackOptions.startPanX     = track[2];
-		navigation.options.trackball.trackOptions.startPanY     = track[3];
-		navigation.options.trackball.trackOptions.startPanZ     = track[4];
-		navigation.options.trackball.trackOptions.startDistance = track[5];
+	if(model_config.options.trackball.type === "TurntablePanTrackball") {
+		model_config.options.trackball.trackOptions.startPhi      = track[0];
+		model_config.options.trackball.trackOptions.startTheta    = track[1];
+		model_config.options.trackball.trackOptions.startPanX     = track[2];
+		model_config.options.trackball.trackOptions.startPanY     = track[3];
+		model_config.options.trackball.trackOptions.startPanZ     = track[4];
+		model_config.options.trackball.trackOptions.startDistance = track[5];
 	}
-	else if(navigation.options.trackball.type === "SphereTrackball") {
-		navigation.options.trackball.trackOptions.startMatrix = track[0];
-		navigation.options.trackball.trackOptions.startPanX = track[1];
-		navigation.options.trackball.trackOptions.startPanY = track[2];
-		navigation.options.trackball.trackOptions.startPanZ = track[3];		
-		navigation.options.trackball.trackOptions.startDistance = track[4];
+	else if(model_config.options.trackball.type === "SphereTrackball") {
+		model_config.options.trackball.trackOptions.startMatrix = track[0];
+		model_config.options.trackball.trackOptions.startPanX = track[1];
+		model_config.options.trackball.trackOptions.startPanY = track[2];
+		model_config.options.trackball.trackOptions.startPanZ = track[3];		
+		model_config.options.trackball.trackOptions.startDistance = track[4];
 	}
-	navigation.save();
-	navigation.update();	
+	model_config.save();
+	model_config.update();	
 }
 function resetInitialView(){
-	if(navigation.options.trackball.type === "TurntablePanTrackball") {	
-		navigation.options.trackball.trackOptions.startPhi      = default_ariadne.trackball.trackOptions.startPhi;
-		navigation.options.trackball.trackOptions.startTheta    = default_ariadne.trackball.trackOptions.startTheta;
-		navigation.options.trackball.trackOptions.startPanX     = default_ariadne.trackball.trackOptions.startPanX;
-		navigation.options.trackball.trackOptions.startPanY     = default_ariadne.trackball.trackOptions.startPanY;
-		navigation.options.trackball.trackOptions.startPanZ     = default_ariadne.trackball.trackOptions.startPanZ;
-		navigation.options.trackball.trackOptions.startDistance = default_ariadne.trackball.trackOptions.startDistance;
+	if(model_config.options.trackball.type === "TurntablePanTrackball") {	
+		model_config.options.trackball.trackOptions.startPhi      = default_ariadne.trackball.trackOptions.startPhi;
+		model_config.options.trackball.trackOptions.startTheta    = default_ariadne.trackball.trackOptions.startTheta;
+		model_config.options.trackball.trackOptions.startPanX     = default_ariadne.trackball.trackOptions.startPanX;
+		model_config.options.trackball.trackOptions.startPanY     = default_ariadne.trackball.trackOptions.startPanY;
+		model_config.options.trackball.trackOptions.startPanZ     = default_ariadne.trackball.trackOptions.startPanZ;
+		model_config.options.trackball.trackOptions.startDistance = default_ariadne.trackball.trackOptions.startDistance;
 	}
-	else if(navigation.options.trackball.type === "SphereTrackball") {
-		navigation.options.trackball.trackOptions.startMatrix = SglMat4.identity();
-		navigation.options.trackball.trackOptions.startPanX = 0.0;
-		navigation.options.trackball.trackOptions.startPanY = 0.0;
-		navigation.options.trackball.trackOptions.startPanZ = 0.0;
-		navigation.options.trackball.trackOptions.startDistance = 1.5;
+	else if(model_config.options.trackball.type === "SphereTrackball") {
+		model_config.options.trackball.trackOptions.startMatrix = SglMat4.identity();
+		model_config.options.trackball.trackOptions.startPanX = 0.0;
+		model_config.options.trackball.trackOptions.startPanY = 0.0;
+		model_config.options.trackball.trackOptions.startPanZ = 0.0;
+		model_config.options.trackball.trackOptions.startDistance = 1.5;
 	}	
-	navigation.save();
-	navigation.update();	
+	model_config.save();
+	model_config.update();	
 }
 //----------------------------------------------------------------------------------
 

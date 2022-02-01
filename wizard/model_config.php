@@ -207,7 +207,7 @@
 <script src="config.js"></script>
 <script>
 
-class Straight extends Config {
+class ModelConfig extends Config {
 	constructor(frame, options) {
 		super(frame, options);
 
@@ -228,7 +228,7 @@ class Straight extends Config {
 //------------------------------------------
 // config object
 //------------------------------------------
-let straight = new Straight('#media', 'update.php'); //'options.json'); 
+let model_config = new ModelConfig('#media', 'update.php'); //'options.json'); 
 //------------------------------------------
 
 //------------------------------------------
@@ -248,6 +248,7 @@ function startStraightMode(){
 	showReference();
 	viewFrom("front");
 	window.frames[0].removeGrid(); // remove base grid, if any
+	window.frames[0].removeTrackSphere(); // remove track sphere, if any
 	presenter.setTrackballLock(true);
 	//setup mini sphere-trackball manipulator
 	window.frames[0].document.getElementById("draw-canvas").addEventListener('mousedown', onDown);
@@ -265,18 +266,18 @@ function endStraightInterface(){
 function applyStraightMode(){
 	endStraightInterface();	
 	var newmatrix = window.frames[0].presenter._scene.modelInstances["model_1"].transform.matrix;
-	straight.options.scene[0].matrix = newmatrix;
-	straight.save();	
+	model_config.options.scene[0].matrix = newmatrix;
+	model_config.save();	
 }
 function cancelStraightMode(){
 	endStraightInterface();
-	straight.refresh();	
+	model_config.refresh();	
 }
 function resetOrientation(){
 	endStraightInterface();	
 	var newmatrix = SglMat4.identity();
-	straight.options.scene[0].matrix = newmatrix;
-	straight.save();
+	model_config.options.scene[0].matrix = newmatrix;
+	model_config.save();
 }
 
 //-------------------------------------------------------------------------
@@ -322,11 +323,11 @@ function projectPoint(x,y){
 	var v = [x, y, z, 1.0];
 	var track = presenter.getTrackballPosition();
 	// transform to consider current 3dhop trackball view			
-	if(straight.options.trackball.type === "TurntablePanTrackball"){
+	if(model_config.options.trackball.type === "TurntablePanTrackball"){
 		v = SglMat4.mul4(SglMat4.rotationAngleAxis(sglDegToRad(track[1]), [-1.0, 0.0, 0.0]), v);
 		v = SglMat4.mul4(SglMat4.rotationAngleAxis(sglDegToRad(track[0]), [0.0, 1.0, 0.0]), v);		
 	}		
-	else if (straight.options.trackball.type === "SphereTrackball"){
+	else if (model_config.options.trackball.type === "SphereTrackball"){
 		v = SglMat4.mul4(SglMat4.inverse(track[0]), v);		
 	}
 	return [v[0],v[1],v[2]];
@@ -346,11 +347,11 @@ function rotView(axis,delta){
 	}
 	
 	// transform to consider current 3dhop trackball view			
-	if(straight.options.trackball.type === "TurntablePanTrackball"){
+	if(model_config.options.trackball.type === "TurntablePanTrackball"){
 		rotAxis = SglMat4.mul4(SglMat4.rotationAngleAxis(sglDegToRad(track[1]), [-1.0, 0.0, 0.0]), rotAxis);
 		rotAxis = SglMat4.mul4(SglMat4.rotationAngleAxis(sglDegToRad(track[0]), [0.0, 1.0, 0.0]), rotAxis);
 	}		
-	else if (straight.options.trackball.type === "SphereTrackball"){
+	else if (model_config.options.trackball.type === "SphereTrackball"){
 		rotAxis = SglMat4.mul4(SglMat4.inverse(track[0]), rotAxis);		
 	}	
 	var rotMat = SglMat4.rotationAngleAxis(sglDegToRad(delta), rotAxis);
@@ -500,7 +501,7 @@ function viewFrom(direction){
 	let presenter = window.frames[0].presenter; // get current presenter instance
 	var distance = 1.4;
 	
-	let trackType = straight.options.trackball.type;
+	let trackType = model_config.options.trackball.type;
 		
     switch(direction) {
         case "front":
