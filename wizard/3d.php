@@ -276,8 +276,8 @@ function actionsToolbar(action) {
 	else if(action=='pick_on') { presenter.enablePickpointMode(false); pickpointSwitch(); }
 //--POINT PICKING--
 //--SECTIONS--
-	else if(action=='sections') { sectiontoolReset(); sectiontoolSwitch(); }
-	else if(action=='sections_on') { sectiontoolReset(); sectiontoolSwitch(); }
+	else if(action=='sections') { sectiontoolReset(true); sectiontoolSwitch(); }
+	else if(action=='sections_on') { sectiontoolReset(false); sectiontoolSwitch(); }
 //--SECTIONS--
 //--HOTSPOTS--
 	else if(action=='hotspot') { presenter.setSpotVisibility(HOP_ALL, true, true); presenter.enableOnHover(true); hotspotSwitch(); }
@@ -303,6 +303,24 @@ function onEndPick(point) {
 	$('#pickpoint-output').html("[ "+x+" , "+y+" , "+z+" ]");
 } 
 //--PICKPOINT--
+
+function closeAllTools(){
+	presenter.enableLightTrackball(false);
+	lightSwitch();
+	presenter.enableMeasurementTool(false);
+	measureSwitch();
+	presenter.enablePickpointMode(false);
+	pickpointSwitch();
+	sectiontoolReset();
+	sectiontoolSwitch(false);
+	presenter.setSpotVisibility(HOP_ALL, false, true); 
+	presenter.enableOnHover(false);
+	hotspotSwitch();
+
+	presenter.repaint();	
+}
+
+
 
 //--GRID
 function addGrid(instance, step) {
@@ -350,32 +368,7 @@ function addTrackSphere(instance) {
 	var XC = (bb[0] + bb[3]) / 2.0;
 	var YC = (bb[1] + bb[4]) / 2.0;
 	var ZC = (bb[2] + bb[5]) / 2.0;
-	/*
-	var gStep,gStepNum;
-	if(step===0.0) {
-		gStepNum = 15;
-		gStep = rad/gStepNum;
-	}
-	else {
-		gStep = step;
-		gStepNum = Math.ceil(rad/gStep);
-	}
-	
-	var linesBuffer, grid, gg;
-	linesBuffer = [];
-	for (gg = -gStepNum; gg <= gStepNum; gg+=1)
-	{
-			linesBuffer.push([XC + (gg*gStep), YC, ZC + (-gStep*gStepNum)]);
-			linesBuffer.push([XC + (gg*gStep), YC, ZC + ( gStep*gStepNum)]);
-			linesBuffer.push([XC + (-gStep*gStepNum), YC, ZC + (gg*gStep)]);
-			linesBuffer.push([XC + ( gStep*gStepNum), YC, ZC + (gg*gStep)]);
-	}
-	grid = presenter.createEntity("baseGrid", "lines", linesBuffer);
-	grid.color = [0.9, 0.9, 0.9, 0.3];
-	grid.zOff = 0.0;
-	grid.useTransparency = true;
-	presenter.repaint();
-	*/
+
 	var sStep,sStepNum;	
 	sStepNum = 32;
 	sStep = (2 * Math.PI) / sStepNum;

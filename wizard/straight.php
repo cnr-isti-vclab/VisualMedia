@@ -244,6 +244,7 @@ function startStraightMode(){
 	document.getElementById("viewControls").classList.remove("d-none");
 	window.frames[0].presenter.setCameraOrthographic();
 	window.frames[0].onTrackballUpdate = updateReference;
+	window.frames[0].closeAllTools();
 	showReference();
 	viewFrom("front");
 	window.frames[0].removeGrid(); // remove base grid, if any
