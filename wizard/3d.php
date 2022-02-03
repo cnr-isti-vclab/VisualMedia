@@ -218,7 +218,9 @@ function setup3dhop() {
 		modelInstances : {
 			"model_1" : { 
 				mesh  : "mesh_1",
-				color : [0.8, 0.7, 0.75],
+				useLighting : options.scene[0].useLighting,
+				useSolidColor : (options.scene[0].startColor=="color")?false:true,
+				color : hex2color(options.scene[0].solidColor),
 				transform: options.scene[0].matrix? {matrix : options.scene[0].matrix} : null
 			}
 		},
@@ -239,6 +241,8 @@ function setup3dhop() {
 	sectiontoolInit();
 //--SECTIONS--
 
+	// start conditions - interface
+	colorSwitch((options.scene[0].startColor=="color")?false:true);
 }
 
 function actionsToolbar(action) {
@@ -319,8 +323,6 @@ function closeAllTools(){
 
 	presenter.repaint();	
 }
-
-
 
 //--GRID
 function addGrid(instance, step) {
@@ -433,6 +435,17 @@ function startupTrackSphere(){
 		addTrackSphere("model_1");
 	}
 }
+
+// HELPERS-------------------------
+
+function hex2color(hex){
+	let r = parseInt(hex.substr(1,2), 16)
+	let g = parseInt(hex.substr(3,2), 16)
+	let b = parseInt(hex.substr(5,2), 16)
+	return [r/255.0, g/255.0, b/255.0];
+}
+
+//----------------------------------------------
 
 $(document).ready(function(){
 	init3dhop();

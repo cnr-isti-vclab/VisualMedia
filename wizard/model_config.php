@@ -37,7 +37,7 @@
 		<div class="panel">
 			
 
-			<div id="Straightening_panel">
+			<div id="straightening_panel">
 				<h5>
 				<img class="m-1" width="25px" src="skins/icons/restore.png" onclick="resetOrientation();"> Model Orientation
 				</h5>			
@@ -176,8 +176,51 @@
 			</div>
 			
 			<hr/>
+
+				<h5>
+				<img class="m-1" width="25px" src="skins/icons/restore.png" title="Reset Color Options" onclick="resetColorOptions();">
+				Color:
+				</h5>
+				<div class="">
+					<p class="m-1">
+					Start color: 
+					<select id="i_startcolor" onchange="changedStartColor(this.value);">
+							<option value="color">Texture</option>
+							<option value="solid">Solid color</option>
+					</select>
+					</p>
+					<p class="m-1">
+					Solid color: <input type="color" id="i_solidcolor" onchange="changedSolidColor(this.value);" value="#aaaaaa">
+					</p>
+					<p class="m-1">
+					<img src="skins/dark/color.png" width="24px"> <input type="checkbox" id="i_toggleColor" onchange="changedColorButton(this.checked);" checked>Add button for toggling texture/solid</input>
+					</p>
+				</div>
+				
+			<hr/>
 			
-			<div id="Measure_panel">
+				<h5>
+				<img class="m-1" width="25px" src="skins/icons/restore.png" title="Reset Lighting Options" onclick="resetLightOptions();">
+				Lighting:
+				</h5>
+				<div class="">
+					<p class="m-1">
+					Start lighting: 
+					<select id="i_startlighting" onchange="changedStartLighting(this.value);">
+							<option value="true">enabled</option>
+							<option value="false">disabled</option>
+					</select>
+					</p>
+					<p class="m-1">
+					<img src="skins/dark/lighting.png" width="24px"> <input type="checkbox" id="i_toggleLighting" onchange="changedLightingButton(this.checked);" checked>Add button for toggling lighting</input>
+					</p class="m-1">
+					<p class="m-1">
+					<img src="skins/dark/light.png" width="24px"> <input type="checkbox" id="i_toggleLight" onchange="changedLightButton(this.checked);" checked>Add button for control light direction</input>
+					</p>					
+				</div>
+			<hr/>
+
+<!--
 				<h5>Model:</h5>
 				<p>still not working</p>
 				<input type="checkbox" id="i_ignoreUnits" checked> Ignore Scale</input></br>
@@ -187,19 +230,12 @@
 					<option value="mm">mm</option>
 					<option value="m">m</option>
 				</select>
-
-			</div>
+-->
 			
 			<hr/>
-			
-			<div id="Material_panel">
-				<h5>Rendering:</h5>
 				
-			</div>			
 			
 			<hr/>
-
-		</div>
 
 	</div>
 </body>
@@ -216,6 +252,15 @@ class ModelConfig extends Config {
 
 	update() {
 		
+		// color options
+		document.querySelector('#i_startcolor').value = model_config.options.scene[0].startColor;
+		document.querySelector('#i_solidcolor').value = model_config.options.scene[0].solidColor;
+		document.querySelector('#i_toggleColor').checked = model_config.options.tools.includes("color");
+		
+		//lighting
+		document.querySelector('#i_startlighting').value = model_config.options.scene[0].useLighting;
+		document.querySelector('#i_toggleLighting').checked = model_config.options.tools.includes("lighting");
+		document.querySelector('#i_toggleLight').checked = model_config.options.tools.includes("light");
 	}
 	
 	reset() {
@@ -234,6 +279,90 @@ let model_config = new ModelConfig('#media', 'update.php'); //'options.json');
 //------------------------------------------
 var presenter = null;	// current presenter instance from iframe
 //------------------------------------------
+
+
+function changedStartColor(value){
+	model_config.options.scene[0].startColor = value;
+	model_config.save();
+	model_config.update();
+}
+function changedSolidColor(value){
+	model_config.options.scene[0].solidColor = value;
+	model_config.save();
+	model_config.update();
+}
+function changedColorButton(value){
+	if((!value) && (model_config.options.tools.includes("color"))) 
+		model_config.options.tools.splice(model_config.options.tools.indexOf("color"),1);
+	else if((value) && (!model_config.options.tools.includes("color")))
+		model_config.options.tools.push("color");
+	
+	model_config.save();
+	model_config.update();	
+}
+function resetColorOptions(){
+	model_config.options.scene[0].startColor = default_ariadne.scene[0].startColor;
+	model_config.options.scene[0].solidColor = default_ariadne.scene[0].solidColor;
+	let colordefault = default_ariadne.tools.includes("color");
+	if((!colordefault) && (model_config.options.tools.includes("color"))) 
+		model_config.options.tools.splice(model_config.options.tools.indexOf("color"),1);
+	else if((colordefault) && (!model_config.options.tools.includes("color")))
+		model_config.options.tools.push("color");
+
+	model_config.save();
+	model_config.update();	
+}
+
+
+function changedStartLighting(value){
+	model_config.options.scene[0].useLighting = eval(value);	//eval beacuse it is still a string
+	// special case, light direction on, but lighting OFF and lighting toggle OFF, I must deactivate light direction
+	if((model_config.options.tools.includes("light"))&&(!model_config.options.scene[0].useLighting)&&(!model_config.options.tools.includes("lighting"))){
+		model_config.options.tools.splice(model_config.options.tools.indexOf("light"),1);
+	}
+	model_config.save();
+	model_config.update();
+}
+function changedLightingButton(value){
+	if((!value) && (model_config.options.tools.includes("lighting"))) 
+		model_config.options.tools.splice(model_config.options.tools.indexOf("lighting"),1);
+	else if((value) && (!model_config.options.tools.includes("lighting")))
+		model_config.options.tools.push("lighting");
+	// special case, light direction on, but lighting OFF and lighting toggle OFF, I must deactivate light direction
+	if((model_config.options.tools.includes("light"))&&(!model_config.options.scene[0].useLighting)&&(!model_config.options.tools.includes("lighting"))){
+		model_config.options.tools.splice(model_config.options.tools.indexOf("light"),1);
+	}
+	model_config.save();
+	model_config.update();
+}
+function changedLightButton(value){
+	if((!value) && (model_config.options.tools.includes("light"))) 
+		model_config.options.tools.splice(model_config.options.tools.indexOf("light"),1);
+	else if((value) && (!model_config.options.tools.includes("light")))
+		model_config.options.tools.push("light");
+	// special case, light direction on, but lighting OFF and lighting toggle OFF, I must activate lighting toggle
+	if((model_config.options.tools.includes("light"))&&(!model_config.options.scene[0].useLighting)&&(!model_config.options.tools.includes("lighting"))){
+		model_config.options.tools.push("lighting");
+	}
+	model_config.save();
+	model_config.update();	
+}
+function resetLightOptions(){
+	model_config.options.scene[0].useLighting = default_ariadne.scene[0].useLighting;
+	let lightingdefault = default_ariadne.tools.includes("lighting");
+	if((!lightingdefault) && (model_config.options.tools.includes("lighting"))) 
+		model_config.options.tools.splice(model_config.options.tools.indexOf("lighting"),1);
+	else if((lightingdefault) && (!model_config.options.tools.includes("lighting")))
+		model_config.options.tools.push("lighting");
+	let lightdefault = default_ariadne.tools.includes("light");
+	if((!lightdefault) && (model_config.options.tools.includes("light"))) 
+		model_config.options.tools.splice(model_config.options.tools.indexOf("light"),1);
+	else if((lightdefault) && (!model_config.options.tools.includes("light")))
+		model_config.options.tools.push("light");
+		
+	model_config.save();
+	model_config.update();	
+}
 
 //-------------------------------------------------------------------------
 function startStraightMode(){

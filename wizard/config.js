@@ -66,7 +66,7 @@ var default_ariadne = {
         "image": "light.jpg"
     },
 	"skin": "light", 
-	"tools": [ "home", "lighting", "light", "color", "measure", "pick", "sections", "orthographic", "full", "help" ],
+	"tools": [ "home", "light", "color", "measure", "pick", "sections", "orthographic", "full", "help" ],
 	"space": {
 		"centerMode": "scene",
 		"radiusMode": "scene",
@@ -93,7 +93,10 @@ var default_ariadne = {
 	 "scene": [{
 		"id": "mesh",
 		"url": "",
-		"matrix": null
+		"matrix": null,
+		"startColor": "color",
+		"solidColor": "#aaaaaa",
+		"useLighting": true
 		}
 	],
 	"widgets": {
@@ -103,7 +106,7 @@ var default_ariadne = {
 		},
 		"trackSphere" : {
 			"atStartup" : false
-		}		
+		}
 	},
 	"bookmark": {
 		"ID": {
@@ -126,6 +129,3 @@ var default_ariadne = {
 		"viewsNewIndex": 2
 	}
 };
-
-
-
