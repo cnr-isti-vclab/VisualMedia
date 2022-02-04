@@ -21,7 +21,7 @@
 
 		<hr/>
 
-			<p>Background</p>
+			<h5>Background</h5>
 			Colors: <input type="color" name="background-0" value="#aaaaaa"> 
 				    <input type="color" name="background-1" value="#000000"> <br/>
 			<input type="radio" name="background" value="flat"> Flat color <br/>
@@ -38,7 +38,7 @@
 
 		<hr/>
 
-			<p>Buttons:</p>
+			<h5>Buttons:</h5>
 			<input type="checkbox" name="tools[]" value="home" style="display:none">
 			<input type="checkbox" name="tools[]" value="zoomin" style="display:none">
 			<input type="checkbox" name="tools[]" value="zoomout" style="display:none">
@@ -53,6 +53,14 @@
 			<input type="checkbox" name="tools[]" value="full" style="display:none">
 			<input type="checkbox" name="tools[]" value="help" style="display:none">
 
+		<hr/>
+
+			<h5>Widgets:</h5>
+				<p class="d-none" id="cbl_basegrid"><input type="checkbox" onchange="changedBaseGrid(this.checked);" id="cb_basegrid"> Base Grid</p>
+				<p class="d-none" id="cbl_tracksphere"><input type="checkbox" onchange="changedTrackSphere(this.checked);" id="cb_tracksphere"> Track Sphere</p>
+				
+
+				
 		<hr/>
 
 			<div class="row no-gutters">
@@ -122,12 +130,38 @@ class Look extends Config {
 			if(options.tools.includes(tool.value))
 				tool.checked = true;
 		}
+
+		document.getElementById("cb_basegrid").checked = options.widgets.grid.atStartup;
+		document.getElementById("cb_tracksphere").checked = options.widgets.trackSphere.atStartup;
+		// depending on which trackball, show the appropriate widget
+		if(options.trackball.type === "TurntablePanTrackball")
+			document.getElementById("cbl_basegrid").classList.remove("d-none");
+		if(options.trackball.type === "SphereTrackball")
+			document.getElementById("cbl_tracksphere").classList.remove("d-none");
 	}
 	reset() {
 		super.reset();
 		this.update();
 	}
 }
+
+//-------------------------------------------------------
+function changedBaseGrid(value){
+	if (look.options.widgets.grid.atStartup === value) return;
+	
+	look.options.widgets.grid.atStartup = value;
+	look.save();
+	look.update();
+}
+function changedTrackSphere(value){
+	if (look.options.widgets.trackSphere.atStartup === value) return;
+	
+	look.options.widgets.trackSphere.atStartup = value;
+	look.save();
+	look.update();
+}
+//-------------------------------------------------------
+
 
 let look = new Look('#media', 'update.php'); //'options.json'); 
 
