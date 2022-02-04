@@ -56,10 +56,10 @@
 		<hr/>
 
 			<h5>Widgets:</h5>
-				<p class="d-none" id="cbl_basegrid"><input type="checkbox" onchange="changedBaseGrid(this.checked);" id="cb_basegrid"> Base Grid</p>
-				<p class="d-none" id="cbl_tracksphere"><input type="checkbox" onchange="changedTrackSphere(this.checked);" id="cb_tracksphere"> Track Sphere</p>
-				
-
+				<p id="cbl_basegrid"><input type="checkbox" onchange="changedBaseGrid(this.checked);" id="cb_basegrid"> Base Grid</p>
+				<p id="cbl_tracksphere"><input type="checkbox" onchange="changedTrackSphere(this.checked);" id="cb_tracksphere"> Track Sphere</p>
+				</br>
+				<input type="checkbox" onchange="changedCardinalviews(this.checked);" id="cb_cardinalviews"> Cardinal Views</br>
 				
 		<hr/>
 
@@ -134,10 +134,16 @@ class Look extends Config {
 		document.getElementById("cb_basegrid").checked = options.widgets.grid.atStartup;
 		document.getElementById("cb_tracksphere").checked = options.widgets.trackSphere.atStartup;
 		// depending on which trackball, show the appropriate widget
-		if(options.trackball.type === "TurntablePanTrackball")
+		if(options.trackball.type === "TurntablePanTrackball"){
 			document.getElementById("cbl_basegrid").classList.remove("d-none");
-		if(options.trackball.type === "SphereTrackball")
+			document.getElementById("cbl_tracksphere").classList.add("d-none");			
+		}
+		if(options.trackball.type === "SphereTrackball"){
+			document.getElementById("cbl_basegrid").classList.add("d-none");			
 			document.getElementById("cbl_tracksphere").classList.remove("d-none");
+		}
+		
+		document.getElementById("cb_cardinalviews").checked = options.widgets.cardinalViews.atStartup;	
 	}
 	reset() {
 		super.reset();
@@ -146,20 +152,23 @@ class Look extends Config {
 }
 
 //-------------------------------------------------------
-function changedBaseGrid(value){
-	if (look.options.widgets.grid.atStartup === value) return;
-	
+function changedBaseGrid(value){	
 	look.options.widgets.grid.atStartup = value;
 	look.save();
 	look.update();
 }
 function changedTrackSphere(value){
-	if (look.options.widgets.trackSphere.atStartup === value) return;
-	
 	look.options.widgets.trackSphere.atStartup = value;
 	look.save();
 	look.update();
 }
+
+function changedCardinalviews(value){	
+	look.options.widgets.cardinalViews.atStartup = value;
+	look.save();
+	look.update();
+}
+
 //-------------------------------------------------------
 
 

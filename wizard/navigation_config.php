@@ -128,6 +128,7 @@ function setSphere(){
 	navigation_config.options.trackball.type = "SphereTrackball";
 	navigation_config.options.trackball.trackOptions = {};
 	navigation_config.options.trackball.trackOptions.startMatrix = SglMat4.identity();
+	//navigation_config.options.trackball.trackOptions.startMatrix = SglMat4.mul(SglMat4.rotationAngleAxis(sglDegToRad(-25.0), [0.0, 1.0, 0.0]), SglMat4.rotationAngleAxis(sglDegToRad(25.0), [1.0, 0.0, 0.0])); 
 	navigation_config.options.trackball.trackOptions.startPanX = 0.0;
 	navigation_config.options.trackball.trackOptions.startPanY = 0.0;
 	navigation_config.options.trackball.trackOptions.startPanZ = 0.0;

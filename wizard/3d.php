@@ -122,6 +122,16 @@ switch($type) {
  </div>
 <!-- INFO -->
 
+		<div id="cardinalViews" class="d-none" style="position:absolute; right:10px; top:10;">			
+			<center>
+			<table>
+			<tr><td></td><td><button id="vtop" class="btn btn-sm btn-secondary w-100" onclick="viewFrom('top');">ABOVE</button></td><td></td><td></td></tr>
+			<tr><td><button class="btn btn-sm btn-secondary w-100" id="vleft" onclick="viewFrom('left');">LEFT</button></td><td><button class="btn btn-sm btn-secondary w-100" id="vfront" onclick="viewFrom('front');">FRONT</button></td><td><button class="btn btn-sm btn-secondary w-100" id="vright" onclick="viewFrom('right');">RIGHT</button></td><td><button class="btn btn-sm btn-secondary w-100" id="vback" onclick="viewFrom('back');">BACK</button></td></tr>
+			<tr><td></td><td><button class="btn btn-sm btn-secondary w-100" id="vbottom" onclick="viewFrom('bottom');">BELOW</button></td><td></td><td></td></tr> 
+			</table>
+			</center>
+		</div>
+
  <canvas id="draw-canvas"></canvas>
 </div>
 </body>
@@ -436,6 +446,54 @@ function startupTrackSphere(){
 	}
 }
 
+//-------------------------------------------------------------------------
+function viewFrom(direction){
+	var distance = 1.4;
+	
+	let trackType = presenter._scene.trackball.type;
+		
+    switch(direction) {
+        case "front":
+			if(trackType === TurntablePanTrackball)
+				presenter.animateToTrackballPosition([0.0, 0.0, 0.0, 0.0, 0.0, distance]);
+			else if (trackType === SphereTrackball)
+				presenter.animateToTrackballPosition([[ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ], 0.0, 0.0, 0.0, distance]);
+            break;
+        case "back":
+			if(trackType === TurntablePanTrackball)		
+				presenter.animateToTrackballPosition([180.0, 0.0, 0.0, 0.0, 0.0, distance]);
+			else if (trackType === SphereTrackball)
+				presenter.animateToTrackballPosition([[-1, 0, 0, 0, 0, 1, 0, 0, 0, 0,-1, 0, 0, 0, 0, 1 ], 0.0, 0.0, 0.0, distance]);		
+            break;			
+        case "top":
+			if(trackType === TurntablePanTrackball)		
+				presenter.animateToTrackballPosition([0.0, 90.0, 0.0, 0.0, 0.0, distance]);
+			else if (trackType === SphereTrackball)
+				presenter.animateToTrackballPosition([[ 1, 0, 0, 0, 0, 0, 1, 0, 0,-1, 0, 0, 0, 0, 0, 1 ], 0.0, 0.0, 0.0, distance]);
+            break;
+        case "bottom":
+			if(trackType === TurntablePanTrackball)
+				presenter.animateToTrackballPosition([0.0, -90.0, 0.0, 0.0, 0.0, distance]);
+			else if (trackType === SphereTrackball)
+				presenter.animateToTrackballPosition([[ 1, 0, 0, 0, 0, 0,-1, 0, 0, 1, 0, 0, 0, 0, 0, 1 ], 0.0, 0.0, 0.0, distance]);				
+            break;
+        case "left":
+			if(trackType === TurntablePanTrackball)		
+				presenter.animateToTrackballPosition([270.0, 0.0, 0.0, 0.0, 0.0, distance]);
+			else if (trackType === SphereTrackball)
+				presenter.animateToTrackballPosition([[ 0, 0,-1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1 ], 0.0, 0.0, 0.0, distance]);				
+            break;
+        case "right":
+			if(trackType === TurntablePanTrackball)		
+				presenter.animateToTrackballPosition([90.0, 0.0, 0.0, 0.0, 0.0, distance]);
+			else if (trackType === SphereTrackball)				
+				presenter.animateToTrackballPosition([[ 0, 0, 1, 0, 0, 1, 0, 0,-1, 0, 0, 0, 0, 0, 0, 1 ], 0.0, 0.0, 0.0, distance]);
+            break;			
+    }
+}
+
+//-------------------------------------------------------------------------
+
 // HELPERS-------------------------
 
 function hex2color(hex){
@@ -451,10 +509,14 @@ $(document).ready(function(){
 	init3dhop();
 	setup3dhop();
 
+	// widgets
 	if(options.widgets.grid.atStartup)
 		setTimeout(startupGrid, 100);	// grid shows up at startup
 	if(options.widgets.trackSphere.atStartup)
 		setTimeout(startupTrackSphere, 100);	// track sphere shows up at startup
+		
+	if(options.widgets.cardinalViews.atStartup)
+		document.getElementById("cardinalViews").classList.remove("d-none");
 });
 </script>
 </html>

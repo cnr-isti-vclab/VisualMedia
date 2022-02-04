@@ -8,12 +8,11 @@
     "skin": "light",
     "tools": [
         "home",
-        "lighting",
         "light",
+        "color",
         "measure",
         "pick",
         "sections",
-        "color",
         "orthographic",
         "full",
         "help"
@@ -27,8 +26,8 @@
     "trackball": {
         "type": "TurntablePanTrackball",
         "trackOptions": {
-            "startPhi": 30,
-            "startTheta": 25,
+            "startPhi": 2.2557791511084466,
+            "startTheta": 32.3581908621253,
             "startDistance": 1.5,
             "startPanX": 0,
             "startPanY": 0,
@@ -64,28 +63,37 @@
             "id": "mesh",
             "url": "",
             "matrix": [
-                -0.6057029743874731,
-                0.02646326035146019,
-                0.79525065398888,
+                -0.6197971957580857,
+                -0.019748197637409974,
+                0.7845135083734934,
                 0,
-                0.7947066441213702,
-                -0.029574788183163458,
-                0.6062727782881844,
+                0.7846907091808532,
+                -0.029072473628909933,
+                0.619205363512256,
                 0,
-                0.03956332402008634,
-                0.9992122035661374,
-                -0.0031169916569977925,
+                0.01057955838692811,
+                0.9993822091508179,
+                0.033515264838092224,
                 0,
                 0,
                 0,
                 0,
                 1
-            ]
+            ],
+            "startColor": "color",
+            "solidColor": "#aaaaaa",
+            "useLighting": true
         }
     ],
     "widgets": {
         "grid": {
             "step": 0,
+            "atStartup": true
+        },
+        "trackSphere": {
+            "atStartup": false
+        },
+        "cardinalViews": {
             "atStartup": true
         }
     },

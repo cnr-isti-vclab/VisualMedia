@@ -106,6 +106,9 @@ var default_ariadne = {
 		},
 		"trackSphere" : {
 			"atStartup" : false
+		},
+		"cardinalViews" : {
+			"atStartup" : true
 		}
 	},
 	"bookmark": {
