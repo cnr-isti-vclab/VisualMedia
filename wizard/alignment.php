@@ -1,6 +1,4 @@
-
-		
-<!--		<div id="viewControls" class="d-none" style="position:absolute; right:400px; top:0;">
+		<div id="viewControls" class="d-none" style="position:absolute; right:400px; bottom:0;">
 			<h5>View Scene From:</h5>			
 			<center>
 			<table>
@@ -9,16 +7,14 @@
 			<tr><td></td><td><button class="btn btn-sm btn-secondary w-100 vbutton" id="vbottom" onclick="viewFrom('bottom');">BELOW</button></td><td></td><td></td></tr> 
 			</table>
 			</center>
-		</div> -->
-		
-			
+		</div>  
 
 <div id="straightening_panel">
 	<h5>
-	<img class="m-1" width="25px" src="skins/icons/restore.png" onclick="resetOrientation();"> Model Orientation
+	<img class="m-1" width="25px" src="skins/icons/restore.png" onclick="model_config.resetOrientation();"> Model Orientation
 	</h5>			
 	
-	<button class="btn btn-secondary btn-block" id="smStart" onclick="startStraightMode()">Straighten your model</button>
+	<button class="btn btn-secondary btn-block" id="smStart" onclick="model_config.startStraightMode()">Straighten your model</button>
 	<div class="border d-none" id="smControls">
 		<div class="m-1">
 		Select a view using the buttons.</br>
@@ -101,8 +97,8 @@
 			
 		</div>			
 		<div class="m-1 text-right">
-			<button class="btn btn-sm btn-danger" onclick="cancelStraightMode()">CANCEL</button>
-			<button class="btn btn-sm btn-success" onclick="applyStraightMode()">APPLY</button>
+			<button class="btn btn-sm btn-danger" onclick="model_config.cancelStraightMode();">CANCEL</button>
+			<button class="btn btn-sm btn-success" onclick="model_config.applyStraightMode()">APPLY</button>
 		</div>
 	</div>
 </div>
@@ -121,68 +117,76 @@ class ModelConfig extends Config {
 	update() {
 	}
 	
+	startStraightMode(){
+		let frame = window.frames[0];
+		presenter = frame.presenter; // get current presenter instance
+		frame.document.getElementById("toolbar").classList.add("d-none");	
+		document.getElementById("smStart").classList.add("d-none");
+		document.getElementById("smControls").classList.remove("d-none");
+		document.getElementById("viewControls").classList.remove("d-none");
+		presenter.setCameraOrthographic();
+
+
+		this.reference = new Reference(presenter);
+
+		frame.onTrackballUpdate = () => this.reference.update();
+		this.reference.show();
+
+		frame.closeAllTools();
+
+		viewFrom("front");
+		frame.removeGrid(); // remove base grid, if any
+		frame.removeTrackSphere(); // remove track sphere, if any
+		presenter.setTrackballLock(true);
+		//setup mini sphere-trackball manipulator
+		frame.document.getElementById("draw-canvas").addEventListener('mousedown', onDown);
+		frame.document.getElementById("draw-canvas").addEventListener('mousemove', onMove);
+	}
+
 	reset() {
 		cancelStraightMode();
 		super.reset();
 		this.update();
 	}
+
+	applyStraightMode(){
+		this.endStraightInterface();	
+		let newmatrix = window.frames[0].presenter._scene.modelInstances["model_1"].transform.matrix;
+		model_config.options.scene[0].matrix = newmatrix;
+		model_config.save();	
+	}
+
+	cancelStraightMode(){
+		this.endStraightInterface();
+		model_config.refresh();	
+	}
+
+	endStraightInterface(){
+		document.getElementById("smStart").classList.remove("d-none");
+		document.getElementById("smControls").classList.add("d-none");
+		document.getElementById("viewControls").classList.add("d-none");
+		
+		//remove mini sphere-trackball manipulator
+		window.frames[0].document.getElementById("draw-canvas").removeEventListener('mousedown', onDown);
+		window.frames[0].document.getElementById("draw-canvas").removeEventListener('mousemove', onMove);	
+	}
+
+	resetOrientation(){
+		this.endStraightInterface();	
+		let newmatrix = SglMat4.identity();
+		this.options.scene[0].matrix = newmatrix;
+		this.save();
+	}
+
+
+
 }
 
-//------------------------------------------
-// config object
-//------------------------------------------
-let model_config = new ModelConfig('#media', 'update.php'); //'options.json'); 
-//------------------------------------------
+let model_config = new ModelConfig('#media', 'update.php'); 
 
-//------------------------------------------
 var presenter = null;	// current presenter instance from iframe
-//------------------------------------------
 
 
-//-------------------------------------------------------------------------
-function startStraightMode(){
-	presenter = window.frames[0].presenter; // get current presenter instance
-	window.frames[0].document.getElementById("toolbar").classList.add("d-none");	
-	document.getElementById("smStart").classList.add("d-none");
-	document.getElementById("smControls").classList.remove("d-none");
-	document.getElementById("viewControls").classList.remove("d-none");
-	window.frames[0].presenter.setCameraOrthographic();
-	window.frames[0].onTrackballUpdate = updateReference;
-	window.frames[0].closeAllTools();
-	showReference();
-	viewFrom("front");
-	window.frames[0].removeGrid(); // remove base grid, if any
-	window.frames[0].removeTrackSphere(); // remove track sphere, if any
-	presenter.setTrackballLock(true);
-	//setup mini sphere-trackball manipulator
-	window.frames[0].document.getElementById("draw-canvas").addEventListener('mousedown', onDown);
-	window.frames[0].document.getElementById("draw-canvas").addEventListener('mousemove', onMove);
-}
-function endStraightInterface(){
-	document.getElementById("smStart").classList.remove("d-none");
-	document.getElementById("smControls").classList.add("d-none");
-	document.getElementById("viewControls").classList.add("d-none");
-	presenter = null;
-	//remove mini sphere-trackball manipulator
-	window.frames[0].document.getElementById("draw-canvas").removeEventListener('mousedown', onDown);
-	window.frames[0].document.getElementById("draw-canvas").removeEventListener('mousemove', onMove);	
-}
-function applyStraightMode(){
-	endStraightInterface();	
-	var newmatrix = window.frames[0].presenter._scene.modelInstances["model_1"].transform.matrix;
-	model_config.options.scene[0].matrix = newmatrix;
-	model_config.save();	
-}
-function cancelStraightMode(){
-	endStraightInterface();
-	model_config.refresh();	
-}
-function resetOrientation(){
-	endStraightInterface();	
-	var newmatrix = SglMat4.identity();
-	model_config.options.scene[0].matrix = newmatrix;
-	model_config.save();
-}
 
 //-------------------------------------------------------------------------
 // mini sphere-trackball 
@@ -203,42 +207,44 @@ function onMove(e){
 	let my = ((e.target.height-e.clientY) - (e.target.height/2.0)) / minSize;
 	trackV2 = projectPoint(mx,my);
 
-	var axis   = SglVec3.cross(trackV1, trackV2); //axis of rotation
-	var angle  = SglVec3.length(axis); //angle of rotation
-	var rotMat = SglMat4.rotationAngleAxis(angle*2.0, axis); // *2.0 makes it spin faster :)
-	var newmatrix = SglMat4.mul(rotMat, presenter._scene.modelInstances["model_1"].transform.matrix);
+	let axis   = SglVec3.cross(trackV1, trackV2); //axis of rotation
+	let angle  = SglVec3.length(axis);            //angle of rotation
+	if(Math.abs(angle) < 0.0001)
+		return;
+	let rotMat = SglMat4.rotationAngleAxis(angle*2.0, axis); // *2.0 makes it spin faster :)
+	let newmatrix = SglMat4.mul(rotMat, presenter._scene.modelInstances["model_1"].transform.matrix);
 	presenter._scene.modelInstances["model_1"].transform.matrix = newmatrix;
 	presenter.repaint();
 
 	trackV1 = trackV2;
 }
-function projectPoint(x,y){
-		var r = 0.5;
-		var z = 0.0;
-		var d = Math.sqrt(x*x + y*y);
+function projectPoint(x, y){
+	let r = 0.5;
+	let z = 0.0;
+	let d = Math.sqrt(x*x + y*y);
 
-		if (d < (r * 0.70710678118654752440)) { /* Inside sphere */
-			z = Math.sqrt(r*r - d*d);
-		}
-		else { /* On hyperbola */
-			let t = r / 1.41421356237309504880;
-			z = t*t / d;
-		}
-	var v = [x, y, z, 1.0];
-	var track = presenter.getTrackballPosition();
+	if (d < (r * 0.70710678118654752440)) { /* Inside sphere */
+		z = Math.sqrt(r*r - d*d);
+	} else { /* On hyperbola */
+		let t = r / 1.41421356237309504880;
+		z = t*t / d;
+	}
+	let v = [x, y, z, 1.0];
+	let track = presenter.getTrackballPosition();
+
 	// transform to consider current 3dhop trackball view			
 	if(model_config.options.trackball.type === "TurntablePanTrackball"){
 		v = SglMat4.mul4(SglMat4.rotationAngleAxis(sglDegToRad(track[1]), [-1.0, 0.0, 0.0]), v);
 		v = SglMat4.mul4(SglMat4.rotationAngleAxis(sglDegToRad(track[0]), [0.0, 1.0, 0.0]), v);		
-	}		
-	else if (model_config.options.trackball.type === "SphereTrackball"){
+
+	} else if (model_config.options.trackball.type === "SphereTrackball"){
 		v = SglMat4.mul4(SglMat4.inverse(track[0]), v);		
 	}
 	return [v[0],v[1],v[2]];
 }
 //-------------------------------------------------------------------------
 
-function rotView(axis,delta){
+function rotView(axis, delta){
 	var track = presenter.getTrackballPosition();
 	var rotAxis;
 	switch(axis) {
@@ -280,189 +286,112 @@ function rotAbs(axis,delta){
 }
 
 
-//-------------------------------------------------------------------------
-function showReference(){
-	var rad = 0.6 / presenter.sceneRadiusInv;
-	var linesBuffer;
-	var refgridX,refgridY,refgridZ;
+class Reference {
+	constructor(presenter) {
+		this.presenter = presenter;
+	}
 
-	var numDivMaj = 10;
-	var majStep = rad / numDivMaj;
-	
-	var XC = 0.0
-	var YC = 0.0
-	var ZC = 0.0
+	show() {
+		let rad = 0.3 / this.presenter.sceneRadiusInv;
+		let numDiv = 10;
 
-	linesBuffer = [];
-	for (gg = -numDivMaj; gg <= numDivMaj; gg+=1)
-	{
-		linesBuffer.push([XC, YC + (gg*majStep), ZC + (-majStep*numDivMaj)]);
-		linesBuffer.push([XC, YC + (gg*majStep), ZC + ( majStep*numDivMaj)]);
-		linesBuffer.push([XC, YC + (-majStep*numDivMaj), ZC + (gg*majStep)]);
-		linesBuffer.push([XC, YC + ( majStep*numDivMaj), ZC + (gg*majStep)]);		
+		let grid = [];
+		for (let i = -numDiv; i <= numDiv; i++) {
+			let f = i/numDiv;
+			grid.push([0, f, -1], [0, f, 1], [0, -1, f], [0, 1, f]);
+		}
+
+		let arrow = [ [0, 0, 0], [1.3, 0, 0], [1.3, 0, 0], [1.1, 0, 0.15], [1.3, 0, 0], [1.1, 0, -0.15] ];
+		let x = [ [1.4, 0, -0.1], [1.6, 0, 0.1], [1.4, 0, 0.1], [1.6, 0, -0.1] ];
+		let y = [ [0, 1.4, 0], [0, 1.5, 0],  [0, 1.5, 0], [0.1, 1.6, 0],  [0, 1.5, 0], [-0.1, 1.6, 0] ];
+		let z = [ [0, 0.1, 1.4], [0, -0.1, 1.6], [0, 0.1, 1.4], [0, 0.1, 1.6], [0, -0.1, 1.6], [0, -0.1, 1.4]];
+
+
+		for(let point of [...grid, ...arrow, ...x, ...y, ...z])
+			for(let c of point)
+				c *= rad;
+
+		this.refgridX = this.presenter.createEntity("refgridX", "lines", [...grid, ...arrow, ...x]);
+		this.refgridX.color = [0.9, 0.5, 0.5, 1.0];
+		this.refgridX.zOff = 0.0;
+
+		rotate([...grid, ...arrow]);
+
+		this.refgridY = this.presenter.createEntity("refgridZ", "lines", [...grid, ...arrow, ...y]);
+		this.refgridY.color = [0.5, 0.9, 0.5, 1.0];
+		this.refgridY.zOff = 0.0;
+
+		rotate([...grid, ...arrow]);
+
+		this.refgridZ = this.presenter.createEntity("refgridY", "lines", [...grid, ...arrow, ...z]);
+		this.refgridZ.color = [0.5, 0.5, 0.9, 1.0];
+		this.refgridZ.zOff = 0.0;
+
+		function rotate(lines) {
+			for(let point of lines) {
+				point.unshift(point.pop()); //rotate
+			}
+		}
+
+		this.presenter.repaint();
 	}
-	{	
-		//arrow
-		linesBuffer.push([XC, YC, ZC]);
-		linesBuffer.push([XC + (rad*1.3), YC, ZC]);
-		linesBuffer.push([XC + (rad*1.3), YC, ZC]);
-		linesBuffer.push([XC + (rad*1.1), YC, ZC + (rad*0.15)]);
-		linesBuffer.push([XC + (rad*1.3), YC, ZC]);
-		linesBuffer.push([XC + (rad*1.1), YC, ZC - (rad*0.15)]);
-		// X
-		linesBuffer.push([XC + (rad*1.4), YC, ZC - (rad*0.1)]);
-		linesBuffer.push([XC + (rad*1.6), YC, ZC + (rad*0.1)]);
-		linesBuffer.push([XC + (rad*1.4), YC, ZC + (rad*0.1)]);
-		linesBuffer.push([XC + (rad*1.6), YC, ZC - (rad*0.1)]);		
+
+	delete() {
+		for(let e of ['refgridX', 'refgridY', 'refgridZ'])
+			this.presenter.deleteEntity(e);
 	}
-	refgridX = presenter.createEntity("refgridX", "lines", linesBuffer);
-	refgridX.color = [0.9, 0.5, 0.5, 1.0];
-	refgridX.zOff = 0.0;
-	linesBuffer = [];
-	for (gg = -numDivMaj; gg <= numDivMaj; gg+=1)
-	{
-			linesBuffer.push([XC + (gg*majStep), YC, ZC + (-majStep*numDivMaj)]);
-			linesBuffer.push([XC + (gg*majStep), YC, ZC + ( majStep*numDivMaj)]);
-			linesBuffer.push([XC + (-majStep*numDivMaj), YC, ZC + (gg*majStep)]);
-			linesBuffer.push([XC + ( majStep*numDivMaj), YC, ZC + (gg*majStep)]);		
-	}
-	{	
-		//arrow
-		linesBuffer.push([XC, YC, ZC]);
-		linesBuffer.push([XC, YC + (rad*1.3), ZC]);
-		linesBuffer.push([XC, YC + (rad*1.3), ZC]);
-		linesBuffer.push([XC + (rad*0.15), YC + (rad*1.1), ZC]);
-		linesBuffer.push([XC, YC + (rad*1.3), ZC]);
-		linesBuffer.push([XC - (rad*0.15), YC + (rad*1.1), ZC]);
-		// Y
-		linesBuffer.push([XC, YC + (rad*1.4), ZC]);
-		linesBuffer.push([XC, YC + (rad*1.5), ZC]);
-		linesBuffer.push([XC, YC + (rad*1.5), ZC]);
-		linesBuffer.push([XC + (rad*0.1), YC + (rad*1.6), ZC]);
-		linesBuffer.push([XC, YC + (rad*1.5), ZC]);
-		linesBuffer.push([XC - (rad*0.1), YC + (rad*1.6), ZC]);		
-	}	
-	refgridY = presenter.createEntity("refgridY", "lines", linesBuffer);
-	refgridY.color = [0.5, 0.9, 0.5, 1.0];
-	refgridY.zOff = 0.0;
-	linesBuffer = [];
-	for (gg = -numDivMaj; gg <= numDivMaj; gg+=1)
-	{
-			linesBuffer.push([XC + (gg*majStep), YC + (-majStep*numDivMaj), ZC]);
-			linesBuffer.push([XC + (gg*majStep), YC + ( majStep*numDivMaj), ZC]);
-			linesBuffer.push([XC + (-majStep*numDivMaj), YC + (gg*majStep), ZC]);
-			linesBuffer.push([XC + ( majStep*numDivMaj), YC + (gg*majStep), ZC]);		
-	}
-	{	
-		//arrow
-		linesBuffer.push([XC, YC, ZC]);
-		linesBuffer.push([XC, YC, ZC + (rad*1.3)]);
-		linesBuffer.push([XC, YC, ZC + (rad*1.3)]);
-		linesBuffer.push([XC, YC + (rad*0.15), ZC + (rad*1.1)]);
-		linesBuffer.push([XC, YC, ZC + (rad*1.3)]);
-		linesBuffer.push([XC, YC - (rad*0.15), ZC + (rad*1.1)]);
-		// Z
-		linesBuffer.push([XC, YC + (rad*0.1), ZC + (rad*1.4)]);
-		linesBuffer.push([XC, YC - (rad*0.1), ZC + (rad*1.6)]);
-		linesBuffer.push([XC, YC + (rad*0.1), ZC + (rad*1.4)]);
-		linesBuffer.push([XC, YC + (rad*0.1), ZC + (rad*1.6)]);
-		linesBuffer.push([XC, YC - (rad*0.1), ZC + (rad*1.6)]);
-		linesBuffer.push([XC, YC - (rad*0.1), ZC + (rad*1.4)]);
-	}
-	refgridZ = presenter.createEntity("refgridZ", "lines", linesBuffer);
-	refgridZ.color = [0.5, 0.5, 0.9, 1.0];
-	refgridZ.zOff = 0.0;	
+
+
+	update(trackState){
+		if(!this.refgridX) return;
 	
-	presenter.repaint();
+		let matrix = SglMat4.translation(this.presenter.sceneCenter);
+		this.refgridX.transform.matrix = matrix;
+		this.refgridY.transform.matrix = matrix;
+		this.refgridZ.transform.matrix = matrix;
+	}
 }
-function deleteReference(){
-	presenter.deleteEntity("refgridX");
-	presenter.deleteEntity("refgridY");
-	presenter.deleteEntity("refgridZ");
-}
-function updateReference(trackState){	
-	if (typeof presenter._scene.entities === 'undefined') return;
-	if (typeof presenter._scene.entities["refgridX"] === 'undefined') return;
-	
-	var tt=[0.0,0.0,0.0];
-	tt[0] = presenter.sceneCenter[0];
-	tt[1] = presenter.sceneCenter[1];
-	tt[2] = presenter.sceneCenter[2];
-	
-	//var mrX = SglMat4.rotationAngleAxis(sglDegToRad(-trackState[1]), [1.0, 0.0, 0.0]);
-	//var mrY = SglMat4.rotationAngleAxis(sglDegToRad(trackState[0]), [0.0, 1.0, 0.0]);
-	var mrT = SglMat4.translation(tt);
-	var matrix = mrT;//SglMat4.mul(SglMat4.mul(mrT, mrY), mrX);
-	presenter._scene.entities["refgridX"].transform.matrix = matrix;
-	presenter._scene.entities["refgridY"].transform.matrix = matrix;
-	presenter._scene.entities["refgridZ"].transform.matrix = matrix;	
-}
+
+
+
+
 
 //-------------------------------------------------------------------------
 function viewFrom(direction){
 	document.querySelectorAll('.vbutton').forEach(el => {el.classList.remove('btn-primary'); el.classList.add('btn-secondary');});
 	
 	let presenter = window.frames[0].presenter; // get current presenter instance
-	var distance = 1.4;
+	let distance = 1.4;
 	
 	let trackType = model_config.options.trackball.type;
-		
-    switch(direction) {
-        case "front":
-			if(trackType === "TurntablePanTrackball")
-				presenter.animateToTrackballPosition([0.0, 0.0, 0.0, 0.0, 0.0, distance]);
-			else if (trackType === "SphereTrackball")
-				presenter.animateToTrackballPosition([[ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ], 0.0, 0.0, 0.0, distance]);
-			document.querySelector('#vfront').classList.remove("btn-secondary");
-			document.querySelector('#vfront').classList.add("btn-primary");
-            break;
-        case "back":
-			if(trackType === "TurntablePanTrackball")		
-				presenter.animateToTrackballPosition([180.0, 0.0, 0.0, 0.0, 0.0, distance]);
-			else if (trackType === "SphereTrackball")
-				presenter.animateToTrackballPosition([[-1, 0, 0, 0, 0, 1, 0, 0, 0, 0,-1, 0, 0, 0, 0, 1 ], 0.0, 0.0, 0.0, distance]);
-			document.querySelector('#vback').classList.remove("btn-secondary");			
-			document.querySelector('#vback').classList.add("btn-primary");			
-            break;			
-        case "top":
-			if(trackType === "TurntablePanTrackball")		
-				presenter.animateToTrackballPosition([0.0, 90.0, 0.0, 0.0, 0.0, distance]);
-			else if (trackType === "SphereTrackball")
-				presenter.animateToTrackballPosition([[ 1, 0, 0, 0, 0, 0, 1, 0, 0,-1, 0, 0, 0, 0, 0, 1 ], 0.0, 0.0, 0.0, distance]);
-			document.querySelector('#vtop').classList.remove("btn-secondary");
-			document.querySelector('#vtop').classList.add("btn-primary");
-            break;
-        case "bottom":
-			if(trackType === "TurntablePanTrackball")
-				presenter.animateToTrackballPosition([0.0, -90.0, 0.0, 0.0, 0.0, distance]);
-			else if (trackType === "SphereTrackball")
-				presenter.animateToTrackballPosition([[ 1, 0, 0, 0, 0, 0,-1, 0, 0, 1, 0, 0, 0, 0, 0, 1 ], 0.0, 0.0, 0.0, distance]);				
-			document.querySelector('#vbottom').classList.remove("btn-secondary");
-			document.querySelector('#vbottom').classList.add("btn-primary");
-            break;
-        case "left":
-			if(trackType === "TurntablePanTrackball")		
-				presenter.animateToTrackballPosition([270.0, 0.0, 0.0, 0.0, 0.0, distance]);
-			else if (trackType === "SphereTrackball")
-				presenter.animateToTrackballPosition([[ 0, 0,-1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1 ], 0.0, 0.0, 0.0, distance]);				
-			document.querySelector('#vleft').classList.remove("btn-secondary");
-			document.querySelector('#vleft').classList.add("btn-primary");
-            break;
-        case "right":
-			if(trackType === "TurntablePanTrackball")		
-				presenter.animateToTrackballPosition([90.0, 0.0, 0.0, 0.0, 0.0, distance]);
-			else if (trackType === "SphereTrackball")				
-				presenter.animateToTrackballPosition([[ 0, 0, 1, 0, 0, 1, 0, 0,-1, 0, 0, 0, 0, 0, 0, 1 ], 0.0, 0.0, 0.0, distance]);
-			document.querySelector('#vright').classList.remove("btn-secondary");
-			document.querySelector('#vright').classList.add("btn-primary");
-            break;			
-    }
+
+	let angles = {
+		'front' : [0, 0],
+		'back'  : [180, 0],
+		'top'   : [0, 90],
+		'bottom': [0, -90],
+		'left'  : [-90, 0],
+		'right' : [90, 0]
+	};
+	let axes = {
+		'front' : [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ],
+		'back'  : [-1, 0, 0, 0, 0, 1, 0, 0, 0, 0,-1, 0, 0, 0, 0, 1 ],
+		'top'   : [ 1, 0, 0, 0, 0, 0, 1, 0, 0,-1, 0, 0, 0, 0, 0, 1 ],
+		'bottom': [ 1, 0, 0, 0, 0, 0,-1, 0, 0, 1, 0, 0, 0, 0, 0, 1 ],
+		'left'  : [ 0, 0,-1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1 ],
+		'right' : [ 0, 0, 1, 0, 0, 1, 0, 0,-1, 0, 0, 0, 0, 0, 0, 1 ]
+	}
+
+	if(trackType === "TurntablePanTrackball") {
+		presenter.animateToTrackballPosition([...angles[direction], 0.0, 0.0, 0.0, distance]);
+	} else {
+		presenter.animateToTrackballPosition([...axes[direction], 0.0, 0.0, 0.0, distance]);
+	}
+
+	let div = document.querySelector(`#v${direction}`);
+	div.classList.remove("btn-secondary");
+	div.classList.add("btn-primary");
 }
-
-//-------------------------------------------------------------------------
-
-
-
 
 
 </script>
