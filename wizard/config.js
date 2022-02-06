@@ -1,11 +1,10 @@
 
 
 class Config {
+	static options = default_ariadne;
 	constructor(frame, url) {
 		this.url = url;
 		this.frame = document.querySelector(frame);
-
-		this.options = default_ariadne;
 
 		if(url) {
 			fetch(url, { method: "GET", headers: { "Content-Type": "application/json" } })
@@ -13,11 +12,15 @@ class Config {
 					response.json()
 						.then(data => { 
 							this.options = data; 
-							this.update(); })
+							this.update(); 
+						})
 				});
 		} else
 			this.update();
 	}
+	
+	scene() { return this.options.scene[0]; }
+	tools() { return this.options.tools; }
 
 	update() {}
 
@@ -34,10 +37,32 @@ class Config {
 		this.options[key] = value;
 		this.save();
 	}
+	// special case, lighting OFF and lighting toggle OFF, I must deactivate light direction
+	checkLightning() {
+		let tools = this.options.tools;
+		if( (!this.scene().useLighting) && (!tools.includes("lighting"))) {
+			this.options.tools = tools.filter(t => t != "light");
+			this.update();
+		}
+	}
+
+	setTool(tool, value) {
+		this.options.tools = this.options.tools.filter(t => t != tool);
+		if(value)
+			this.options.tools.push(tool);
+		this.checkLightning();
+		this.save();
+	}
+
+	resetTool(tool) {
+		this.options.tools = this.options.tools.filter(t => t != tool);
+		if(default_ariadne.tools.includes(tool))
+			this.tools().push(tool);
+	}
 
 	save() {
-		var json = JSON.stringify(this.options);
-		var xhr = new XMLHttpRequest();
+		let json = JSON.stringify(this.options);
+		let xhr = new XMLHttpRequest();
 		xhr.open('POST', this.url, true);
 		xhr.setRequestHeader('Content-Type', 'application/json');
 		xhr.send(json);
@@ -57,6 +82,7 @@ class Config {
 		alert("Could not save options: " + error);
 	}
 };
+
 
 var default_ariadne = { 
     "background": {

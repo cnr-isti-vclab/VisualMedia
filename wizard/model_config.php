@@ -286,6 +286,7 @@ function changedStartColor(value){
 	model_config.save();
 	model_config.update();
 }
+
 function changedSolidColor(value){
 	model_config.options.scene[0].solidColor = value;
 	model_config.save();

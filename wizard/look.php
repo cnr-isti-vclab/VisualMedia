@@ -1,20 +1,5 @@
-<!doctype html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<!--BOOTSTRAP STYLE-->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
-<!--STYLE-->
-<link rel="stylesheet" href="stylesheet/style.css">
-
-</head>
-
-<body>
-	<div class="vms_container">
-		<iframe id="media" allowfullscreen allow="fullscreen" style="border-width:0px" class="vms" src="3d.php"></iframe>
-
-		<div class="panel">
-			<p>Skin:</p>
+<div>
+		<p>Skin:</p>
 		<?php foreach(array('dark', 'light', 'minimal_dark', 'minimal_light', 'transparent_dark', 'transparent_light') as $s) {?>
 			<img width="32" class="skins" data-skin="<?=$s?>" src="skins/<?=$s?>/home.png">
 		<?php } ?>
@@ -66,13 +51,9 @@
 			<div class="row no-gutters">
 				<div class="col-6"><button class="btn btn-secondary btn-sm btn-block" name="reset"> Reset everything </button></div>
 			</div>
+</div>
 
-		</div>
 
-	</div>
-</body>
-
-<script src="config.js"></script>
 <script>
 class Look extends Config {
 	constructor(frame, options) {
@@ -178,4 +159,3 @@ let reset = document.querySelector('button[name=reset]');
 reset.addEventListener('click', () => look.reset());
 
 </script>
-</html>
