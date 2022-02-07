@@ -46,7 +46,7 @@ class Config {
 	// special case, lighting OFF and lighting toggle OFF, I must deactivate light direction
 	checkLightning() {
 		let tools = Config.options.tools;
-		if( (!this.scene().useLighting) && (!tools.includes("lighting"))) {
+		if( (!Config.options.space.sceneLighting) && (!tools.includes("lighting"))) {
 			Config.options.tools = tools.filter(t => t != "light");
 			this.update();
 		}

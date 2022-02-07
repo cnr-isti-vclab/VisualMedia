@@ -97,8 +97,7 @@ class LightingConfig extends Config {
 		this.resetTool('lighting');
 		this.resetTool('light');
 
-		this.save();
-		this.update();	
+		this.save();	
 	}
 }
 
