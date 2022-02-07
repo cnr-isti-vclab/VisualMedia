@@ -14,7 +14,7 @@
 		Solid color: <input type="color" id="i_solidcolor" onchange="material_config.setSolidColor(this.value);" value="#aaaaaa">
 		</p>
 		<p class="m-1">
-		<img src="skins/dark/color.png" width="24px"> <input type="checkbox" id="i_toggleColor" onchange="material_config.setTool('color', this.checked);" checked>Add button for toggling texture/solid</input>
+		<img src="skins/dark/color.png" width="24px"> <input type="checkbox" id="i_toggleColor" onchange="material_config.setTool('color', this.checked);" checked>Texture/Solid toggle</input>
 		</p>
 	</div>
 	
@@ -33,10 +33,10 @@
 		</select>
 		</p>
 		<p class="m-1">
-		<img src="skins/dark/lighting.png" width="24px"> <input type="checkbox" id="i_toggleLighting" onchange="lighting_config.setTool('lighting', this.checked);" checked>Add button for toggling lighting</input>
+		<img src="skins/dark/lighting.png" width="24px"> <input type="checkbox" id="i_toggleLighting" onchange="lighting_config.setTool('lighting', this.checked);" checked>Lighting on/off toggle</input>
 		</p class="m-1">
 		<p class="m-1">
-		<img src="skins/dark/light.png" width="24px"> <input type="checkbox" id="i_toggleLight" onchange="lighting_config.setTool('light', this.checked);" checked>Add button for control light direction</input>
+		<img src="skins/dark/light.png" width="24px"> <input type="checkbox" id="i_toggleLight" onchange="lighting_config.setTool('light', this.checked);" checked>Light direction tool</input>
 		</p>					
 	</div>
 <hr/>
