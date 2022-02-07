@@ -28,45 +28,47 @@
 		<table border="0">
 			<tr>
 			<div class="btn-group" role="group">
-				<button class="btn btn-secondary btn-sm" onclick="rotView('y',-90.0);">90</button></td>
-				<button class="btn btn-secondary btn-sm" onclick="rotView('y',-15.0);">15</button></td>
-				<button class="btn btn-secondary btn-sm" onclick="rotView('y', -5.0);">5<img width="20px" src="skins/icons/lf.png"/></button></td>
+				<button class="btn btn-secondary btn-sm" onclick="rotView('y',-90.0);">90</button>
+				<button class="btn btn-secondary btn-sm" onclick="rotView('y',-15.0);">15</button>
+				<button class="btn btn-secondary btn-sm" onclick="rotView('y', -5.0);">5<img width="20px" src="skins/icons/lf.png"/></button>
 			</div>
-			<img width="40px" src="skins/icons/roty.png" title="HORIZONTAL"/>					
+			<img width="50px" src="skins/icons/roty.png" title="HORIZONTAL"/>					
 			<div class="btn-group" role="group">
-				<button class="btn btn-secondary btn-sm" onclick="rotView('y',  5.0);"><img width="20px" src="skins/icons/rt.png"/>5</button></td>
-				<button class="btn btn-secondary btn-sm" onclick="rotView('y', 15.0);">15</button></td>
-				<button class="btn btn-secondary btn-sm" onclick="rotView('y', 90.0);">90</button></td>
+				<button class="btn btn-secondary btn-sm" onclick="rotView('y',  5.0);"><img width="20px" src="skins/icons/rt.png"/>5</button>
+				<button class="btn btn-secondary btn-sm" onclick="rotView('y', 15.0);">15</button>
+				<button class="btn btn-secondary btn-sm" onclick="rotView('y', 90.0);">90</button>
 			</div>					
 			</tr>
 			<tr>
 			<div class="btn-group" role="group">
-				<button class="btn btn-secondary btn-sm" onclick="rotView('x',-90.0);">90</button></td>
-				<button class="btn btn-secondary btn-sm" onclick="rotView('x',-15.0);">15</button></td>
-				<button class="btn btn-secondary btn-sm" onclick="rotView('x', -5.0);">5<img width="20px" src="skins/icons/up.png"/></button></td>
+				<button class="btn btn-secondary btn-sm" onclick="rotView('x',-90.0);">90</button>
+				<button class="btn btn-secondary btn-sm" onclick="rotView('x',-15.0);">15</button>
+				<button class="btn btn-secondary btn-sm" onclick="rotView('x', -5.0);">5<img width="20px" src="skins/icons/up.png"/></button>
 			</div>
-			<img width="40px" src="skins/icons/rotx.png" title="VERTICAL"/>
+			<img width="50px" src="skins/icons/rotx.png" title="VERTICAL"/>
 			<div class="btn-group" role="group">
-				<button class="btn btn-secondary btn-sm" onclick="rotView('x',  5.0);"><img width="20px" src="skins/icons/dn.png"/>5</button></td>
-				<button class="btn btn-secondary btn-sm" onclick="rotView('x', 15.0);">15</button></td>
-				<button class="btn btn-secondary btn-sm" onclick="rotView('x', 90.0);">90</button></td>
+				<button class="btn btn-secondary btn-sm" onclick="rotView('x',  5.0);"><img width="20px" src="skins/icons/dn.png"/>5</button>
+				<button class="btn btn-secondary btn-sm" onclick="rotView('x', 15.0);">15</button>
+				<button class="btn btn-secondary btn-sm" onclick="rotView('x', 90.0);">90</button>
 			</div>
 			</tr>
 			<tr>
 			<div class="btn-group" role="group">
-				<button class="btn btn-secondary btn-sm" onclick="rotView('z', 90.0);">90</button></td>
-				<button class="btn btn-secondary btn-sm" onclick="rotView('z', 15.0);">15</button></td>
-				<button class="btn btn-secondary btn-sm" onclick="rotView('z',  5.0);">5<img width="20px" src="skins/icons/rl.png"/></button></td>
+				<button class="btn btn-secondary btn-sm" onclick="rotView('z', 90.0);">90</button>
+				<button class="btn btn-secondary btn-sm" onclick="rotView('z', 15.0);">15</button>
+				<button class="btn btn-secondary btn-sm" onclick="rotView('z',  5.0);">5<img width="20px" src="skins/icons/rl.png"/></button>
 			</div>
-			<img width="40px" src="skins/icons/rotz.png" title="ROLL"/>
+			<img width="50px" src="skins/icons/rotz.png" title="ROLL"/>
 			<div class="btn-group" role="group">
-				<button class="btn btn-secondary btn-sm" onclick="rotView('z', -5.0);"><img width="20px" src="skins/icons/rr.png"/>5</button></td>
-				<button class="btn btn-secondary btn-sm" onclick="rotView('z',-15.0);">15</button></td>
-				<button class="btn btn-secondary btn-sm" onclick="rotView('z',-90.0);">90</button></td>
+				<button class="btn btn-secondary btn-sm" onclick="rotView('z', -5.0);"><img width="20px" src="skins/icons/rr.png"/>5</button>
+				<button class="btn btn-secondary btn-sm" onclick="rotView('z',-15.0);">15</button>
+				<button class="btn btn-secondary btn-sm" onclick="rotView('z',-90.0);">90</button>
 			</div>
 			</tr>					
 		</table>			
 		</center>
+		
+		<!--
 		</hr>
 		<center>
 		<table border="0">
@@ -93,9 +95,9 @@
 			</tr>
 		</table>			
 		</center>
+		-->
 		
-	
-			
+		</hr>		
 		</div>			
 		<div class="m-1 text-right">
 			<button class="btn btn-sm btn-danger" onclick="model_config.cancelStraightMode();">CANCEL</button>
@@ -163,7 +165,7 @@ class ModelConfig extends Config {
 	}
 
 	endStraightInterface(){
-		document.getElementById("smStart").classList.remove("d-none");
+		document.getElementById("sm_instructions").classList.remove("d-none");
 		document.getElementById("smControls").classList.add("d-none");
 		document.getElementById("viewControls").classList.add("d-none");
 		
@@ -233,11 +235,11 @@ function projectPoint(x, y){
 	let track = presenter.getTrackballPosition();
 
 	// transform to consider current 3dhop trackball view			
-	if(model_config.options.trackball.type === "TurntablePanTrackball"){
+	if(Config.options.trackball.type === "TurntablePanTrackball"){
 		v = SglMat4.mul4(SglMat4.rotationAngleAxis(sglDegToRad(track[1]), [-1.0, 0.0, 0.0]), v);
 		v = SglMat4.mul4(SglMat4.rotationAngleAxis(sglDegToRad(track[0]), [0.0, 1.0, 0.0]), v);		
 
-	} else if (model_config.options.trackball.type === "SphereTrackball"){
+	} else if (Config.options.trackball.type === "SphereTrackball"){
 		v = SglMat4.mul4(SglMat4.inverse(track[0]), v);		
 	}
 	return [v[0],v[1],v[2]];
@@ -257,11 +259,11 @@ function rotView(axis, delta){
 	}
 	
 	// transform to consider current 3dhop trackball view			
-	if(model_config.options.trackball.type === "TurntablePanTrackball"){
+	if(Config.options.trackball.type === "TurntablePanTrackball"){
 		rotAxis = SglMat4.mul4(SglMat4.rotationAngleAxis(sglDegToRad(track[1]), [-1.0, 0.0, 0.0]), rotAxis);
 		rotAxis = SglMat4.mul4(SglMat4.rotationAngleAxis(sglDegToRad(track[0]), [0.0, 1.0, 0.0]), rotAxis);
 	}		
-	else if (model_config.options.trackball.type === "SphereTrackball"){
+	else if (Config.options.trackball.type === "SphereTrackball"){
 		rotAxis = SglMat4.mul4(SglMat4.inverse(track[0]), rotAxis);		
 	}	
 	var rotMat = SglMat4.rotationAngleAxis(sglDegToRad(delta), rotAxis);
@@ -292,7 +294,7 @@ class Reference {
 	}
 
 	show() {
-		let rad = 0.5 / this.presenter.sceneRadiusInv;
+		let rad = 0.6 / this.presenter.sceneRadiusInv;
 		let numDiv = 10;
 
 		let grid = [];
@@ -341,7 +343,6 @@ class Reference {
 			this.presenter.deleteEntity(e);
 	}
 
-
 	update(trackState){
 		if(!this.refgridX) return;
 	
@@ -363,7 +364,7 @@ function viewFrom(direction){
 	let presenter = window.frames[0].presenter; // get current presenter instance
 	let distance = 1.4;
 	
-	let trackType = model_config.options.trackball.type;
+	let trackType = Config.options.trackball.type;
 
 	let angles = {
 		'front' : [0, 0],

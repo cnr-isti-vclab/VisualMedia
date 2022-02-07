@@ -130,7 +130,7 @@ switch($type) {
 <div id="panel_widgets" class="" style="position:absolute; right:0px; top:0; pointer-events: none;">
 	<div id="compass" class="m-2 d-none">
 		<center>
-			<canvas class="mouse" id="compassCanvas" style="background:#555555; width:100; height:100; border:1px solid #000000;" onclick="compassClick()"/>
+			<canvas class="mouse" id="compassCanvas" style="width:100; height:100;" onclick="compassClick()"/>
 		<center>
 	</div>	
 	<div id="cardinalViews" class="m-2 d-none">			
@@ -530,18 +530,24 @@ function updateCompass(angle, tilt) {
     ctx.rotate(angle);
 
 	ctx.beginPath();
-    ctx.arc(0, 0, 45, 0, 2 * Math.PI, false);
+    ctx.arc(0, 0, 35, 0, 2 * Math.PI, false);
     ctx.lineWidth = 4;
-    ctx.strokeStyle = '#443377';
-    ctx.stroke();	
+    ctx.strokeStyle = '#44337766';
+    ctx.stroke();
 	
 	ctx.font = "28px Verdana";
-    ctx.strokeStyle = '#ff4444';	
-	ctx.strokeText("N",-10,-25);
-    ctx.strokeStyle = '#ffffff';	
+	ctx.strokeStyle = 'black';
+    ctx.lineWidth = 1.5;
+	ctx.strokeText("N",-10,-25);	
 	ctx.strokeText("S",-10,45);
 	ctx.strokeText("E",27,10);
 	ctx.strokeText("W",-47,10);	
+    ctx.fillStyle = '#ff4444';
+    ctx.fillText("N",-10,-25);	
+    ctx.fillStyle = '#ffffff';
+	ctx.fillText("S",-10,45);
+	ctx.fillText("E",27,10);
+	ctx.fillText("W",-47,10);	
 	
     // Restore the previous drawing state
     ctx.restore();
