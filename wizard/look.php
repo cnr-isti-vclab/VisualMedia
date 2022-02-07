@@ -40,11 +40,14 @@
 
 		<hr/>
 
-			<h5>Widgets:</h5>
-				<p id="cbl_basegrid"><input type="checkbox" onchange="changedBaseGrid(this.checked);" id="cb_basegrid"> Base Grid</p>
-				<p id="cbl_tracksphere"><input type="checkbox" onchange="changedTrackSphere(this.checked);" id="cb_tracksphere"> Track Sphere</p>
+			<h5>
+			<img class="m-1" width="25px" src="skins/icons/restore.png" title="Reset FOV" onclick="look.resetWidgets();">Widgets:
+			</h5>
+				<p id="cbl_basegrid"><input type="checkbox" onchange="look.changedBaseGrid(this.checked);" id="cb_basegrid"> Base Grid</p>
+				<p id="cbl_tracksphere"><input type="checkbox" onchange="look.changedTrackSphere(this.checked);" id="cb_tracksphere"> Track Sphere</p>
 				</br>
-				<input type="checkbox" onchange="changedCardinalviews(this.checked);" id="cb_cardinalviews"> Cardinal Views</br>
+				<input type="checkbox" onchange="look.changedCardinalviews(this.checked);" id="cb_cardinalviews"> Cardinal Views</br>
+				<p id="cbl_compass"><input type="checkbox" onchange="look.changedCompass(this.checked);" id="cb_compass"> Compass</p></br>
 				
 		<hr/>
 
@@ -92,9 +95,8 @@ class Look extends Config {
 				this.set('tools', this.tools.filter(t => t.checked).map(i => i.value));
 			});
 		}
-
 	}
-
+	
 	update() {
 		let options = Config.options;
 
@@ -112,37 +114,58 @@ class Look extends Config {
 
 		document.getElementById("cb_basegrid").checked = options.widgets.grid.atStartup;
 		document.getElementById("cb_tracksphere").checked = options.widgets.trackSphere.atStartup;
+		document.getElementById("cb_compass").checked = options.widgets.compass.atStartup;
+		
 		// depending on which trackball, show the appropriate widget
 		if(options.trackball.type === "TurntablePanTrackball"){
 			document.getElementById("cbl_basegrid").classList.remove("d-none");
-			document.getElementById("cbl_tracksphere").classList.add("d-none");			
+			document.getElementById("cbl_tracksphere").classList.add("d-none");
+			document.getElementById("cbl_compass").classList.remove("d-none");
 		}
 		if(options.trackball.type === "SphereTrackball"){
 			document.getElementById("cbl_basegrid").classList.add("d-none");			
 			document.getElementById("cbl_tracksphere").classList.remove("d-none");
+			document.getElementById("cbl_compass").classList.add("d-none");
 		}
 		
 		document.getElementById("cb_cardinalviews").checked = options.widgets.cardinalViews.atStartup;	
 	}
+	
 	reset() {
 		super.reset();
 	}
-}
 
-//-------------------------------------------------------
-function changedBaseGrid(value){	
-	Config.options.widgets.grid.atStartup = value;
-	look.save();
-}
+	changedBaseGrid(value){	
+		Config.options.widgets.grid.atStartup = value;
+		this.save();
+	}
+	changedTrackSphere(value){
+		Config.options.widgets.trackSphere.atStartup = value;
+		this.save();
+	}
+	changedCardinalviews(value){	
+		Config.options.widgets.cardinalViews.atStartup = value;
+		this.save();
+	}
+	changedCompass(value){	
+		Config.options.widgets.compass.atStartup = value;
+		this.save();
+	}
 
-function changedTrackSphere(value){
-	Config.options.widgets.trackSphere.atStartup = value;
-	look.save();
-}
-
-function changedCardinalviews(value){	
-	Config.options.widgets.cardinalViews.atStartup = value;
-	look.save();
+	resetWidgets(){
+		if(Config.options.trackball.type === "TurntablePanTrackball"){
+			Config.options.widgets.grid.atStartup = default_ariadne.widgets.grid.atStartup;
+			Config.options.widgets.trackSphere.atStartup = false;		
+		}
+		if(Config.options.trackball.type === "SphereTrackball"){
+			Config.options.widgets.grid.atStartup = false;
+			Config.options.widgets.trackSphere.atStartup = default_ariadne.widgets.trackSphere.atStartup;	
+		}	
+		Config.options.widgets.compass.atStartup = default_ariadne.widgets.compass.atStartup;
+		Config.options.widgets.cardinalViews.atStartup = default_ariadne.widgets.cardinalViews.atStartup;
+		Config.options.widgets.compass.atStartup = default_ariadne.widgets.compass.atStartup;		
+		Config.save();
+	}	
 }
 
 //-------------------------------------------------------

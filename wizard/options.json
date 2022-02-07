@@ -1,6 +1,6 @@
 {
     "background": {
-        "type": "linear",
+        "type": "radial",
         "color0": "#aaaaaa",
         "color1": "#000000",
         "image": "light.jpg"
@@ -8,19 +8,18 @@
     "skin": "light",
     "tools": [
         "home",
+        "light",
         "measure",
         "pick",
         "sections",
-        "color",
         "orthographic",
         "full",
-        "help",
-        "lighting"
+        "help"
     ],
     "space": {
         "centerMode": "scene",
         "radiusMode": "scene",
-        "cameraFOV": "60",
+        "cameraFOV": 60,
         "sceneLighting": true
     },
     "trackball": {
@@ -81,7 +80,7 @@
                 1
             ],
             "startColor": "color",
-            "solidColor": "#aaaaaa",
+            "solidColor": "#80ff00",
             "useLighting": true
         }
     ],
@@ -94,7 +93,10 @@
             "atStartup": false
         },
         "cardinalViews": {
-            "atStartup": true
+            "atStartup": false
+        },
+        "compass": {
+            "atStartup": false
         }
     },
     "bookmark": {

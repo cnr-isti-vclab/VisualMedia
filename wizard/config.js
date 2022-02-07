@@ -143,7 +143,10 @@ var default_ariadne = {
 		},
 		"cardinalViews" : {
 			"atStartup" : true
-		}
+		},
+		"compass" : {
+			"atStartup" : false
+		}		
 	},
 	"bookmark": {
 		"ID": {
