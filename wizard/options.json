@@ -25,30 +25,38 @@
         "sceneLighting": true
     },
     "trackball": {
-        "type": "SphereTrackball",
+        "type": "TurntablePanTrackball",
         "trackOptions": {
-            "startMatrix": [
-                1,
-                0,
-                0,
-                0,
-                0,
-                1,
-                0,
-                0,
-                0,
-                0,
-                1,
-                0,
-                0,
-                0,
-                0,
-                1
-            ],
+            "startPhi": 30,
+            "startTheta": 25,
+            "startDistance": 1.5,
             "startPanX": 0,
             "startPanY": 0,
             "startPanZ": 0,
-            "startDistance": 1.5
+            "minMaxPhi": [
+                -180,
+                180
+            ],
+            "minMaxTheta": [
+                -90,
+                90
+            ],
+            "minMaxDist": [
+                0.1,
+                3
+            ],
+            "minMaxPanX": [
+                -1,
+                1
+            ],
+            "minMaxPanY": [
+                -1,
+                1
+            ],
+            "minMaxPanZ": [
+                -1,
+                1
+            ]
         }
     },
     "scene": [
@@ -64,10 +72,10 @@
     "widgets": {
         "grid": {
             "step": 0,
-            "atStartup": false
+            "atStartup": true
         },
         "trackSphere": {
-            "atStartup": true
+            "atStartup": false
         },
         "cardinalViews": {
             "atStartup": false

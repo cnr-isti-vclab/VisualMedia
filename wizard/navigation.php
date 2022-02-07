@@ -71,6 +71,11 @@ class NavigationConfig extends Config {
 		document.querySelector('#labelFOV').innerHTML = options.space.cameraFOV + "°";
 	}
 
+	reset() {
+		super.reset();
+		this.update();
+	}
+
 	setTurntable(){
 		let trackball = this.options.trackball;
 		if(trackball.type === "TurntablePanTrackball") return;	//ignore if same type
@@ -88,7 +93,6 @@ class NavigationConfig extends Config {
 
 	setSphere() {
 		let trackball = this.options.trackball;
-
 		if(trackball.type === "SphereTrackball") return;	//ignore if same type
 		
 		trackball.type = "SphereTrackball";
@@ -114,7 +118,6 @@ class NavigationConfig extends Config {
 		this.save();
 		this.update();
 	}
-
 
 	resetFOV(){
 		this.options.space.cameraFOV = default_ariadne.space.cameraFOV;
@@ -171,10 +174,7 @@ class NavigationConfig extends Config {
 			this.update();	
 	}
 
-	reset() {
-		super.reset();
-		this.update();
-	}
+
 }
 
 let navigation_config = new NavigationConfig('#media', 'update.php'); 
