@@ -53,10 +53,10 @@
 	<div class="container-fluid" style="padding:0px; margin:0px; display:flex; flex:2;">
 		<iframe id="media" allowfullscreen allow="fullscreen" style="border-width:0px" class="vms" src="3d.php"></iframe>
 		<div class="panel" style="max-height:100%">
-			<div id="alignment" class="active"><? include('alignment.php'); ?></div>
-			<div id="material" class=""><? include('material.php'); ?></div>
-			<div id="navigation" class=""><? include('navigation.php'); ?></div>
-			<div id="interface" class=""><? include('look.php'); ?></div>
+			<div id="alignment" class="active"><?php include('alignment.php'); ?></div>
+			<div id="material" class=""><?php include('material.php'); ?></div>
+			<div id="navigation" class=""><?php include('navigation.php'); ?></div>
+			<div id="interface" class=""><?php include('look.php'); ?></div>
 		</div>
 	</div>
 </div>
