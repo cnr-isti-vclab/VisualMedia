@@ -1,43 +1,43 @@
+<div class="col-12">
+	<h5>Object Manipulation</h5>
+	<p><span id="trackname"></span></p>
+	<div class="d-flex" style="gap:10px">
+		<button style="flex-grow:1; flex-basis:0;" class="btn btn-secondary" id="bt_setTurntable" onclick="navigation_config.setTurntable();">TURNTABLE</button>
+		<button style="flex-grow:1; flex-basis:0;" class="btn btn-secondary" id="bt_setSphere" onclick="navigation_config.setSphere();">SPHERE</button>				
+	</div>
 
-<h5>Object Manipulation</h5>
-<p><span id="trackname"></span></p>
-<div class="d-flex" style="gap:10px">
-	<button style="flex-grow:1; flex-basis:0;" class="btn btn-secondary" id="bt_setTurntable" onclick="navigation_config.setTurntable();">TURNTABLE</button>
-	<button style="flex-grow:1; flex-basis:0;" class="btn btn-secondary" id="bt_setSphere" onclick="navigation_config.setSphere();">SPHERE</button>				
+	<hr/>
+
+	<h5>
+		<img class="restore" title="Reset initial view" src="restore.svg" onclick="navigation_config.resetInitialView();"> Initial View
+	</h5>
+	<button style="width:100%" class="btn btn-secondary btn-sm" onclick="navigation_config.useCurrentView();">Use Current View</button>
+		
+	<hr/>
+
+	<h5>
+		<img class="restore" title="Reset FOV" src="restore.svg" onclick="navigation_config.resetFOV();"> Field of View
+	</h5>
+	<div style="display:flex">
+		<span class="h5 m-1" id="labelFOV">---</span>
+		<input style="flex-grow:1" type="range" min="5" max="85" step="1.0" id="rangeFOV" onInput="updatingFOV(this.value);" onChange="navigation_config.setFOV(this.value);">
+	</div>
+
+
+	<div style="display:flex; gap:7px;">
+		<button style="flex-grow:1; flex-basis:0;" class="btn btn-secondary btn-sm" title="15°" onclick="navigation_config.setFOV(15);">Tele</button>
+		<button style="flex-grow:1; flex-basis:0;" class="btn btn-secondary btn-sm" title="35°" onclick="navigation_config.setFOV(35);">Human</button>
+		<button style="flex-grow:1; flex-basis:0;" class="btn btn-secondary btn-sm" title="80°" onclick="navigation_config.setFOV(80);">FishEye</button>
+	</div>
+
+	<div class="mt-2">
+		<p>Initial projection (perspective/ortho) placeholder.</p>
+		<p><img src="skins/dark/orthographic.png" width="24px"> 
+			<input type="checkbox" id="i_toggleOrtho" onchange="navigation_config.setTool('orthographic', this.checked);" checked>
+			Perspective/Ortho toggle</input>
+		</p>
+	</div>
 </div>
-
-<hr/>
-
-<h5>
-	<img class="restore" title="Reset initial view" src="restore.svg" onclick="navigation_config.resetInitialView();"> Initial View
-</h5>
-<button style="width:100%" class="btn btn-secondary btn-sm" onclick="navigation_config.useCurrentView();">Use Current View</button>
-	
-<hr/>
-
-<h5>
-	<img class="restore" title="Reset FOV" src="restore.svg" onclick="navigation_config.resetFOV();"> Field of View
-</h5>
-<div style="display:flex">
-	<span class="h5 m-1" id="labelFOV">---</span>
-	<input style="flex-grow:1" type="range" min="5" max="85" step="1.0" id="rangeFOV" onInput="updatingFOV(this.value);" onChange="navigation_config.setFOV(this.value);">
-</div>
-
-
-<div style="display:flex; gap:7px;">
-	<button style="flex-grow:1; flex-basis:0;" class="btn btn-secondary btn-sm" title="15°" onclick="navigation_config.setFOV(15);">Tele</button>
-	<button style="flex-grow:1; flex-basis:0;" class="btn btn-secondary btn-sm" title="35°" onclick="navigation_config.setFOV(35);">Human</button>
-	<button style="flex-grow:1; flex-basis:0;" class="btn btn-secondary btn-sm" title="80°" onclick="navigation_config.setFOV(80);">FishEye</button>
-</div>
-
-<div class="mt-2">
-	<p>Initial projection (perspective/ortho) placeholder.</p>
-	<p><img src="skins/dark/orthographic.png" width="24px"> 
-		<input type="checkbox" id="i_toggleOrtho" onchange="navigation_config.setTool('orthographic', this.checked);" checked>
-		Perspective/Ortho toggle</input>
-	</p>
-</div>
-
 
 
 
