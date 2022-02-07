@@ -239,7 +239,6 @@ function setup3dhop() {
 		modelInstances : {
 			"model_1" : { 
 				mesh  : "mesh_1",
-				useLighting : options.scene[0].useLighting,
 				useSolidColor : (options.scene[0].startColor=="color")?false:true,
 				color : hex2color(options.scene[0].solidColor),
 				transform: options.scene[0].matrix? {matrix : options.scene[0].matrix} : null
@@ -264,6 +263,7 @@ function setup3dhop() {
 
 	// start conditions - interface
 	colorSwitch((options.scene[0].startColor=="color")?false:true);
+	lightingSwitch();
 }
 
 function actionsToolbar(action) {

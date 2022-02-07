@@ -129,8 +129,7 @@ var default_ariadne = {
 		"url": "",
 		"matrix": null,
 		"startColor": "color",
-		"solidColor": "#aaaaaa",
-		"useLighting": true
+		"solidColor": "#aaaaaa"
 		}
 	],
 	"widgets": {

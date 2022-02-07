@@ -81,14 +81,13 @@ class LightingConfig extends Config {
 	}
 	update() {
 		//lighting
-		document.querySelector('#i_startlighting').value = this.scene().useLighting;
+		document.querySelector('#i_startlighting').value = Config.options.space.sceneLighting;
 		document.querySelector('#i_toggleLighting').checked = this.tools().includes("lighting");
 		document.querySelector('#i_toggleLight').checked = this.tools().includes("light");
-
 	}
 
 	setStartLighting(value) {
-		this.scene().useLighting = (value == "true");
+		Config.options.space.sceneLighting = (value == "true");
 		this.checkLightning();
 		this.save();
 	}
