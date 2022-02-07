@@ -8,8 +8,8 @@
 	<span id="trackname"></span>
 	<center>
 	<center>
-		<button class="btn btn-primary m-1" onclick="navigation_config.setTurntable();">TURNTABLE</button>
-		<button class="btn btn-primary m-1" onclick="navigation_config.setSphere();">SPHERE</button>				
+		<button class="btn m-1 btn-secondary" id="bt_setTurntable" onclick="navigation_config.setTurntable();">TURNTABLE</button>
+		<button class="btn m-1 btn-secondary" id="bt_setSphere" onclick="navigation_config.setSphere();">SPHERE</button>				
 	</center>
 	</div>	
 
@@ -59,9 +59,15 @@ class NavigationConfig extends Config {
 		// trackball
 		let tname = "error";
 		switch(Config.options.trackball.type) {
-		case "TurntablePanTrackball": tname = "Turntable with Panning";
+		case "TurntablePanTrackball": 
+			tname = "Turntable with Panning";
+			document.getElementById("bt_setTurntable").classList.add("btn-info");
+			document.getElementById("bt_setSphere").classList.remove("btn-info");
 			break;
-		case "SphereTrackball": tname = "Spherical Trackball";
+		case "SphereTrackball": 
+			tname = "Spherical Trackball";
+			document.getElementById("bt_setTurntable").classList.remove("btn-info");
+			document.getElementById("bt_setSphere").classList.add("btn-info");
 			break;
 		}
 		document.querySelector('#trackname').innerHTML = tname;

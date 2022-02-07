@@ -359,7 +359,7 @@ class Reference {
 
 //-------------------------------------------------------------------------
 function viewFrom(direction){
-	document.querySelectorAll('.vbutton').forEach(el => {el.classList.remove('btn-primary'); el.classList.add('btn-secondary');});
+	document.querySelectorAll('.vbutton').forEach(el => {el.classList.remove('btn-info'); el.classList.add('btn-secondary');});
 	
 	let presenter = window.frames[0].presenter; // get current presenter instance
 	let distance = 1.4;
@@ -391,7 +391,7 @@ function viewFrom(direction){
 
 	let div = document.querySelector(`#v${direction}`);
 	div.classList.remove("btn-secondary");
-	div.classList.add("btn-primary");
+	div.classList.add("btn-info");
 }
 
 
