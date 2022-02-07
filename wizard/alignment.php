@@ -1,6 +1,6 @@
-		<div id="viewControls" class="border d-none" style="position:absolute; right:400px; top:10;">
-			<h5>View Scene From:</h5>			
+		<div id="viewControls" class="border d-none p-2" style="position:absolute; right:400px; top:10;">
 			<center>
+			<h5>View Scene From:</h5>			
 			<table>
 			<tr><td></td><td><button id="vtop" class="btn btn-sm btn-secondary w-100 vbutton" onclick="viewFrom('top');">ABOVE</button></td><td></td><td></td></tr>
 			<tr><td><button class="btn btn-sm btn-secondary w-100 vbutton" id="vleft" onclick="viewFrom('left');">LEFT</button></td><td><button class="btn btn-sm btn-secondary w-100 vbutton" id="vfront" onclick="viewFrom('front');">FRONT</button></td><td><button class="btn btn-sm btn-secondary w-100 vbutton" id="vright" onclick="viewFrom('right');">RIGHT</button></td><td><button class="btn btn-sm btn-secondary w-100 vbutton" id="vback" onclick="viewFrom('back');">BACK</button></td></tr>
@@ -13,13 +13,14 @@
 	<h5>
 	<img class="m-1" width="25px" src="skins/icons/restore.png" onclick="model_config.resetOrientation();"> Model Orientation
 	</h5>			
-	
-	<button class="btn btn-secondary btn-block" id="smStart" onclick="model_config.startStraightMode()">Straighten your model</button>
+	<div id="sm_instructions">
+		<p>This is how the viewer will look and navigate. If the model is not in the correct orientation, you can re-orient it using this button:</p>	
+		<button class="btn btn-secondary btn-block" id="smStart" onclick="model_config.startStraightMode()">Straighten your model</button>
+	</div>
 	<div class="border d-none" id="smControls">
 		<div class="m-1">
-		Select a view using the buttons.</br>
-		Orient the model to match the chosen view by clicking and dragging in the 3D panel or by using the buttons below.</br>
-		Apply when satisfied; Cancel to revert changes. Reset to inital pose removes all transformations, and returns to the original pose in the 3D file.
+		<p>Select a view using the buttons: you'll see how the scene will look from that direction.</br>
+		Orient the model to match the chosen view by clicking and dragging in the 3D panel or by using the buttons below.</p>
 		</div>
 		<div class="m-1">
 		
@@ -123,7 +124,7 @@ class ModelConfig extends Config {
 		frame.document.getElementById("toolbar").classList.add("d-none");
 		frame.document.getElementById("panel_widgets").classList.add("d-none");
 		
-		document.getElementById("smStart").classList.add("d-none");
+		document.getElementById("sm_instructions").classList.add("d-none");
 		document.getElementById("smControls").classList.remove("d-none");
 		document.getElementById("viewControls").classList.remove("d-none");
 		presenter.setCameraOrthographic();
@@ -291,7 +292,7 @@ class Reference {
 	}
 
 	show() {
-		let rad = 0.6 / this.presenter.sceneRadiusInv;
+		let rad = 0.5 / this.presenter.sceneRadiusInv;
 		let numDiv = 10;
 
 		let grid = [];
