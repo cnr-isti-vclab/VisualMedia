@@ -47,6 +47,11 @@ switch($type) {
 }
 ?>
 }
+
+.mouse {
+	pointer-events: auto;
+}
+
 </style>
 
 </head>
@@ -122,16 +127,22 @@ switch($type) {
  </div>
 <!-- INFO -->
 
-		<div id="cardinalViews" class="d-none" style="position:absolute; right:10px; top:10;">			
-			<center>
-			<table>
-			<tr><td></td><td><button id="vtop" class="btn btn-sm btn-secondary w-100" onclick="viewFrom('top');">ABOVE</button></td><td></td><td></td></tr>
-			<tr><td><button class="btn btn-sm btn-secondary w-100" id="vleft" onclick="viewFrom('left');">LEFT</button></td><td><button class="btn btn-sm btn-secondary w-100" id="vfront" onclick="viewFrom('front');">FRONT</button></td><td><button class="btn btn-sm btn-secondary w-100" id="vright" onclick="viewFrom('right');">RIGHT</button></td><td><button class="btn btn-sm btn-secondary w-100" id="vback" onclick="viewFrom('back');">BACK</button></td></tr>
-			<tr><td></td><td><button class="btn btn-sm btn-secondary w-100" id="vbottom" onclick="viewFrom('bottom');">BELOW</button></td><td></td><td></td></tr> 
-			</table>
-			</center>
-		</div>
-
+<div id="panel_widgets" class="" style="position:absolute; right:0px; top:0; pointer-events: none;">
+	<div id="compass" class="m-2 d-none">
+		<center>
+			<canvas class="mouse" id="compassCanvas" style="background:#555555; width:100; height:100; border:1px solid #000000;" onclick="compassClick()"/>
+		<center>
+	</div>	
+	<div id="cardinalViews" class="m-2 d-none">			
+		<center>
+		<table>
+		<tr><td></td><td><button id="vtop" class="btn btn-sm btn-secondary w-100 mouse" onclick="viewFrom('top');">ABOVE</button></td><td></td><td></td></tr>
+		<tr><td><button class="btn btn-sm btn-secondary w-100 mouse" id="vleft" onclick="viewFrom('left');">LEFT</button></td><td><button class="btn btn-sm btn-secondary w-100 mouse" id="vfront" onclick="viewFrom('front');">FRONT</button></td><td><button class="btn btn-sm btn-secondary w-100 mouse" id="vright" onclick="viewFrom('right');">RIGHT</button></td><td><button class="btn btn-sm btn-secondary w-100 mouse" id="vback" onclick="viewFrom('back');">BACK</button></td></tr>
+		<tr><td></td><td><button class="btn btn-sm btn-secondary w-100 mouse" id="vbottom" onclick="viewFrom('bottom');">BELOW</button></td><td></td><td></td></tr> 
+		</table>
+		</center>
+	</div>
+</div>
  <canvas id="draw-canvas"></canvas>
 </div>
 </body>
@@ -494,6 +505,63 @@ function viewFrom(direction){
 
 //-------------------------------------------------------------------------
 
+// COMPASS
+function onTrackballUpdate(trackState){
+	
+	if(options.widgets.compass.atStartup)
+		updateCompass(sglDegToRad(trackState[0]), sglDegToRad(trackState[1]));
+}
+function updateCompass(angle, tilt) {
+	$('#compassCanvas').attr('width', 100);
+	$('#compassCanvas').attr('height',100);
+ 	var canv = document.getElementById("compassCanvas");
+	var ctx = canv.getContext("2d");
+	var hh = canv.height;
+	var ww = canv.width;
+		
+	ctx.clearRect(0, 0, canv.width, canv.height);	
+    // Save the current drawing state
+    ctx.save();
+ 
+    // Now move across and down half the
+    ctx.translate(ww/2.0, hh/2.0);
+ 
+    // Rotate around this point
+    ctx.rotate(angle);
+
+	ctx.beginPath();
+    ctx.arc(0, 0, 45, 0, 2 * Math.PI, false);
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = '#443377';
+    ctx.stroke();	
+	
+	ctx.font = "28px Verdana";
+    ctx.strokeStyle = '#ff4444';	
+	ctx.strokeText("N",-10,-25);
+    ctx.strokeStyle = '#ffffff';	
+	ctx.strokeText("S",-10,45);
+	ctx.strokeText("E",27,10);
+	ctx.strokeText("W",-47,10);	
+	
+    // Restore the previous drawing state
+    ctx.restore();
+}
+function compassClick(){
+	var dirX = (event.offsetX - (event.srcElement.width / 2.0)) / event.srcElement.width;
+	var dirY = (event.offsetY - (event.srcElement.height / 2.0)) / event.srcElement.height;
+	var len = Math.sqrt((dirX * dirX) + (dirY * dirY));
+	dirX = dirX / len;
+	dirY = dirY / len;
+	var targetA = sglRadToDeg(Math.atan2(dirX, dirY));
+	var currpos = presenter.getTrackballPosition();
+	targetA = currpos[0] + targetA;
+	targetA = targetA < 0 ? ((targetA % 360) + 360) : (targetA % 360);
+	targetA = Math.floor((targetA + 45) / 90.0) * 90.0;
+	currpos[0] = targetA
+	presenter.animateToTrackballPosition(currpos);
+}
+
+
 // HELPERS-------------------------
 
 function hex2color(hex){
@@ -517,6 +585,8 @@ $(document).ready(function(){
 		
 	if(options.widgets.cardinalViews.atStartup)
 		document.getElementById("cardinalViews").classList.remove("d-none");
+	if(options.widgets.compass.atStartup)
+		document.getElementById("compass").classList.remove("d-none");
 });
 </script>
 </html>

@@ -40,11 +40,14 @@
 
 		<hr/>
 
-			<h5>Widgets:</h5>
+			<h5>
+			<img class="m-1" width="25px" src="skins/icons/restore.png" title="Reset FOV" onclick="resetWidgets();">Widgets:
+			</h5>
 				<p id="cbl_basegrid"><input type="checkbox" onchange="changedBaseGrid(this.checked);" id="cb_basegrid"> Base Grid</p>
 				<p id="cbl_tracksphere"><input type="checkbox" onchange="changedTrackSphere(this.checked);" id="cb_tracksphere"> Track Sphere</p>
 				</br>
 				<input type="checkbox" onchange="changedCardinalviews(this.checked);" id="cb_cardinalviews"> Cardinal Views</br>
+				<input type="checkbox" onchange="changedCompass(this.checked);" id="cb_compass"> Compass</br>
 				
 		<hr/>
 
@@ -114,14 +117,18 @@ class Look extends Config {
 
 		document.getElementById("cb_basegrid").checked = options.widgets.grid.atStartup;
 		document.getElementById("cb_tracksphere").checked = options.widgets.trackSphere.atStartup;
+		document.getElementById("cb_compass").checked = options.widgets.compass.atStartup;
+		
 		// depending on which trackball, show the appropriate widget
 		if(options.trackball.type === "TurntablePanTrackball"){
 			document.getElementById("cbl_basegrid").classList.remove("d-none");
-			document.getElementById("cbl_tracksphere").classList.add("d-none");			
+			document.getElementById("cbl_tracksphere").classList.add("d-none");
+			document.getElementById("cb_compass").classList.remove("d-none");
 		}
 		if(options.trackball.type === "SphereTrackball"){
 			document.getElementById("cbl_basegrid").classList.add("d-none");			
 			document.getElementById("cbl_tracksphere").classList.remove("d-none");
+			document.getElementById("cb_compass").classList.add("d-none");
 		}
 		
 		document.getElementById("cb_cardinalviews").checked = options.widgets.cardinalViews.atStartup;	
@@ -143,11 +150,33 @@ function changedTrackSphere(value){
 	look.save();
 	look.update();
 }
-
 function changedCardinalviews(value){	
 	look.options.widgets.cardinalViews.atStartup = value;
 	look.save();
 	look.update();
+}
+function changedCompass(value){	
+	look.options.widgets.compass.atStartup = value;
+	look.save();
+	look.update();
+}
+
+function resetWidgets(){
+	
+	if(look.options.trackball.type === "TurntablePanTrackball"){
+		look.options.widgets.grid.atStartup = default_ariadne.widgets.grid.atStartup;
+		look.options.widgets.trackSphere.atStartup = false;		
+	}
+	if(look.options.trackball.type === "SphereTrackball"){
+		look.options.widgets.grid.atStartup = false;
+		look.options.widgets.trackSphere.atStartup = default_ariadne.widgets.trackSphere.atStartup;	
+	}	
+	
+	look.options.widgets.compass.atStartup = default_ariadne.widgets.compass.atStartup;
+	
+	look.options.widgets.cardinalViews.atStartup = default_ariadne.widgets.cardinalViews.atStartup;
+	look.save();
+	look.update();	
 }
 
 //-------------------------------------------------------

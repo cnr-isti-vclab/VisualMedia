@@ -103,6 +103,7 @@ class NavigationConfig extends Config {
 		// enabling/disabling visual components
 		this.options.widgets.grid.atStartup = false;
 		this.options.widgets.trackSphere.atStartup = true;
+		this.options.widgets.compass.atStartup = false;
 		
 		this.save();
 		this.update();

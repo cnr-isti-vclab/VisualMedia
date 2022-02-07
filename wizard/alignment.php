@@ -1,4 +1,4 @@
-		<div id="viewControls" class="d-none" style="position:absolute; right:400px; bottom:0;">
+		<div id="viewControls" class="border d-none" style="position:absolute; right:400px; top:10;">
 			<h5>View Scene From:</h5>			
 			<center>
 			<table>
@@ -120,7 +120,9 @@ class ModelConfig extends Config {
 	startStraightMode(){
 		let frame = window.frames[0];
 		presenter = frame.presenter; // get current presenter instance
-		frame.document.getElementById("toolbar").classList.add("d-none");	
+		frame.document.getElementById("toolbar").classList.add("d-none");
+		frame.document.getElementById("panel_widgets").classList.add("d-none");
+		
 		document.getElementById("smStart").classList.add("d-none");
 		document.getElementById("smControls").classList.remove("d-none");
 		document.getElementById("viewControls").classList.remove("d-none");
@@ -190,7 +192,6 @@ var presenter = null;	// current presenter instance from iframe
 
 //-------------------------------------------------------------------------
 // mini sphere-trackball 
-
 var trackV1, trackV2;
 
 function onDown(e){
@@ -292,7 +293,7 @@ class Reference {
 	}
 
 	show() {
-		let rad = 0.3 / this.presenter.sceneRadiusInv;
+		let rad = 0.6 / this.presenter.sceneRadiusInv;
 		let numDiv = 10;
 
 		let grid = [];

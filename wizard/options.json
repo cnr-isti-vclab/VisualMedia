@@ -8,10 +8,12 @@
     "skin": "light",
     "tools": [
         "home",
-        "color",
+        "lighting",
+        "light",
         "measure",
         "pick",
         "sections",
+        "color",
         "orthographic",
         "full",
         "help"
@@ -19,42 +21,34 @@
     "space": {
         "centerMode": "scene",
         "radiusMode": "scene",
-        "cameraFOV": 35,
+        "cameraFOV": 60,
         "sceneLighting": true
     },
     "trackball": {
-        "type": "TurntablePanTrackball",
+        "type": "SphereTrackball",
         "trackOptions": {
-            "startPhi": 30,
-            "startTheta": 25,
-            "startDistance": 1.5,
+            "startMatrix": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
             "startPanX": 0,
             "startPanY": 0,
             "startPanZ": 0,
-            "minMaxPhi": [
-                -180,
-                180
-            ],
-            "minMaxTheta": [
-                -90,
-                90
-            ],
-            "minMaxDist": [
-                0.1,
-                3
-            ],
-            "minMaxPanX": [
-                -1,
-                1
-            ],
-            "minMaxPanY": [
-                -1,
-                1
-            ],
-            "minMaxPanZ": [
-                -1,
-                1
-            ]
+            "startDistance": 1.5
         }
     },
     "scene": [
@@ -63,20 +57,23 @@
             "url": "",
             "matrix": null,
             "startColor": "color",
-            "solidColor": "#aaaaaa",
+            "solidColor": "#80ff00",
             "useLighting": true
         }
     ],
     "widgets": {
         "grid": {
             "step": 0,
-            "atStartup": true
-        },
-        "trackSphere": {
             "atStartup": false
         },
-        "cardinalViews": {
+        "trackSphere": {
             "atStartup": true
+        },
+        "cardinalViews": {
+            "atStartup": false
+        },
+        "compass": {
+            "atStartup": false
         }
     },
     "bookmark": {
