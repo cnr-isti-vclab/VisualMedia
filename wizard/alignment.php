@@ -11,7 +11,8 @@
 
 <div id="straightening_panel">
 	<h5>
-	<img class="m-1" width="25px" src="skins/icons/restore.png" onclick="model_config.resetOrientation();"> Model Orientation
+	<img class="restore" title="Reset model orientation" src="restore.svg" onclick="model_config.resetOrientation();">
+	 Model Orientation
 	</h5>			
 	<div id="sm_instructions">
 		<p>This is how the viewer will look and navigate. If the model is not in the correct orientation, you can re-orient it using this button:</p>	
@@ -185,7 +186,7 @@ class ModelConfig extends Config {
 
 }
 
-let model_config = new ModelConfig('#media', 'update.php'); 
+let model_config = new ModelConfig(); 
 
 var presenter = null;	// current presenter instance from iframe
 

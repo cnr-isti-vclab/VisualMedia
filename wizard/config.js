@@ -3,26 +3,30 @@
 class Config {
 	static options = null;
 	static children = [];
+	static url = null;
+	static frame = null;
 
 	constructor(frame, url) {
 		Config.children.push(this);
 		if(!Config.options)
 			Config.options = JSON.parse(JSON.stringify(default_ariadne));
 
-		this.url = url;
-		this.frame = document.querySelector(frame);
-		if(url) {
-			fetch(url, { method: "GET", headers: { "Content-Type": "application/json" } })
-				.then(response => {
-					response.json()
-						.then(data => { 
-							Config.options = data; 
-							this.update(); 
-						})
-				});
-		} else {
-			this.update();
-		}
+		if(url)
+			Config.url = url;
+		if(frame)
+			Config.frame = frame;
+		if(typeof(Config.frame) == 'string')
+			Config.frame = document.querySelector(Config.frame);
+
+
+		fetch(Config.url, { method: "GET", headers: { "Content-Type": "application/json" } })
+		.then(response => {
+				response.json()
+			.then(data => { 
+				Config.options = data; 
+				this.update(); 
+			})
+		});
 	}
 	
 	scene() { return Config.options.scene[0]; }
@@ -30,13 +34,13 @@ class Config {
 
 	update() {}
 
-	refresh() {
-		this.frame.contentWindow.location.reload();
+	static refresh() {
+		Config.frame.contentWindow.location.reload();
 	}
 
-	reset() {
+	static reset() {
 		Config.options = JSON.parse(JSON.stringify(default_ariadne));
-		this.save();
+		Config.saveOptions();
 	}
 	
 	set(key, value) {
@@ -66,21 +70,27 @@ class Config {
 			this.tools().push(tool);
 	}
 
+	
 	save() {
+		Config.saveOptions();
+	}
+
+	static saveOptions() {
 		for(let child of Config.children)
 			child.update();
 		let json = JSON.stringify(Config.options);
 		let xhr = new XMLHttpRequest();
-		xhr.open('POST', this.url, true);
+		xhr.open('POST', Config.url, true);
 		xhr.setRequestHeader('Content-Type', 'application/json');
 		xhr.send(json);
 
 		xhr.onreadystatechange = (event) => {
 			if (xhr.readyState === 4) {
 				if (xhr.status === 200) {
-					this.refresh();
+					Config.refresh();
 				} else {
-					this.onError(xhr.statusText);
+					if(this.onError)
+						this.onError(xhr.statusText);
 				}
 			}
 		};

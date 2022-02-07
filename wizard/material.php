@@ -1,46 +1,53 @@
-<h5>
-	<img class="m-1" width="25px" src="skins/icons/restore.png" title="Reset Color Options" onclick="material_config.reset();">
-	Color:
+<div class="col-12">
+	<h5>
+		<img class="restore" title="Reset colors options to default" src="restore.svg" onclick="material_config.reset();"> Color
 	</h5>
-	<div class="">
-		<p class="m-1">
-		Start color: 
-		<select id="i_startcolor" onchange="material_config.setStartColor(this.value);">
+
+	<div class="row">
+		<p class="col-6">Initial color: </p>
+		<div class="col-6 mb-1">
+			<select id="i_startcolor" class="form-control  form-control-sm" onchange="material_config.setStartColor(this.value);">
 				<option value="color">Texture</option>
 				<option value="solid">Solid color</option>
-		</select>
-		</p>
-		<p class="m-1">
-		Solid color: <input type="color" id="i_solidcolor" onchange="material_config.setSolidColor(this.value);" value="#aaaaaa">
-		</p>
-		<p class="m-1">
-		<img src="skins/dark/color.png" width="24px"> <input type="checkbox" id="i_toggleColor" onchange="material_config.setTool('color', this.checked);" checked>Texture/Solid toggle</input>
+			</select>
+		</div>
+
+		<p class="col-6">Solid color:</p>
+		<p class="col-6"><input type="color" id="i_solidcolor" onchange="material_config.setSolidColor(this.value);" value="#aaaaaa"></p>
+		<p class="col-12">
+			<img src="skins/dark/color.png" width="24px"> <input type="checkbox" id="i_toggleColor" onchange="material_config.setTool('color', this.checked);" checked> Texture/Solid toggle</input>
 		</p>
 	</div>
-	
-<hr/>
+
+	<hr/>
 
 	<h5>
-	<img class="m-1" width="25px" src="skins/icons/restore.png" title="Reset Lighting Options" onclick="lighting_config.reset();">
-	Lighting:
+		<img class="restore" title="Reset lighting options to default" src="restore.svg" onclick="lighting_config.reset();"> Lighting:
 	</h5>
-	<div class="">
-		<p class="m-1">
-		Start lighting: 
-		<select id="i_startlighting" onchange="lighting_config.setStartLighting(this.value);">
-				<option value="true">enabled</option>
-				<option value="false">disabled</option>
-		</select>
-		</p>
-		<p class="m-1">
-		<img src="skins/dark/lighting.png" width="24px"> <input type="checkbox" id="i_toggleLighting" onchange="lighting_config.setTool('lighting', this.checked);" checked>Lighting on/off toggle</input>
-		</p class="m-1">
-		<p class="m-1">
-		<img src="skins/dark/light.png" width="24px"> <input type="checkbox" id="i_toggleLight" onchange="lighting_config.setTool('light', this.checked);" checked>Light direction tool</input>
-		</p>					
+	<div class="row">
+		<p class="col-6">Initial lighting:</p>
+		<div class="col-6">
+			<select id="i_startlighting"  class="form-control  form-control-sm"  onchange="lighting_config.setStartLighting(this.value);">
+				<option value="true">Enabled</option>
+				<option value="false">Disabled</option>
+			</select>
+		</div>
 	</div>
-<hr/>
 
+	<div class="row mt-3">
+		<p class="col-12"">
+			<img src="skins/dark/lighting.png" width="24px"> <input type="checkbox" id="i_toggleLighting" onchange="lighting_config.setTool('lighting', this.checked);" checked> Add button for toggling lighting</input>
+		</p>
+
+		<p class="col-12">
+		<img src="skins/dark/lighting.png" width="24px"> <input type="checkbox" id="i_toggleLighting" onchange="lighting_config.setTool('lighting', this.checked);" checked>Lighting on/off toggle</input>
+		</p>
+
+		<p class="col-12">
+		<img src="skins/dark/light.png" width="24px"> <input type="checkbox" id="i_toggleLight" onchange="lighting_config.setTool('light', this.checked);" checked>Light direction tool</input>
+		</p>
+	</div>
+</div>
 <script>
 
 class MaterialConfig extends Config {
@@ -71,7 +78,7 @@ class MaterialConfig extends Config {
 	}
 }
 
-let material_config = new MaterialConfig('#media', 'update.php');
+let material_config = new MaterialConfig();
 
 
 
@@ -100,6 +107,6 @@ class LightingConfig extends Config {
 	}
 }
 
-let lighting_config = new LightingConfig('#media', 'update.php');
+let lighting_config = new LightingConfig();
 
 </script>

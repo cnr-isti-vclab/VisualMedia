@@ -1,25 +1,26 @@
 {
     "background": {
         "type": "radial",
-        "color0": "#aaaaaa",
+        "color0": "#e65151",
         "color1": "#000000",
         "image": "light.jpg"
     },
-    "skin": "light",
+    "skin": "minimal_light",
     "tools": [
         "home",
-        "light",
         "measure",
         "pick",
         "sections",
         "orthographic",
         "full",
-        "help"
+        "help",
+        "color",
+        "light"
     ],
     "space": {
         "centerMode": "scene",
         "radiusMode": "scene",
-        "cameraFOV": 60,
+        "cameraFOV": 35,
         "sceneLighting": true
     },
     "trackball": {
@@ -62,17 +63,17 @@
             "id": "mesh",
             "url": "",
             "matrix": [
-                -1.8369701987210297e-16,
+                1,
+                0,
+                0,
+                0,
                 0,
                 1,
                 0,
-                1,
-                6.123233995736766e-17,
-                1.8369701987210297e-16,
                 0,
-                -6.123233995736766e-17,
+                0,
+                0,
                 1,
-                -1.1248198369963932e-32,
                 0,
                 0,
                 0,
@@ -80,7 +81,7 @@
                 1
             ],
             "startColor": "color",
-            "solidColor": "#80ff00",
+            "solidColor": "#aaaaaa",
             "useLighting": true
         }
     ],

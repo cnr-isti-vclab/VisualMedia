@@ -32,6 +32,11 @@
 }
 
 </style>
+<script>
+//needed before initializing the various panels.
+	Config.url = "update.php";
+	Config.frame = "#media";
+</script>
 </head>
 
 <body>
@@ -52,22 +57,25 @@
 	</ul>
 	<div class="container-fluid" style="padding:0px; margin:0px; display:flex; flex:2;">
 		<iframe id="media" allowfullscreen allow="fullscreen" style="border-width:0px" class="vms" src="3d.php"></iframe>
-		<div class="panel" style="max-height:100%">
+		<div class="panel" style="display:flex; justify-content:space-between; flex-direction:column;">
 			<div id="alignment" class="active"><?php include('alignment.php'); ?></div>
 			<div id="material" class=""><?php include('material.php'); ?></div>
 			<div id="navigation" class=""><?php include('navigation.php'); ?></div>
 			<div id="interface" class=""><?php include('look.php'); ?></div>
+
+			<div class="active" style="padding:15px">
+				<button class="btn btn-secondary btn-sm btn-block" name="reset"> Reset everything </button>
+			</div>
 		</div>
 	</div>
 </div>
 </body>
 
-
 <script>
 wizardStep(window.location.hash);
 function wizardStep(step) {
 	step = step.substring(1); //remove #
-	for( let div of document.querySelectorAll('.panel > div'))
+	for( let div of document.querySelectorAll('#alignment, #material, #navigation, #interface'))
 		div.classList.toggle('active', div.id == step);
 }
 
@@ -75,5 +83,12 @@ window.addEventListener('hashchange', function(e) {
 	let newHash = (new URL(e.newURL)).hash;
 	wizardStep(newHash);	
 	e.preventDefault();
-})
+});
+
+let reset = document.querySelector('button[name=reset]');
+reset.addEventListener('click', () => {
+	let reset = confirm("Everything, alignment, material, navigation etc. will be reset to defaults. Are you sure?");
+	if(reset)
+		Config.reset()
+});
 </script>
