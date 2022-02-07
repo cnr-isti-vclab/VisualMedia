@@ -126,7 +126,6 @@ class ModelConfig extends Config {
 		document.getElementById("viewControls").classList.remove("d-none");
 		presenter.setCameraOrthographic();
 
-
 		this.reference = new Reference(presenter);
 
 		frame.onTrackballUpdate = () => this.reference.update();
@@ -146,13 +145,12 @@ class ModelConfig extends Config {
 	reset() {
 		cancelStraightMode();
 		super.reset();
-		this.update();
 	}
 
 	applyStraightMode(){
 		this.endStraightInterface();	
 		let newmatrix = window.frames[0].presenter._scene.modelInstances["model_1"].transform.matrix;
-		model_config.options.scene[0].matrix = newmatrix;
+		Config.options.scene[0].matrix = newmatrix;
 		model_config.save();	
 	}
 
@@ -174,7 +172,7 @@ class ModelConfig extends Config {
 	resetOrientation(){
 		this.endStraightInterface();	
 		let newmatrix = SglMat4.identity();
-		this.options.scene[0].matrix = newmatrix;
+		Config.options.scene[0].matrix = newmatrix;
 		this.save();
 	}
 

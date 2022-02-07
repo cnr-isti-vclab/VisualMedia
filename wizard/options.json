@@ -8,18 +8,19 @@
     "skin": "light",
     "tools": [
         "home",
-        "color",
         "measure",
         "pick",
         "sections",
+        "color",
         "orthographic",
         "full",
-        "help"
+        "help",
+        "lighting"
     ],
     "space": {
         "centerMode": "scene",
         "radiusMode": "scene",
-        "cameraFOV": 35,
+        "cameraFOV": "60",
         "sceneLighting": true
     },
     "trackball": {
@@ -61,7 +62,24 @@
         {
             "id": "mesh",
             "url": "",
-            "matrix": null,
+            "matrix": [
+                -1.8369701987210297e-16,
+                0,
+                1,
+                0,
+                1,
+                6.123233995736766e-17,
+                1.8369701987210297e-16,
+                0,
+                -6.123233995736766e-17,
+                1,
+                -1.1248198369963932e-32,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
             "startColor": "color",
             "solidColor": "#aaaaaa",
             "useLighting": true

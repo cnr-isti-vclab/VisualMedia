@@ -54,40 +54,40 @@ class NavigationConfig extends Config {
 	}
 
 	update() {
-		let options = this.options;
+		let options = Config.options;
 		
 		// trackball
 		let tname = "error";
-		switch(options.trackball.type) {
-        case "TurntablePanTrackball": tname = "Turntable with Panning";
-            break;
-        case "SphereTrackball": tname = "Spherical Trackball";
-            break;
+		switch(Config.options.trackball.type) {
+		case "TurntablePanTrackball": tname = "Turntable with Panning";
+			break;
+		case "SphereTrackball": tname = "Spherical Trackball";
+			break;
 		}
 		document.querySelector('#trackname').innerHTML = tname;
 		
 		//fov
-		document.querySelector('#rangeFOV').value = options.space.cameraFOV;
-		document.querySelector('#labelFOV').innerHTML = options.space.cameraFOV + "°";
+		document.querySelector('#rangeFOV').value = Config.options.space.cameraFOV;
+		document.querySelector('#labelFOV').innerHTML = Config.options.space.cameraFOV + "°";
 	}
 
 	setTurntable(){
-		let trackball = this.options.trackball;
+		let trackball = Config.options.trackball;
 		if(trackball.type === "TurntablePanTrackball") return;	//ignore if same type
 		
 		trackball.type = "TurntablePanTrackball"
 		trackball.trackOptions = default_ariadne.trackball.trackOptions;
 		
 		// enabling/disabling visual components
-		this.options.widgets.grid.atStartup = true;
-		this.options.widgets.trackSphere.atStartup = false;
+		Config.options.widgets.grid.atStartup = true;
+		Config.options.widgets.trackSphere.atStartup = false;
 		
 		this.save();
 		this.update();
 	}
 
 	setSphere() {
-		let trackball = this.options.trackball;
+		let trackball = Config.options.trackball;
 
 		if(trackball.type === "SphereTrackball") return;	//ignore if same type
 		
@@ -101,29 +101,26 @@ class NavigationConfig extends Config {
 		};
 
 		// enabling/disabling visual components
-		this.options.widgets.grid.atStartup = false;
-		this.options.widgets.trackSphere.atStartup = true;
+		Config.options.widgets.grid.atStartup = false;
+		Config.options.widgets.trackSphere.atStartup = true;
 		
 		this.save();
-		this.update();
 	}
 
 	setFOV(newVal){
-		this.options.space.cameraFOV = newVal;
+		Config.options.space.cameraFOV = newVal;
 		this.save();
-		this.update();
 	}
 
 
 	resetFOV(){
-		this.options.space.cameraFOV = default_ariadne.space.cameraFOV;
+		Config.options.space.cameraFOV = default_ariadne.space.cameraFOV;
 		this.save();
-		this.update();
 	}
 
 	useCurrentView() {
 		var track = window.frames[0].presenter.getTrackballPosition();
-		let trackball = this.options.trackball;
+		let trackball = Config.options.trackball;
 		let trackOptions = trackball.trackOptions;
 	
 		if(trackball.type === "TurntablePanTrackball") {
@@ -150,8 +147,8 @@ class NavigationConfig extends Config {
 	}
 
 	resetInitialView() {
-			let trackball = this.options.trackball;
-			let  trackOptions = trackball.trackOptions;
+			let trackball = Config.options.trackball;
+			let trackOptions = trackball.trackOptions;
 
 		if(trackball.type === "TurntablePanTrackball") {
 			const { startPhi, startTheta, startPanX, startPanY, startPanZ, startDistance } = default_ariadne.trackball.trackOptions;
@@ -172,7 +169,6 @@ class NavigationConfig extends Config {
 
 	reset() {
 		super.reset();
-		this.update();
 	}
 }
 

@@ -69,14 +69,14 @@ class Look extends Config {
 		for(let type of this.types) 
 			type.addEventListener('change', () => {
 				if(type.checked) {
-					this.options.background.type = type.value;
+					Config.options.background.type = type.value;
 					this.save();
 				}
 			});
 
 		for(let property of ['image', 'color0', 'color1']) {
 			this[property].addEventListener('change', () => {
-				this.options.background[property] = this[property].value;
+				Config.options.background[property] = this[property].value;
 				this.save();
 			});
 		}
@@ -96,7 +96,7 @@ class Look extends Config {
 	}
 
 	update() {
-		let options = this.options;
+		let options = Config.options;
 
 		let background = options.background || 'flat';
 		let type = background.type;
@@ -107,10 +107,8 @@ class Look extends Config {
 		this.color0.value = background.color0;
 		this.color1.value = background.color1;
 
-		for(let tool of this.tools) {
-			if(options.tools.includes(tool.value))
-				tool.checked = true;
-		}
+		for(let tool of this.tools) 
+			tool.checked = options.tools.includes(tool.value);
 
 		document.getElementById("cb_basegrid").checked = options.widgets.grid.atStartup;
 		document.getElementById("cb_tracksphere").checked = options.widgets.trackSphere.atStartup;
@@ -128,26 +126,23 @@ class Look extends Config {
 	}
 	reset() {
 		super.reset();
-		this.update();
 	}
 }
 
 //-------------------------------------------------------
 function changedBaseGrid(value){	
-	look.options.widgets.grid.atStartup = value;
+	Config.options.widgets.grid.atStartup = value;
 	look.save();
-	look.update();
 }
+
 function changedTrackSphere(value){
-	look.options.widgets.trackSphere.atStartup = value;
+	Config.options.widgets.trackSphere.atStartup = value;
 	look.save();
-	look.update();
 }
 
 function changedCardinalviews(value){	
-	look.options.widgets.cardinalViews.atStartup = value;
+	Config.options.widgets.cardinalViews.atStartup = value;
 	look.save();
-	look.update();
 }
 
 //-------------------------------------------------------

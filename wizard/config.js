@@ -1,26 +1,32 @@
 
 
 class Config {
-	static options = default_ariadne;
+	static options = null;
+	static children = [];
+
 	constructor(frame, url) {
+		Config.children.push(this);
+		if(!Config.options)
+			Config.options = JSON.parse(JSON.stringify(default_ariadne));
+
 		this.url = url;
 		this.frame = document.querySelector(frame);
-
 		if(url) {
 			fetch(url, { method: "GET", headers: { "Content-Type": "application/json" } })
 				.then(response => {
 					response.json()
 						.then(data => { 
-							this.options = data; 
+							Config.options = data; 
 							this.update(); 
 						})
 				});
-		} else
+		} else {
 			this.update();
+		}
 	}
 	
-	scene() { return this.options.scene[0]; }
-	tools() { return this.options.tools; }
+	scene() { return Config.options.scene[0]; }
+	tools() { return Config.options.tools; }
 
 	update() {}
 
@@ -29,39 +35,41 @@ class Config {
 	}
 
 	reset() {
-		this.options = JSON.parse(JSON.stringify(default_ariadne));
+		Config.options = JSON.parse(JSON.stringify(default_ariadne));
 		this.save();
 	}
 	
 	set(key, value) {
-		this.options[key] = value;
+		Config.options[key] = value;
 		this.save();
 	}
 	// special case, lighting OFF and lighting toggle OFF, I must deactivate light direction
 	checkLightning() {
-		let tools = this.options.tools;
+		let tools = Config.options.tools;
 		if( (!this.scene().useLighting) && (!tools.includes("lighting"))) {
-			this.options.tools = tools.filter(t => t != "light");
+			Config.options.tools = tools.filter(t => t != "light");
 			this.update();
 		}
 	}
 
 	setTool(tool, value) {
-		this.options.tools = this.options.tools.filter(t => t != tool);
+		Config.options.tools = Config.options.tools.filter(t => t != tool);
 		if(value)
-			this.options.tools.push(tool);
+			Config.options.tools.push(tool);
 		this.checkLightning();
 		this.save();
 	}
 
 	resetTool(tool) {
-		this.options.tools = this.options.tools.filter(t => t != tool);
+		Config.options.tools = Config.options.tools.filter(t => t != tool);
 		if(default_ariadne.tools.includes(tool))
 			this.tools().push(tool);
 	}
 
 	save() {
-		let json = JSON.stringify(this.options);
+		for(let child of Config.children)
+			child.update();
+		let json = JSON.stringify(Config.options);
 		let xhr = new XMLHttpRequest();
 		xhr.open('POST', this.url, true);
 		xhr.setRequestHeader('Content-Type', 'application/json');

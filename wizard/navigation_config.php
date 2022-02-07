@@ -98,7 +98,6 @@ class NavigationConfig extends Config {
 	
 	reset() {
 		super.reset();
-		this.update();
 	}
 }
 
@@ -120,8 +119,8 @@ function setTurntable(){
 	navigation_config.options.widgets.trackSphere.atStartup = false;
 	
 	navigation_config.save();
-	navigation_config.update();
 }
+
 function setSphere(){
 	if(navigation_config.options.trackball.type === "SphereTrackball") return;	//ignore if same type
 	
@@ -139,7 +138,6 @@ function setSphere(){
 	navigation_config.options.widgets.trackSphere.atStartup = true;
 	
 	navigation_config.save();
-	navigation_config.update();
 }
 
 
@@ -152,12 +150,10 @@ function updatingFOV(newVal){
 function changedFOV(newVal){
 	navigation_config.options.space.cameraFOV = newVal;
 	navigation_config.save();
-	navigation_config.update();	
 }
 function resetFOV(){
 	navigation_config.options.space.cameraFOV = default_ariadne.space.cameraFOV;
 	navigation_config.save();
-	navigation_config.update();
 }
 //----------------------------------------------------------------------------------
 function useCurrentView(){
@@ -179,7 +175,6 @@ function useCurrentView(){
 		navigation_config.options.trackball.trackOptions.startDistance = track[4];
 	}
 	navigation_config.save();
-	navigation_config.update();	
 }
 function resetInitialView(){
 	if(navigation_config.options.trackball.type === "TurntablePanTrackball") {	

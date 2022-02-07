@@ -68,7 +68,6 @@ class MaterialConfig extends Config {
 		this.resetTool('color');
 
 		this.save();
-		this.update();
 	}
 }
 
