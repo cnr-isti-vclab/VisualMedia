@@ -133,7 +133,7 @@ switch($type) {
 			<canvas class="mouse" id="compassCanvas" style="width:100; height:100;" onclick="compassClick()"/>
 		<center>
 	</div>	
-	<div id="cardinalViews" class="m-2 d-none">			
+	<div id="canonicalViews" class="m-2 d-none">			
 		<center>
 		<table>
 		<tr><td></td><td><button id="vtop" class="btn btn-sm btn-secondary w-100 mouse" onclick="viewFrom('top');">ABOVE</button></td><td></td><td></td></tr>
@@ -589,8 +589,8 @@ $(document).ready(function(){
 	if(options.widgets.trackSphere.atStartup)
 		setTimeout(startupTrackSphere, 100);	// track sphere shows up at startup
 		
-	if(options.widgets.cardinalViews.atStartup)
-		document.getElementById("cardinalViews").classList.remove("d-none");
+	if(options.widgets.canonicalViews.atStartup)
+		document.getElementById("canonicalViews").classList.remove("d-none");
 	if(options.widgets.compass.atStartup)
 		document.getElementById("compass").classList.remove("d-none");
 });

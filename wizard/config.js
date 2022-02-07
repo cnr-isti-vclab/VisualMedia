@@ -100,7 +100,7 @@ var default_ariadne = {
         "image": "light.jpg"
     },
 	"skin": "light", 
-	"tools": [ "home", "light", "color", "measure", "pick", "sections", "orthographic", "full", "help" ],
+	"tools": [ "home", "light", "color", "measure", "pick", "sections", "full", "help" ],
 	"space": {
 		"centerMode": "scene",
 		"radiusMode": "scene",
@@ -140,7 +140,7 @@ var default_ariadne = {
 		"trackSphere" : {
 			"atStartup" : false
 		},
-		"cardinalViews" : {
+		"canonicalViews" : {
 			"atStartup" : true
 		},
 		"compass" : {

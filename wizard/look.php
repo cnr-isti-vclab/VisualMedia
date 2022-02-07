@@ -46,7 +46,7 @@
 				<p id="cbl_basegrid"><input type="checkbox" onchange="look.changedBaseGrid(this.checked);" id="cb_basegrid"> Base Grid</p>
 				<p id="cbl_tracksphere"><input type="checkbox" onchange="look.changedTrackSphere(this.checked);" id="cb_tracksphere"> Track Sphere</p>
 				</br>
-				<input type="checkbox" onchange="look.changedCardinalviews(this.checked);" id="cb_cardinalviews"> Cardinal Views</br>
+				<input type="checkbox" onchange="look.changedCanonicalviews(this.checked);" id="cb_canonicalviews"> Canonical Views</br>
 				<p id="cbl_compass"><input type="checkbox" onchange="look.changedCompass(this.checked);" id="cb_compass"> Compass</p></br>
 				
 		<hr/>
@@ -128,7 +128,7 @@ class Look extends Config {
 			document.getElementById("cbl_compass").classList.add("d-none");
 		}
 		
-		document.getElementById("cb_cardinalviews").checked = options.widgets.cardinalViews.atStartup;	
+		document.getElementById("cb_canonicalviews").checked = options.widgets.canonicalViews.atStartup;	
 	}
 	
 	reset() {
@@ -143,8 +143,8 @@ class Look extends Config {
 		Config.options.widgets.trackSphere.atStartup = value;
 		this.save();
 	}
-	changedCardinalviews(value){	
-		Config.options.widgets.cardinalViews.atStartup = value;
+	changedCanonicalviews(value){	
+		Config.options.widgets.canonicalViews.atStartup = value;
 		this.save();
 	}
 	changedCompass(value){	
@@ -162,7 +162,7 @@ class Look extends Config {
 			Config.options.widgets.trackSphere.atStartup = default_ariadne.widgets.trackSphere.atStartup;	
 		}	
 		Config.options.widgets.compass.atStartup = default_ariadne.widgets.compass.atStartup;
-		Config.options.widgets.cardinalViews.atStartup = default_ariadne.widgets.cardinalViews.atStartup;
+		Config.options.widgets.canonicalViews.atStartup = default_ariadne.widgets.canonicalViews.atStartup;
 		Config.options.widgets.compass.atStartup = default_ariadne.widgets.compass.atStartup;		
 		Config.save();
 	}	

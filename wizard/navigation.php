@@ -39,6 +39,11 @@
 	<button class="btn btn-primary btn-sm m-1" title="80°" onclick="navigation_config.setFOV(80);">FishEye</button>
 	</center>
 	</div>
+	</br>
+	<div class="m-1">
+	Start in orthographic view</br>
+	<img src="skins/dark/orthographic.png" width="24px"> <input type="checkbox" id="i_toggleOrtho" onchange="navigation_config.setTool('orthographic', this.checked);" checked> Perspective/Ortho toggle</input>
+	</div>
 	
 <hr/>
 
