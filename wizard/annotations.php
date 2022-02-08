@@ -3,13 +3,14 @@
 	<img class="m-1 restore" width="25px" src="skins/icons/restore.png" title="Reset Hotspots" onclick="annotations.reset()"> Hotspots
 	</h5>
 
-	<button class="btn btn-secondary btn-block" id="smStart" title="Enter Hotspot Configuration" onclick="annotations.startSpotMode()">Configure hotspots</button>
-	<div class="border d-none" id="annotationsControls">
+	<div id="spot_instructions">
+		<p>Hotspots are clickable geometries that you can link to additional information. You can add hotspots to the model by using this button:</p>	
+		<button class="btn btn-secondary btn-block" id="spotStart" onclick="annotations.startSpotMode()">Configure Hotspots</button>
+	</div>
+	<div class="d-none" id="annotationsControls">
 		<div class="m-1">
-		Hotspots are clickable geometries that you can link to additional information.
-		To add hotspots to your model, click on it.
-		When done, you can change the hotspots configuration using the panel below.
-		Apply to save changes. Cancel to discard changes.
+		To add an hotspot to your model, click on the object.
+		You can set configure each hotspot using the panel below.
 		</div>
 		<hr/>
 		<div class="p-1">
@@ -48,7 +49,7 @@ class Annotations extends Config {
 		let newSpot = {};
 		newSpot.pos = pos;
 		newSpot.visible = true;
-		newSpot.radius = 2;
+		newSpot.radius = 1;
 		newSpot.color = [0.9, 0.2, 0.2];
 		newSpot.title = "Spot " + newID;
 		newSpot.text = "";
@@ -75,8 +76,8 @@ class Annotations extends Config {
 			let newSpot = {
 				mesh            : "sphere",
 				color           : spots[id].color,
-				alpha           : 0.7,
-				alphaHigh       : 0.9,
+				alpha           : 0.5,
+				alphaHigh       : 0.7,
 				transform : { 
 					translation : spots[id].pos,
 					scale : [spots[id].radius*scaleFactor, spots[id].radius*scaleFactor, spots[id].radius*scaleFactor],
@@ -123,9 +124,8 @@ class Annotations extends Config {
 				<textarea class='form-control' rows='1' style='resize:none;' onchange='annotations.updateSpotTitle("${spot}",this.value);' title='Title'>${Config.options.spots[spot].title}<\/textarea>
 			<\/td>
 			<td style="text-align:center">
-				<input type='number' min='1' max='9' value='${Config.options.spots[spot].radius}' onchange='annotations.updateSpotRadius("${spot}",this.value);' style='cursor:hand;width:2em;' title='Radius'>
-			<\/td>
-			<td style="text-align:center">
+				<input type='number' min='1' max='9' value='${Config.options.spots[spot].radius}' onchange='annotations.updateSpotRadius("${spot}",this.value);' style='cursor:hand;width:3em;' title='Radius'>
+				<\/br>
 				<input type='color' value='${hxcol}' style='cursor:hand;' onchange='annotations.updateSpotColor("${spot}",this.value);' title='Color'>
 			<\/td>
 			<td style="text-align:center">
@@ -164,7 +164,7 @@ class Annotations extends Config {
 
 	startSpotMode() {
 		this.fillSpotsPanel();
-		document.getElementById("smStart").classList.add("d-none");
+		document.getElementById("spot_instructions").classList.add("d-none");
 		document.getElementById("annotationsControls").classList.remove("d-none");
 		window.frames[0].document.getElementById("toolbar").classList.add("d-none");
 		window.frames[0].closeAllTools();
@@ -182,7 +182,7 @@ class Annotations extends Config {
 	}
 
 	endSpotMode() {
-		document.getElementById("smStart").classList.remove("d-none");
+		document.getElementById("spot_instructions").classList.remove("d-none");
 		document.getElementById("annotationsControls").classList.add("d-none");
 	}
 
