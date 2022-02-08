@@ -35,10 +35,6 @@
 	</div>
 
 	<div class="row mt-3">
-		<p class="col-12"">
-			<img src="skins/dark/lighting.png" width="24px"> <input type="checkbox" id="i_toggleLighting" onchange="lighting_config.setTool('lighting', this.checked);" checked> Add button for toggling lighting</input>
-		</p>
-
 		<p class="col-12">
 		<img src="skins/dark/lighting.png" width="24px"> <input type="checkbox" id="i_toggleLighting" onchange="lighting_config.setTool('lighting', this.checked);" checked>Lighting on/off toggle</input>
 		</p>
