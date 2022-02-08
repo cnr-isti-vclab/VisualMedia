@@ -34,7 +34,7 @@ class Config {
 
 	update() {}
 
-	static refresh() {
+	refresh() {
 		Config.frame.contentWindow.location.reload();
 	}
 
@@ -140,7 +140,8 @@ var default_ariadne = {
 		"url": "",
 		"matrix": null,
 		"startColor": "color",
-		"solidColor": "#aaaaaa"
+		"solidColor": "#aaaaaa",
+		"specular": 2
 		}
 	],
 	"widgets": {

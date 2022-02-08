@@ -233,7 +233,10 @@ for(let id in tools) {
 function setup3dhop() {
 	presenter = new Presenter("draw-canvas");
 
-	presenter.toggleDebugMode();
+	//presenter.toggleDebugMode();
+
+	//specular color
+	let specularColor = 
 
 	presenter.setScene({
 		meshes: {
@@ -245,6 +248,7 @@ function setup3dhop() {
 				mesh  : "mesh_1",
 				useSolidColor : (options.scene[0].startColor=="color")?false:true,
 				color : hex2color(options.scene[0].solidColor),
+				specularColor : [0.1 * options.scene[0].specular, 0.1 * options.scene[0].specular, 0.1 * options.scene[0].specular, 32],
 				transform: options.scene[0].matrix? {matrix : options.scene[0].matrix} : null
 			}
 		},
@@ -273,6 +277,7 @@ function setup3dhop() {
 	// start conditions - interface
 	colorSwitch((options.scene[0].startColor=="color")?false:true);
 	lightingSwitch();
+	cameraSwitch((options.space.cameraType=="orthographic")?false:true);
 }
 
 function actionsToolbar(action) {

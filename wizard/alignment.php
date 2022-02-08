@@ -157,12 +157,12 @@ class ModelConfig extends Config {
 		this.endStraightInterface();	
 		let newmatrix = window.frames[0].presenter._scene.modelInstances["model_1"].transform.matrix;
 		Config.options.scene[0].matrix = newmatrix;
-		model_config.save();	
+		this.save();	
 	}
 
 	cancelStraightMode(){
 		this.endStraightInterface();
-		model_config.refresh();	
+		this.refresh();	
 	}
 
 	endStraightInterface(){

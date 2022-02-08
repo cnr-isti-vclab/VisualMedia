@@ -1,27 +1,25 @@
 {
     "background": {
         "type": "radial",
-        "color0": "#e65151",
+        "color0": "#aaaaaa",
         "color1": "#000000",
         "image": "light.jpg"
     },
-    "skin": "minimal_light",
+    "skin": "light",
     "tools": [
         "home",
+        "light",
         "measure",
-        "pick",
         "sections",
-        "orthographic",
         "full",
-        "help",
-        "color",
-        "light"
+        "help"
     ],
     "space": {
         "centerMode": "scene",
         "radiusMode": "scene",
-        "cameraFOV": 35,
-        "sceneLighting": true
+        "cameraFOV": 60,
+        "sceneLighting": true,
+        "cameraType": "perspective"
     },
     "trackball": {
         "type": "TurntablePanTrackball",
@@ -63,17 +61,17 @@
             "id": "mesh",
             "url": "",
             "matrix": [
-                1,
+                -0.6051924549979862,
+                0.0269825712140217,
+                0.7956217903402293,
                 0,
+                0.7951512357482701,
+                -0.02775342183392094,
+                0.6057757504757921,
                 0,
-                0,
-                0,
-                1,
-                0,
-                0,
-                0,
-                0,
-                1,
+                0.038426614494511305,
+                0.9992505633859755,
+                -0.004659063350229665,
                 0,
                 0,
                 0,
@@ -82,7 +80,7 @@
             ],
             "startColor": "color",
             "solidColor": "#aaaaaa",
-            "useLighting": true
+            "specular": 2
         }
     ],
     "widgets": {
@@ -94,7 +92,7 @@
             "atStartup": false
         },
         "canonicalViews": {
-            "atStartup": false
+            "atStartup": true
         },
         "compass": {
             "atStartup": false
