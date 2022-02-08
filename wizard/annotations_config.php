@@ -59,12 +59,15 @@ class Annotations extends Config {
 	}
 
 	pickSpot(pos) {
-		annotations.presenter._pickValid = false;
+		if(!this.presenter)
+			this.presenter = window.frames[0].presenter;
+		this.presenter._pickValid = false;
 
-		if(!annotations.options.spots) annotations.options.spots = {};
+		if(!Config.options.spots)
+			Config.options.spots = {};
 
 		let newID = 1;
-		if(Object.keys(annotations.options.spots).length) newID = parseInt(Object.keys(annotations.options.spots).pop())+1;
+		if(Object.keys(Config.options.spots).length) newID = parseInt(Object.keys(Config.options.spots).pop())+1;
 
 		let newSpot = {};
 		newSpot.pos = pos;
@@ -75,31 +78,34 @@ class Annotations extends Config {
 		newSpot.text = "";
 		newSpot.tags = [];
 
-		annotations.options.spots[newID] = newSpot;
+		Config.options.spots[newID] = newSpot;
 
-		if(!annotations.options.tools.includes('hotspot')) annotations.options.tools.push('hotspot');
+		if(!Config.options.tools.includes('hotspot')) 
+			Config.options.tools.push('hotspot');
 
-		annotations.options.space.scaleFactor = 0.02/annotations.presenter.sceneRadiusInv;
+		Config.options.space.scaleFactor = 0.02/this.presenter.sceneRadiusInv;
 
-		annotations.fillSpotsPanel();
-		annotations.displaySpots();
+		this.fillSpotsPanel();
+		this.displaySpots();
 	}
 
 	displaySpots() {
 		this.presenter._scene.spots = {};
 		this.presenter._spotsProgressiveID = 1;
+		let spots = Config.options.spots;
+		let scaleFactor = Config.options.space.scaleFactor;
 
-		for (let id in this.options.spots) {
+		for (let id in spots) {
 			let newSpot = {
 				mesh            : "sphere",
-				color           : this.options.spots[id].color,
+				color           : spots[id].color,
 				alpha           : 0.7,
 				alphaHigh       : 0.9,
 				transform : { 
-					translation : this.options.spots[id].pos,
-					scale : [this.options.spots[id].radius*this.options.space.scaleFactor, this.options.spots[id].radius*this.options.space.scaleFactor, this.options.spots[id].radius*this.options.space.scaleFactor],
+					translation : spots[id].pos,
+					scale : [spots[id].radius*scaleFactor, spots[id].radius*scaleFactor, spots[id].radius*scaleFactor],
 					},
-				visible         : this.options.spots[id].visible,
+				visible         : spots[id].visible,
 			};
 			this.presenter._scene.spots[id] = this.presenter._parseSpot(newSpot);
 		}
@@ -116,7 +122,7 @@ class Annotations extends Config {
 		var content = "";
 
 		var head = "";
-		this.options.spots ? head = "Hotspots List" : head = "Hotspots List Empty";
+		Config.options.spots ? head = "Hotspots List" : head = "Hotspots List Empty";
 
 		content += `
 		<tr>
@@ -129,19 +135,19 @@ class Annotations extends Config {
 		target = document.getElementById("spots-panel");
 		content = "";
 
-		for (let spot in this.options.spots) {
-			let r = parseInt(this.options.spots[spot].color[0]*255);
-			let g = parseInt(this.options.spots[spot].color[1]*255);
-			let b = parseInt(this.options.spots[spot].color[2]*255);
+		for (let spot in Config.options.spots) {
+			let r = parseInt(Config.options.spots[spot].color[0]*255);
+			let g = parseInt(Config.options.spots[spot].color[1]*255);
+			let b = parseInt(Config.options.spots[spot].color[2]*255);
 			var hxcol = "#" + r.toString(16).padStart(2, '0') + g.toString(16).padStart(2, '0') + b.toString(16).padStart(2, '0'); 
 		
 			content += `
 			<tr>
 			<td>
-				<textarea class='form-control' rows='1' style='resize:none;' onchange='annotations.updateSpotTitle("${spot}",this.value);' title='Title'>${this.options.spots[spot].title}<\/textarea>
+				<textarea class='form-control' rows='1' style='resize:none;' onchange='annotations.updateSpotTitle("${spot}",this.value);' title='Title'>${Config.options.spots[spot].title}<\/textarea>
 			<\/td>
 			<td style="text-align:center">
-				<input type='number' min='1' max='9' value='${this.options.spots[spot].radius}' onchange='annotations.updateSpotRadius("${spot}",this.value);' style='cursor:hand;width:2em;' title='Radius'>
+				<input type='number' min='1' max='9' value='${Config.options.spots[spot].radius}' onchange='annotations.updateSpotRadius("${spot}",this.value);' style='cursor:hand;width:2em;' title='Radius'>
 			<\/td>
 			<td style="text-align:center">
 				<input type='color' value='${hxcol}' style='cursor:hand;' onchange='annotations.updateSpotColor("${spot}",this.value);' title='Color'>
@@ -157,11 +163,11 @@ class Annotations extends Config {
 	}
 
 	updateSpotTitle(spotID, title){
-		this.options.spots[spotID].title = title;
+		Config.options.spots[spotID].title = title;
 	}
 
 	updateSpotRadius(spotID, value){
-		this.options.spots[spotID].radius = value;
+		Config.options.spots[spotID].radius = value;
 		this.displaySpots();
 	}
 
@@ -169,15 +175,15 @@ class Annotations extends Config {
 		const r = parseInt(value.substr(1,2), 16)
 		const g = parseInt(value.substr(3,2), 16)
 		const b = parseInt(value.substr(5,2), 16)
-		this.options.spots[spotID].color = [r/255.0, g/255.0, b/255.0];
+		Config.options.spots[spotID].color = [r/255.0, g/255.0, b/255.0];
 		this.displaySpots();
 	}
 
 	deleteSpot(spotID){
-		delete this.options.spots[spotID];
+		delete Config.options.spots[spotID];
 		this.fillSpotsPanel();
 		this.displaySpots();
-		if(Object.keys(annotations.options.spots).length==0) annotations.options.tools.splice(annotations.options.tools.indexOf('hotspot'), 1);
+		if(Object.keys(Config.options.spots).length==0) Config.options.tools.splice(Config.options.tools.indexOf('hotspot'), 1);
 	}
 
 	startSpotMode() {
@@ -188,14 +194,14 @@ class Annotations extends Config {
 		window.frames[0].closeAllTools();
 		window.frames[0].document.getElementById("draw-canvas").style.cursor = 'crosshair';
 		this.presenter = window.frames[0].presenter;
-		this.presenter._onEndPickingPoint = this.pickSpot;
+		this.presenter._onEndPickingPoint = (pos) => this.pickSpot(pos);
 		this.presenter.enablePickpointMode(true);
 		this.presenter.setSpotVisibility(256, true, true);
 		this.presenter.enableOnHover(true);
 
-		if(this.options.trackball.type === "TurntablePanTrackball")
+		if(Config.options.trackball.type === "TurntablePanTrackball")
 			this.presenter.animateToTrackballPosition([0.0, 0.0, 0.0, 0.0, 0.0, 1.4]);
-		else if (this.options.trackball.type === "SphereTrackball")
+		else if (Config.options.trackball.type === "SphereTrackball")
 			this.presenter.animateToTrackballPosition([[ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ], 0.0, 0.0, 0.0, 1.4]);
 	}
 
@@ -206,7 +212,7 @@ class Annotations extends Config {
 
 	cancelSpots(){
 		this.endSpotMode();
-		this.refresh();
+		Config.refresh();
 		annotations = new Annotations('#media', 'update.php');
 	}
 
@@ -217,7 +223,7 @@ class Annotations extends Config {
 
 	onEnterSpot(id){
 		window.frames[0].toastr.options.timeOut = 0;
-		window.frames[0].toastr.info(annotations.options.spots[id].title);
+		window.frames[0].toastr.info(Config.options.spots[id].title);
 	}
 
 	onLeaveSpot(id){
@@ -231,11 +237,12 @@ class Annotations extends Config {
 
 	reset() {
 		this.endSpotMode();
-		super.reset();
+		Config.options.spots = {};
+		this.save();
 	}
 }
 
-let annotations = new Annotations('#media', 'update.php'); //'options.json'); 
+let annotations = new Annotations('#media', 'update.php'); 
 
 </script>
 </html>
