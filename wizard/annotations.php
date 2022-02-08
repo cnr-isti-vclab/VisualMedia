@@ -1,6 +1,6 @@
 <div id="hotspot_panel">
 	<h5>
-	<img class="m-1 restore" width="25px" src="skins/icons/restore.png" title="Reset Hotspots" onclick="annotations.reset()"> Hotspots
+	Hotspots
 	</h5>
 
 	<div id="spot_instructions">
@@ -18,6 +18,7 @@
 			<tbody id="spots-panel"></tbody>
 		</table>
 		</div>
+		<button class="btn btn-sm btn-secondary mb-2" title="Exit Discarding Changes" onclick="annotations.reset()">Remove all hotspots</button>		
 		<div class="m-1 text-right">
 			<button class="btn btn-sm btn-danger" title="Exit Discarding Changes" onclick="annotations.cancelSpots()">CANCEL</button>
 			<button class="btn btn-sm btn-success" title="Exit Saving Changes" onclick="annotations.applySpots()">APPLY</button>
@@ -212,9 +213,10 @@ class Annotations extends Config {
 	}
 
 	reset() {
-		this.endSpotMode();
 		Config.options.spots = {};
-		this.save();
+		this.fillSpotsPanel();
+		this.displaySpots();		
+		//this.save();
 	}
 }
 
