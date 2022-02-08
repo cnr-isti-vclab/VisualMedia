@@ -90,7 +90,7 @@
 			<hr/>
 			<a href="#material">
 				<div class="dot"></div>
-				</p>Material &amp; light</p>
+				</p>Material &amp; Light</p>
 			</a>
 		</li>
 		<li>
@@ -125,7 +125,7 @@
 			<div id="annotations" class=""><?php include('annotations.php'); ?></div>
 
 			<div class="active" style="padding:15px">
-				<button class="btn btn-secondary btn-sm btn-block" name="reset"> Reset everything </button>
+				<button class="btn btn-secondary btn-sm btn-block" name="reset_all"> Reset everything </button>
 			</div>
 		</div>
 	</div>
@@ -151,10 +151,10 @@ window.addEventListener('hashchange', function(e) {
 	e.preventDefault();
 });
 
-let reset = document.querySelector('button[name=reset]');
-reset.addEventListener('click', () => {
-	let reset = confirm("Everything, alignment, material, navigation etc. will be reset to defaults. Are you sure?");
-	if(reset)
+let reset_all = document.querySelector('button[name=reset]');
+reset_all.addEventListener('click', () => {
+	let doReset = confirm("Everything, alignment, material, navigation etc. will be reset to defaults. Are you sure?");
+	if(doReset)
 		Config.reset()
 });
 </script>
