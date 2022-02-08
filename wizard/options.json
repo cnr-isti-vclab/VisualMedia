@@ -93,7 +93,7 @@
         "trackSphere": {
             "atStartup": false
         },
-        "cardinalViews": {
+        "canonicalViews": {
             "atStartup": false
         },
         "compass": {

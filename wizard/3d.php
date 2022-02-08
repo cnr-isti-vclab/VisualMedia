@@ -30,6 +30,10 @@ $options = json_decode($data);
 <!--BOOTSTRAP STYLE-->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
 
+<!--TOASRT-->
+<link type="text/css" rel="stylesheet" href="stylesheet/toastr.min.css" rel="stylesheet"/>
+<script type="text/javascript" src="js/toastr.min.js"></script>
+
 <style>
 html { overflow:hidden; }
 
@@ -169,7 +173,7 @@ if(options.spots) {
 			alphaHigh       : 0.9,
 			transform : { 
 				translation : options.spots[id].pos,
-				scale : [options.spots[id].radius, options.spots[id].radius, options.spots[id].radius],
+				scale : [options.spots[id].radius*options.space.scaleFactor, options.spots[id].radius*options.space.scaleFactor, options.spots[id].radius*options.space.scaleFactor],
 				},
 			visible         : false,
 		}
@@ -261,6 +265,11 @@ function setup3dhop() {
 	sectiontoolInit();
 //--SECTIONS--
 
+//--HOTSPOTS--
+	presenter._onEnterSpot = onEnterSpot;
+	presenter._onLeaveSpot = onLeaveSpot;
+//--HOTSPOTS--
+
 	// start conditions - interface
 	colorSwitch((options.scene[0].startColor=="color")?false:true);
 	lightingSwitch();
@@ -326,8 +335,19 @@ function onEndPick(point) {
 	var y = point[1].toFixed(2);
 	var z = point[2].toFixed(2);
 	$('#pickpoint-output').html("[ "+x+" , "+y+" , "+z+" ]");
-} 
+}
 //--PICKPOINT--
+
+//--HOTSPOTS--
+function onEnterSpot(id) {
+	toastr.options.timeOut = 0;
+	toastr.info(options.spots[id].title);
+}
+function onLeaveSpot(id) {
+	toastr.remove();
+	toastr.options.timeOut = 2000;
+}
+//--HOTSPOTS--
 
 function closeAllTools(){
 	presenter.enableLightTrackball(false);
@@ -342,7 +362,7 @@ function closeAllTools(){
 	presenter.enableOnHover(false);
 	hotspotSwitch();
 
-	presenter.repaint();	
+	presenter.repaint();
 }
 
 //--GRID
@@ -414,7 +434,7 @@ function addTrackSphere(instance) {
 	sphere.color = [0.9, 0.9, 0.9, 0.1];
 	sphere.zOff = 0.0;
 	sphere.useTransparency = true;
-	presenter.repaint();	
+	presenter.repaint();
 }
 function removeTrackSphere() {
 	presenter.deleteEntity("trackSphere");
@@ -593,6 +613,16 @@ $(document).ready(function(){
 		document.getElementById("canonicalViews").classList.remove("d-none");
 	if(options.widgets.compass.atStartup)
 		document.getElementById("compass").classList.remove("d-none");
+
+	// TOASTR configuration
+		toastr.options = {
+		"positionClass": "toast-bottom-left",
+		"preventDuplicates": false,
+		"showDuration": "300",
+		"hideDuration": "300",
+		"timeOut": "2000",
+		"extendedTimeOut": "1000"
+	}
 });
 </script>
 </html>

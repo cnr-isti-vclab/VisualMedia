@@ -1,0 +1,241 @@
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!--BOOTSTRAP STYLE-->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+<!--STYLE-->
+<link rel="stylesheet" href="stylesheet/style.css">
+
+</head>
+
+<body>
+	<div class="vms_container">
+		<iframe id="media" allowfullscreen allow="fullscreen" style="border-width:0px" class="vms" src="3d.php"></iframe>
+
+		<div class="panel">
+			<div id="hotspot_panel">
+				<h5>
+				<img class="m-1 restore" width="25px" src="skins/icons/restore.png" title="Reset Hotspots" onclick="annotations.reset()"> Hotspots
+				</h5>
+
+				<button class="btn btn-secondary btn-block" id="smStart" title="Enter Hotspot Configuration" onclick="annotations.startSpotMode()">Configure hotspots</button>
+				<div class="border d-none" id="smControls">
+					<div class="m-1">
+					Hotspots are clickable geometries that you can link to additional information.
+					To add hotspots to your model, click on it.
+					When done, you can change the hotspots configuration using the panel below.
+					Apply to save changes. Cancel to discard changes.
+					</div>
+					<hr/>
+					<div class="p-1">
+					<table border="1" style="width:100%">
+						<thead id="spots-head"></thead>
+						<tbody id="spots-panel"></tbody>
+					</table>
+					</div>
+					<hr/>
+					<div class="m-1 text-right">
+						<button class="btn btn-sm btn-danger" title="Exit Discarding Changes" onclick="annotations.cancelSpots()">CANCEL</button>
+						<button class="btn btn-sm btn-success" title="Exit Saving Changes" onclick="annotations.applySpots()">APPLY</button>
+					</div>
+				</div>
+			</div>
+
+			<hr/>
+
+
+		</div>
+	</div>
+</body>
+
+<script src="config.js"></script>
+<script>
+class Annotations extends Config {
+	constructor(frame, options) {
+		super(frame, options);
+
+		this.presenter = null;
+	}
+
+	pickSpot(pos) {
+		annotations.presenter._pickValid = false;
+
+		if(!annotations.options.spots) annotations.options.spots = {};
+
+		let newID = 1;
+		if(Object.keys(annotations.options.spots).length) newID = parseInt(Object.keys(annotations.options.spots).pop())+1;
+
+		let newSpot = {};
+		newSpot.pos = pos;
+		newSpot.visible = true;
+		newSpot.radius = 2;
+		newSpot.color = [0.9, 0.2, 0.2];
+		newSpot.title = "Spot " + newID;
+		newSpot.text = "";
+		newSpot.tags = [];
+
+		annotations.options.spots[newID] = newSpot;
+
+		if(!annotations.options.tools.includes('hotspot')) annotations.options.tools.push('hotspot');
+
+		annotations.options.space.scaleFactor = 0.02/annotations.presenter.sceneRadiusInv;
+
+		annotations.fillSpotsPanel();
+		annotations.displaySpots();
+	}
+
+	displaySpots() {
+		this.presenter._scene.spots = {};
+		this.presenter._spotsProgressiveID = 1;
+
+		for (let id in this.options.spots) {
+			let newSpot = {
+				mesh            : "sphere",
+				color           : this.options.spots[id].color,
+				alpha           : 0.7,
+				alphaHigh       : 0.9,
+				transform : { 
+					translation : this.options.spots[id].pos,
+					scale : [this.options.spots[id].radius*this.options.space.scaleFactor, this.options.spots[id].radius*this.options.space.scaleFactor, this.options.spots[id].radius*this.options.space.scaleFactor],
+					},
+				visible         : this.options.spots[id].visible,
+			};
+			this.presenter._scene.spots[id] = this.presenter._parseSpot(newSpot);
+		}
+
+		this.presenter._scenePrepare();
+		this.presenter.repaint();
+
+		this.presenter._onEnterSpot = this.onEnterSpot;
+		this.presenter._onLeaveSpot = this.onLeaveSpot;
+	}
+
+	fillSpotsPanel() {
+		var target = document.getElementById("spots-head");
+		var content = "";
+
+		var head = "";
+		this.options.spots ? head = "Hotspots List" : head = "Hotspots List Empty";
+
+		content += `
+		<tr>
+			<th colspan="4" style="text-align:center">`+head+`<\/th>
+		<\/tr>
+		`;
+
+		target.innerHTML = content;
+
+		target = document.getElementById("spots-panel");
+		content = "";
+
+		for (let spot in this.options.spots) {
+			let r = parseInt(this.options.spots[spot].color[0]*255);
+			let g = parseInt(this.options.spots[spot].color[1]*255);
+			let b = parseInt(this.options.spots[spot].color[2]*255);
+			var hxcol = "#" + r.toString(16).padStart(2, '0') + g.toString(16).padStart(2, '0') + b.toString(16).padStart(2, '0'); 
+		
+			content += `
+			<tr>
+			<td>
+				<textarea class='form-control' rows='1' style='resize:none;' onchange='annotations.updateSpotTitle("${spot}",this.value);' title='Title'>${this.options.spots[spot].title}<\/textarea>
+			<\/td>
+			<td style="text-align:center">
+				<input type='number' min='1' max='9' value='${this.options.spots[spot].radius}' onchange='annotations.updateSpotRadius("${spot}",this.value);' style='cursor:hand;width:2em;' title='Radius'>
+			<\/td>
+			<td style="text-align:center">
+				<input type='color' value='${hxcol}' style='cursor:hand;' onchange='annotations.updateSpotColor("${spot}",this.value);' title='Color'>
+			<\/td>
+			<td style="text-align:center">
+				<button class='m-1 btn-sm btn-danger' onclick='annotations.deleteSpot("${spot}");' title='Delete Spot'><img src='./skins/icons/delete.png' width='15px'/><\/button>
+			<\/td>
+			<\/tr>
+			`;
+		}
+
+		target.innerHTML = content;
+	}
+
+	updateSpotTitle(spotID, title){
+		this.options.spots[spotID].title = title;
+	}
+
+	updateSpotRadius(spotID, value){
+		this.options.spots[spotID].radius = value;
+		this.displaySpots();
+	}
+
+	updateSpotColor(spotID, value){
+		const r = parseInt(value.substr(1,2), 16)
+		const g = parseInt(value.substr(3,2), 16)
+		const b = parseInt(value.substr(5,2), 16)
+		this.options.spots[spotID].color = [r/255.0, g/255.0, b/255.0];
+		this.displaySpots();
+	}
+
+	deleteSpot(spotID){
+		delete this.options.spots[spotID];
+		this.fillSpotsPanel();
+		this.displaySpots();
+		if(Object.keys(annotations.options.spots).length==0) annotations.options.tools.splice(annotations.options.tools.indexOf('hotspot'), 1);
+	}
+
+	startSpotMode() {
+		this.fillSpotsPanel();
+		document.getElementById("smStart").classList.add("d-none");
+		document.getElementById("smControls").classList.remove("d-none");
+		window.frames[0].document.getElementById("toolbar").classList.add("d-none");
+		window.frames[0].closeAllTools();
+		window.frames[0].document.getElementById("draw-canvas").style.cursor = 'crosshair';
+		this.presenter = window.frames[0].presenter;
+		this.presenter._onEndPickingPoint = this.pickSpot;
+		this.presenter.enablePickpointMode(true);
+		this.presenter.setSpotVisibility(256, true, true);
+		this.presenter.enableOnHover(true);
+
+		if(this.options.trackball.type === "TurntablePanTrackball")
+			this.presenter.animateToTrackballPosition([0.0, 0.0, 0.0, 0.0, 0.0, 1.4]);
+		else if (this.options.trackball.type === "SphereTrackball")
+			this.presenter.animateToTrackballPosition([[ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ], 0.0, 0.0, 0.0, 1.4]);
+	}
+
+	endSpotMode() {
+		document.getElementById("smStart").classList.remove("d-none");
+		document.getElementById("smControls").classList.add("d-none");
+	}
+
+	cancelSpots(){
+		this.endSpotMode();
+		this.refresh();
+		annotations = new Annotations('#media', 'update.php');
+	}
+
+	applySpots() {
+		this.endSpotMode();
+		this.save();
+	}
+
+	onEnterSpot(id){
+		window.frames[0].toastr.options.timeOut = 0;
+		window.frames[0].toastr.info(annotations.options.spots[id].title);
+	}
+
+	onLeaveSpot(id){
+		window.frames[0].toastr.remove();
+		window.frames[0].toastr.options.timeOut = 2000;
+	}
+
+	update() {
+//		let options = this.options;
+	}
+
+	reset() {
+		this.endSpotMode();
+		super.reset();
+	}
+}
+
+let annotations = new Annotations('#media', 'update.php'); //'options.json'); 
+
+</script>
+</html>
