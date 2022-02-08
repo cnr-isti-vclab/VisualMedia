@@ -18,7 +18,7 @@
 			<img src="skins/dark/color.png" width="24px"> <input type="checkbox" id="i_toggleColor" onchange="material_config.setTool('color', this.checked);" checked> Texture/Solid toggle</input>
 		</p>
 		
-		<p class="col-6">Glossyness:</p>
+		<p class="col-6">Glossiness:</p>
 		<div class="col-6">
 			<select id="i_glossy"  class="form-control  form-control-sm"  onchange="material_config.setGlossy(this.value);">
 				<option value="0">Dull</option>
