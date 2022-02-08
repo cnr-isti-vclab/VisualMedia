@@ -68,6 +68,7 @@ class MaterialConfig extends Config {
 		// glossy
 		document.querySelector('#i_glossy').value = this.scene().specular;		
 	}
+	
 	setStartColor(value) {
 		this.scene().startColor = value;
 		this.save();

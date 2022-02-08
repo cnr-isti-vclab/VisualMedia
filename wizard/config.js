@@ -34,7 +34,7 @@ class Config {
 
 	update() {}
 
-	refresh() {
+	static refresh() {
 		Config.frame.contentWindow.location.reload();
 	}
 

@@ -162,7 +162,7 @@ class ModelConfig extends Config {
 
 	cancelStraightMode(){
 		this.endStraightInterface();
-		this.refresh();	
+		Config.refresh();	
 	}
 
 	endStraightInterface(){
