@@ -14,6 +14,7 @@
 	display:flex;
 	justify-content:center;
 	padding-top:10px;
+	margin-bottom:4px;
 }
 .wizard-progress li {
 	list-style-type: none;
@@ -28,6 +29,9 @@
 	color:#212529;
 }
 
+.wizard-progress li.active p {
+	color:#0d5e6b;
+}
 
 .wizard-progress li .dot {
 	position:relative;
@@ -47,10 +51,10 @@
 	padding:0px;
 	width:200px;
 
-  border-top: 2px solid #6c757d;
-  border-color: #6c757d;
-  background-color: #6c757d;
-  color: #6c757d; 
+	border-top: 2px solid #6c757d;
+	border-color: #6c757d;
+	background-color: #6c757d;
+	color: #6c757d; 
 }
 
 .panel > div {
@@ -79,9 +83,8 @@
 <div class="wizard">
 	<ul class="container wizard-progress">
 		<li class="active">
-
+			<hr style="width:50%; position:relative; left:50%"/>
 			<a href="#alignment">
-				<hr/>
 				<div class="dot"></div>
 				<p>Alignment</p>
 			</a>
@@ -90,7 +93,7 @@
 			<hr/>
 			<a href="#material">
 				<div class="dot"></div>
-				</p>Material &amp; Light</p>
+				<p>Material &amp; Light</p>
 			</a>
 		</li>
 		<li>
@@ -108,7 +111,7 @@
 			</a>
 		</li>
 		<li>
-			<hr/>
+			<hr style="width:50%"/>
 			<a href="#annotations">
 				<div class="dot"></div>
 				<p>Annotations</p>
