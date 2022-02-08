@@ -69,6 +69,7 @@
 			
 </div>
 
+<hr/>
 
 <script>
 class Look extends Config {

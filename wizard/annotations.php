@@ -4,28 +4,28 @@
 	</h5>
 
 	<div id="spot_instructions">
-		<p>Hotspots are clickable geometries that you can link to additional information. You can add hotspots to the model by using this button:</p>	
+		<p>Hotspots are clickable geometries that you can link to additional information.</br>You can add hotspots to the model by using this button:</p>	
 		<button class="btn btn-secondary btn-block" id="spotStart" onclick="annotations.startSpotMode()">Configure Hotspots</button>
 	</div>
 	<div class="d-none" id="annotationsControls">
 		<div class="m-1">
 		To add an hotspot to your model, click on the object.
-		You can set configure each hotspot using the panel below.
+		You can configure each hotspot using the panel below.
 		</div>
-		<hr/>
 		<div class="p-1">
 		<table border="1" style="width:100%">
 			<thead id="spots-head"></thead>
 			<tbody id="spots-panel"></tbody>
 		</table>
 		</div>
-		<hr/>
 		<div class="m-1 text-right">
 			<button class="btn btn-sm btn-danger" title="Exit Discarding Changes" onclick="annotations.cancelSpots()">CANCEL</button>
 			<button class="btn btn-sm btn-success" title="Exit Saving Changes" onclick="annotations.applySpots()">APPLY</button>
 		</div>
 	</div>
 </div>
+
+<hr/>
 
 <script>
 class Annotations extends Config {

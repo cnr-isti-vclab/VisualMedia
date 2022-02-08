@@ -1,4 +1,4 @@
-<div id="viewControls" class="border d-none p-2" style="position:absolute; right:400px; top:10;">
+<div id="viewControls" class="d-none p-2" style="position:absolute; right:400px; top:10;">
 	<center>
 	<h5>View Scene From:</h5>			
 	<table>
@@ -18,7 +18,7 @@
 		<p>This is how the viewer will look and navigate. If the model is not in the correct orientation, you can re-orient it using this button:</p>	
 		<button class="btn btn-secondary btn-block" id="smStart" onclick="model_config.startStraightMode()">Straighten your model</button>
 	</div>
-	<div class="border d-none" id="smControls">
+	<div class="d-none" id="smControls">
 		<div class="m-1">
 		<p>Select a view using the buttons: you'll see how the scene will look from that direction.</br>
 		Orient the model to match the chosen view by clicking and dragging in the 3D panel or by using the buttons below.</p>
@@ -98,7 +98,6 @@
 		</center>
 		-->
 		
-		</hr>		
 		</div>			
 		<div class="m-1 text-right">
 			<button class="btn btn-sm btn-danger" onclick="model_config.cancelStraightMode();">CANCEL</button>
@@ -108,8 +107,6 @@
 </div>
 
 <hr/>
-
-	
 
 <script>
 class ModelConfig extends Config {

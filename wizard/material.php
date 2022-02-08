@@ -54,8 +54,10 @@
 		</p>
 	</div>
 </div>
-<script>
 
+<hr/>
+
+<script>
 class MaterialConfig extends Config {
 	constructor(frame, options) {
 		super(frame, options);

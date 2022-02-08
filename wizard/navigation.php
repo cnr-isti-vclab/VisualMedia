@@ -44,10 +44,9 @@
 	</div>
 </div>
 
-
+<hr/>
 
 <script>
-
 class NavigationConfig extends Config {
 	constructor(frame, options) {
 		super(frame, options);
