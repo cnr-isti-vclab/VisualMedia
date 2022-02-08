@@ -52,7 +52,7 @@
 			<input type="checkbox" name="tools[]" value="color">        <img src="skins/dark/color.png" width="24px"> Solid Color</br>
 			<input type="checkbox" name="tools[]" value="orthographic"> <img src="skins/dark/orthographic.png" width="24px"> Orthographic</br>
 			<input type="checkbox" name="tools[]" value="hotspot" style="display:none">
-			<input type="checkbox" name="tools[]" value="full"    style="display:none">
+			<input type="checkbox" name="tools[]" value="full"> <img src="skins/dark/full.png" width="24px"> Full Screen</br>
 			<input type="checkbox" name="tools[]" value="help"    style="display:none">
 		</div>
 	</div>
@@ -176,7 +176,7 @@ class Look extends Config {
 
 	resetWidgets(){
 		let trackball = Config.options.trackball;
-		let widget = Config.options.widgets;
+		let widgets = Config.options.widgets;
 		if(trackball.type === "TurntablePanTrackball"){
 			widgets.grid.atStartup = default_ariadne.widgets.grid.atStartup;
 			widgets.trackSphere.atStartup = false;		
