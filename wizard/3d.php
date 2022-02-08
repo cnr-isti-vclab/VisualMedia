@@ -277,6 +277,7 @@ function setup3dhop() {
 	// start conditions - interface
 	colorSwitch((options.scene[0].startColor=="color")?false:true);
 	lightingSwitch();
+	cameraSwitch((options.space.cameraType=="orthographic")?false:true);
 }
 
 function actionsToolbar(action) {
