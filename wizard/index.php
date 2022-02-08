@@ -151,7 +151,7 @@ window.addEventListener('hashchange', function(e) {
 	e.preventDefault();
 });
 
-let reset_all = document.querySelector('button[name=reset]');
+let reset_all = document.querySelector('button[name=reset_all]');
 reset_all.addEventListener('click', () => {
 	let doReset = confirm("Everything, alignment, material, navigation etc. will be reset to defaults. Are you sure?");
 	if(doReset)
