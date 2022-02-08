@@ -96,7 +96,7 @@ class LightingConfig extends Config {
 	}
 
 	reset() {
-		this.scene().useLighting = default_ariadne.scene[0].useLighting;
+		Config.options.space.sceneLighting = default_ariadne.space.sceneLighting;
 		this.resetTool('lighting');
 		this.resetTool('light');
 		this.save();	
