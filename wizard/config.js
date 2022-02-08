@@ -115,7 +115,8 @@ var default_ariadne = {
 		"centerMode": "scene",
 		"radiusMode": "scene",
 		"cameraFOV": 60,
-		"sceneLighting": true
+		"sceneLighting": true,
+		"cameraType": "perspective"
 	}, 
 	"trackball": {
 		"type": "TurntablePanTrackball",
