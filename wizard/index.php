@@ -13,12 +13,46 @@
 .wizard-progress {
 	display:flex;
 	justify-content:center;
+	padding-top:10px;
 }
 .wizard-progress li {
 	list-style-type: none;
 	display:list-item;
 	width:200px;
 }
+.wizard-progress li a {
+	display:flex;
+	flex-direction:column;
+	align-items:center;
+	text-decoration:none;
+	color:#212529;
+}
+
+
+.wizard-progress li .dot {
+	position:relative;
+	background-color:#6c757d;
+	width:25px;
+	height:25px;
+	border-radius:50%
+}
+.wizard-progress li.active .dot {
+	background-color:#17a2b8;
+}
+
+.wizard-progress li hr {
+	position:relative;
+	top:13px;
+	margin:0px;
+	padding:0px;
+	width:200px;
+
+  border-top: 2px solid #6c757d;
+  border-color: #6c757d;
+  background-color: #6c757d;
+  color: #6c757d; 
+}
+
 .panel > div {
 	display: none;
 }
@@ -30,6 +64,8 @@
 	display:flex;
 	flex-direction: column;
 }
+
+
 
 </style>
 <script>
@@ -43,19 +79,40 @@
 <div class="wizard">
 	<ul class="container wizard-progress">
 		<li class="active">
-			<a href="#alignment">Alignment</a>
+
+			<a href="#alignment">
+				<hr/>
+				<div class="dot"></div>
+				<p>Alignment</p>
+			</a>
 		</li>
 		<li>
-			<a href="#material">Material &amp; light</a>
+			<hr/>
+			<a href="#material">
+				<div class="dot"></div>
+				</p>Material &amp; light</p>
+			</a>
 		</li>
 		<li>
-			<a href="#navigation">Navigation</a>
+			<hr/>
+			<a href="#navigation">
+				<div class="dot"></div>
+				<p>Navigation</p>
+			</a>
 		</li>
 		<li>
-			<a href="#interface">Interface</a>
+			<hr/>
+			<a href="#interface">
+				<div class="dot"></div>
+				<p>Interface</p>
+			</a>
 		</li>
 		<li>
-			<a href="#annotations">Annotations</a>
+			<hr/>
+			<a href="#annotations">
+				<div class="dot"></div>
+				<p>Annotations</p>
+			</a>
 		</li>
 	</ul>
 	<div class="container-fluid" style="padding:0px; margin:0px; display:flex; flex:2;">
@@ -77,7 +134,12 @@
 
 <script>
 wizardStep(window.location.hash);
+
 function wizardStep(step) {
+	for(let li of document.querySelectorAll('.wizard-progress li'))
+		li.classList.remove('active');
+	let li = document.querySelector(`a[href='${step}']`).parentElement;
+	li.classList.add('active');
 	step = step.substring(1); //remove #
 	for( let div of document.querySelectorAll('#alignment, #material, #navigation, #interface, #annotations'))
 		div.classList.toggle('active', div.id == step);
@@ -85,7 +147,7 @@ function wizardStep(step) {
 
 window.addEventListener('hashchange', function(e) {
 	let newHash = (new URL(e.newURL)).hash;
-	wizardStep(newHash);	
+	wizardStep(newHash);
 	e.preventDefault();
 });
 
