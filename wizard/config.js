@@ -104,13 +104,13 @@ class Config {
 
 var default_ariadne = { 
     "background": {
-        "type": "linear",
+        "type": "radial",
         "color0": "#aaaaaa",
         "color1": "#000000",
         "image": "light.jpg"
     },
 	"skin": "light", 
-	"tools": [ "home", "light", "color", "measure", "pick", "sections", "full", "help" ],
+	"tools": [ "home", "light", "measure", "sections", "full", "help" ],
 	"space": {
 		"centerMode": "scene",
 		"radiusMode": "scene",
