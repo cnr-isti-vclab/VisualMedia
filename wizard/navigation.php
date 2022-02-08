@@ -16,7 +16,7 @@
 	<hr/>
 
 	<h5>
-		<img class="restore" title="Reset FOV" src="restore.svg" onclick="navigation_config.resetFOV();"> Field of View
+		<img class="restore" title="Reset FOV" src="restore.svg" onclick="navigation_config.resetCamera();"> Field of View
 	</h5>
 	<div style="display:flex">
 		<span class="h5 m-1" id="labelFOV">---</span>
@@ -177,13 +177,15 @@ class NavigationConfig extends Config {
 		this.save();
 	}
 
-	resetFOV(){
-		Config.options.space.cameraFOV = default_ariadne.space.cameraFOV;
+	setStartProjection(value){
+		Config.options.space.cameraType = value;
 		this.save();
 	}
 
-	setStartProjection(value){
-		Config.options.space.cameraType = value;
+	resetCamera(){
+		Config.options.space.cameraFOV = default_ariadne.space.cameraFOV;
+		Config.options.space.cameraType = default_ariadne.space.cameraType;
+		this.resetTool('orthographic');		
 		this.save();
 	}
 
