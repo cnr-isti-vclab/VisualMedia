@@ -1,6 +1,6 @@
 <div class="col-12">
 	<h5>
-		<img class="restore" title="Reset colors options to default" src="restore.svg" onclick="material_config.reset();"> Color
+		<img class="restore" title="Reset colors options to default" src="restore.svg" onclick="material_config.materialReset();"> Color
 	</h5>
 
 	<div class="row">
@@ -17,6 +17,16 @@
 		<p class="col-12">
 			<img src="skins/dark/color.png" width="24px"> <input type="checkbox" id="i_toggleColor" onchange="material_config.setTool('color', this.checked);" checked> Texture/Solid toggle</input>
 		</p>
+		
+		<p class="col-6">Glossyness:</p>
+		<div class="col-6">
+			<select id="i_glossy"  class="form-control  form-control-sm"  onchange="material_config.setGlossy(this.value);">
+				<option value="0">Dull</option>
+				<option value="2">Low</option>
+				<option value="4">Medium</option>
+				<option value="6">Shiny</option>
+			</select>
+		</div>
 	</div>
 
 	<hr/>
@@ -55,6 +65,8 @@ class MaterialConfig extends Config {
 		document.querySelector('#i_startcolor').value = this.scene().startColor;
 		document.querySelector('#i_solidcolor').value = this.scene().solidColor;
 		document.querySelector('#i_toggleColor').checked = this.tools().includes("color");
+		// glossy
+		document.querySelector('#i_glossy').value = this.scene().specular;		
 	}
 	setStartColor(value) {
 		this.scene().startColor = value;
@@ -65,17 +77,21 @@ class MaterialConfig extends Config {
 		this.save();
 	}
 
-	reset() {
+	setGlossy(value){
+		this.scene().specular = parseInt(value);
+		this.save();
+	}
+
+	materialReset() {
 		this.scene().startColor = default_ariadne.scene[0].startColor;
 		this.scene().solidColor = default_ariadne.scene[0].solidColor;
 		this.resetTool('color');
-
+		this.scene().specular = default_ariadne.scene[0].specular;
 		this.save();
 	}
 }
 
 let material_config = new MaterialConfig();
-
 
 
 class LightingConfig extends Config {

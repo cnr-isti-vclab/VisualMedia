@@ -78,9 +78,8 @@ class NavigationConfig extends Config {
 		//fov
 		document.querySelector('#rangeFOV').value = Config.options.space.cameraFOV;
 		document.querySelector('#labelFOV').innerHTML = Config.options.space.cameraFOV + "°";
-		
+		//camera
 		document.getElementById("i_toggleOrtho").checked = this.tools().includes("orthographic");
-
 		document.getElementById("i_startCamera").value = Config.options.space.cameraType;		
 	}
 

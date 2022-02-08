@@ -140,7 +140,8 @@ var default_ariadne = {
 		"url": "",
 		"matrix": null,
 		"startColor": "color",
-		"solidColor": "#aaaaaa"
+		"solidColor": "#aaaaaa",
+		"specular": 2
 		}
 	],
 	"widgets": {
