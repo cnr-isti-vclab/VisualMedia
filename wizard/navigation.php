@@ -22,16 +22,22 @@
 		<span class="h5 m-1" id="labelFOV">---</span>
 		<input style="flex-grow:1" type="range" min="5" max="85" step="1.0" id="rangeFOV" onInput="updatingFOV(this.value);" onChange="navigation_config.setFOV(this.value);">
 	</div>
-
-
 	<div style="display:flex; gap:7px;">
 		<button style="flex-grow:1; flex-basis:0;" class="btn btn-secondary btn-sm" title="15°" onclick="navigation_config.setFOV(15);">Tele</button>
 		<button style="flex-grow:1; flex-basis:0;" class="btn btn-secondary btn-sm" title="35°" onclick="navigation_config.setFOV(35);">Human</button>
 		<button style="flex-grow:1; flex-basis:0;" class="btn btn-secondary btn-sm" title="80°" onclick="navigation_config.setFOV(80);">FishEye</button>
 	</div>
 
-	<div class="mt-2">
-		<p>Initial projection (perspective/ortho) placeholder.</p>
+	<div class="mt-4">
+		<div class="row">
+			<p class="col-6">Start with view:</p>
+			<div class="col-6">
+				<select id="i_startCamera"  class="form-control  form-control-sm"  onchange="navigation_config.setStartProjection(this.value);">
+					<option value="perspective">Perspective</option>
+					<option value="orthographic">Orthographic</option>
+				</select>
+			</div>
+		</div>
 		<p><img src="skins/dark/orthographic.png" width="24px"> 
 			<input type="checkbox" id="i_toggleOrtho" onchange="navigation_config.setTool('orthographic', this.checked);" checked>
 			Perspective/Ortho toggle</input>
@@ -72,6 +78,10 @@ class NavigationConfig extends Config {
 		//fov
 		document.querySelector('#rangeFOV').value = Config.options.space.cameraFOV;
 		document.querySelector('#labelFOV').innerHTML = Config.options.space.cameraFOV + "°";
+		
+		document.getElementById("i_toggleOrtho").checked = this.tools().includes("orthographic");
+
+		document.getElementById("i_startCamera").value = Config.options.space.cameraType;		
 	}
 
 	reset() {
@@ -111,16 +121,6 @@ class NavigationConfig extends Config {
 		Config.options.widgets.grid.atStartup = false;
 		Config.options.widgets.trackSphere.atStartup = true;
 		Config.options.widgets.compass.atStartup = false;
-		this.save();
-	}
-
-	setFOV(newVal){
-		Config.options.space.cameraFOV = newVal;
-		this.save();
-	}
-
-	resetFOV(){
-		Config.options.space.cameraFOV = default_ariadne.space.cameraFOV;
 		this.save();
 	}
 
@@ -171,6 +171,21 @@ class NavigationConfig extends Config {
 		}
 		this.save();
 			this.update();	
+	}
+
+	setFOV(newVal){
+		Config.options.space.cameraFOV = newVal;
+		this.save();
+	}
+
+	resetFOV(){
+		Config.options.space.cameraFOV = default_ariadne.space.cameraFOV;
+		this.save();
+	}
+
+	setStartProjection(value){
+		Config.options.space.cameraType = value;
+		this.save();
 	}
 
 	reset() {
