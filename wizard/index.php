@@ -54,6 +54,9 @@
 		<li>
 			<a href="#interface">Interface</a>
 		</li>
+		<li>
+			<a href="#annotations">Annotations</a>
+		</li>
 	</ul>
 	<div class="container-fluid" style="padding:0px; margin:0px; display:flex; flex:2;">
 		<iframe id="media" allowfullscreen allow="fullscreen" style="border-width:0px" class="vms" src="3d.php"></iframe>
@@ -62,6 +65,7 @@
 			<div id="material" class=""><?php include('material.php'); ?></div>
 			<div id="navigation" class=""><?php include('navigation.php'); ?></div>
 			<div id="interface" class=""><?php include('look.php'); ?></div>
+			<div id="annotations" class=""><?php include('annotations.php'); ?></div>
 
 			<div class="active" style="padding:15px">
 				<button class="btn btn-secondary btn-sm btn-block" name="reset"> Reset everything </button>
@@ -75,7 +79,7 @@
 wizardStep(window.location.hash);
 function wizardStep(step) {
 	step = step.substring(1); //remove #
-	for( let div of document.querySelectorAll('#alignment, #material, #navigation, #interface'))
+	for( let div of document.querySelectorAll('#alignment, #material, #navigation, #interface, #annotations'))
 		div.classList.toggle('active', div.id == step);
 }
 
