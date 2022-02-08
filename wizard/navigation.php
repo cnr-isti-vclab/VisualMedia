@@ -1,9 +1,8 @@
 <div class="col-12">
 	<h5>Object Manipulation</h5>
-	<p><span id="trackname"></span></p>
 	<div class="d-flex" style="gap:10px">
-		<button style="flex-grow:1; flex-basis:0;" class="btn btn-secondary" id="bt_setTurntable" onclick="navigation_config.setTurntable();">TURNTABLE</button>
-		<button style="flex-grow:1; flex-basis:0;" class="btn btn-secondary" id="bt_setSphere" onclick="navigation_config.setSphere();">SPHERE</button>				
+		<button style="flex-grow:1; flex-basis:0;" class="btn btn-secondary" id="bt_setTurntable" onclick="navigation_config.setTurntable();"><img src="skins/icons/turntable.png" width="80px">TURNTABLE</button>
+		<button style="flex-grow:1; flex-basis:0;" class="btn btn-secondary" id="bt_setSphere" onclick="navigation_config.setSphere();"><img src="skins/icons/sphere.png" width="80px">SPHERE</button>				
 	</div>
 
 	<hr/>
@@ -60,20 +59,16 @@ class NavigationConfig extends Config {
 		let options = Config.options;
 		
 		// trackball
-		let tname = "error";
 		switch(Config.options.trackball.type) {
 		case "TurntablePanTrackball": 
-			tname = "Turntable with Panning";
 			document.getElementById("bt_setTurntable").classList.add("btn-info");
 			document.getElementById("bt_setSphere").classList.remove("btn-info");
 			break;
 		case "SphereTrackball": 
-			tname = "Spherical Trackball";
 			document.getElementById("bt_setTurntable").classList.remove("btn-info");
 			document.getElementById("bt_setSphere").classList.add("btn-info");
 			break;
 		}
-		document.querySelector('#trackname').innerHTML = tname;
 		
 		//fov
 		document.querySelector('#rangeFOV').value = Config.options.space.cameraFOV;
