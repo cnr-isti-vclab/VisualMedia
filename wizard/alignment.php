@@ -106,8 +106,6 @@
 	</div>
 </div>
 
-<hr/>
-
 <script>
 class ModelConfig extends Config {
 	constructor(frame, options) {

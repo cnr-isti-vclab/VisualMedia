@@ -82,7 +82,6 @@
 			<input type="checkbox" class="switch" onchange="look.setNavCube(this.checked);" id="cb_navcube"> Navigation Cube</p>
 </div>
 
-<hr/>
 
 <script>
 class Look extends Config {

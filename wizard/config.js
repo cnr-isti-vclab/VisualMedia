@@ -71,11 +71,11 @@ class Config {
 	}
 
 	
-	save() {
-		Config.saveOptions();
+	save(skiprefresh) {
+		Config.saveOptions(skiprefresh);
 	}
 
-	static saveOptions() {
+	static saveOptions(skiprefresh) {
 		for(let child of Config.children)
 			child.update();
 		let json = JSON.stringify(Config.options);
@@ -87,7 +87,8 @@ class Config {
 		xhr.onreadystatechange = (event) => {
 			if (xhr.readyState === 4) {
 				if (xhr.status === 200) {
-					Config.refresh();
+					if(!skiprefresh)
+						Config.refresh();
 				} else {
 					if(this.onError)
 						this.onError(xhr.statusText);

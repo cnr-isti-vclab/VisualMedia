@@ -8,11 +8,11 @@
     "skin": "light",
     "tools": [
         "home",
-        "light",
         "measure",
         "sections",
         "full",
-        "help"
+        "help",
+        "light"
     ],
     "space": {
         "centerMode": "scene",
@@ -60,27 +60,10 @@
         {
             "id": "mesh",
             "url": "",
-            "matrix": [
-                -0.6051924549979862,
-                0.0269825712140217,
-                0.7956217903402293,
-                0,
-                0.7951512357482701,
-                -0.02775342183392094,
-                0.6057757504757921,
-                0,
-                0.038426614494511305,
-                0.9992505633859755,
-                -0.004659063350229665,
-                0,
-                0,
-                0,
-                0,
-                1
-            ],
+            "matrix": null,
             "startColor": "color",
             "solidColor": "#aaaaaa",
-            "specular": 2
+            "specular": 6
         }
     ],
     "widgets": {
@@ -96,9 +79,12 @@
         },
         "compass": {
             "atStartup": false
+        },
+        "navCube": {
+            "atStartup": false
         }
     },
-    "spots": {},
+    "spots": [],
     "bookmark": {
         "ID": {
             "view": {

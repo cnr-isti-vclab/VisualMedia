@@ -55,7 +55,6 @@
 	</div>
 </div>
 
-<hr/>
 
 <script>
 class MaterialConfig extends Config {

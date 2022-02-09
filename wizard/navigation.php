@@ -47,7 +47,7 @@
 	</div>
 </div>
 
-<hr/>
+
 
 <script>
 class NavigationConfig extends Config {

@@ -26,8 +26,6 @@
 	</div>
 </div>
 
-<hr/>
-
 <script>
 class Annotations extends Config {
 	constructor(frame, options) {
