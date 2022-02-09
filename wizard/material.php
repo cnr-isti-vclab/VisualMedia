@@ -46,11 +46,11 @@
 
 	<div class="row mt-3">
 		<p class="col-12">
-		<img src="skins/dark/lighting.png" width="24px"> <input type="checkbox" id="i_toggleLighting" onchange="lighting_config.setTool('lighting', this.checked);" checked>Lighting on/off toggle</input>
+		<img src="skins/dark/lighting.png" width="24px"> <input type="checkbox" class="switch" id="i_toggleLighting" onchange="lighting_config.setTool('lighting', this.checked);" checked>Lighting on/off toggle</input>
 		</p>
 
 		<p class="col-12">
-		<img src="skins/dark/light.png" width="24px"> <input type="checkbox" id="i_toggleLight" onchange="lighting_config.setTool('light', this.checked);" checked>Light direction tool</input>
+		<img src="skins/dark/light.png" width="24px"> <input type="checkbox"  class="switch"id="i_toggleLight" onchange="lighting_config.setTool('light', this.checked);" checked>Light direction tool</input>
 		</p>
 	</div>
 </div>

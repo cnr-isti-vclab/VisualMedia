@@ -44,15 +44,23 @@
 			<input type="checkbox" name="tools[]" value="home"    style="display:none">
 			<input type="checkbox" name="tools[]" value="zoomin"  style="display:none">
 			<input type="checkbox" name="tools[]" value="zoomout" style="display:none">
-			<input type="checkbox" name="tools[]" value="lighting">     <img src="skins/dark/lighting.png" width="24px"> Lighting</br>
-			<input type="checkbox" name="tools[]" value="light">        <img src="skins/dark/lightcontrol.png" width="24px"> Light Direction</br>
-			<input type="checkbox" name="tools[]" value="measure">      <img src="skins/dark/measure.png" width="24px"> Measure</br>
-			<input type="checkbox" name="tools[]" value="pick">         <img src="skins/dark/pick.png" width="24px"> Picking</br>
-			<input type="checkbox" name="tools[]" value="sections">     <img src="skins/dark/sections.png" width="24px"> Sections</br>
-			<input type="checkbox" name="tools[]" value="color">        <img src="skins/dark/color.png" width="24px"> Solid Color</br>
-			<input type="checkbox" name="tools[]" value="orthographic"> <img src="skins/dark/orthographic.png" width="24px"> Orthographic</br>
+			<p><img src="skins/dark/lighting.png" width="26px"> Lighting 
+				<input type="checkbox" name="tools[]" class="switch" value="lighting"></p>
+			<p><img src="skins/dark/lightcontrol.png" width="26px"> Light Direction
+				<input type="checkbox" name="tools[]" class="switch" value="light"></p>
+			<p><img src="skins/dark/measure.png" width="24px"> Measure
+				<input type="checkbox" name="tools[]" class="switch" value="measure"></p>
+			<p><img src="skins/dark/pick.png" width="24px"> Picking
+				<input type="checkbox" name="tools[]" class="switch" value="pick"></p>
+			<p><img src="skins/dark/sections.png" width="24px"> Sections
+				<input type="checkbox" name="tools[]" class="switch" value="sections"></p>
+			<p><img src="skins/dark/color.png" width="24px"> Solid Color
+				<input type="checkbox" name="tools[]" class="switch" value="color"></p>
+			<p><img src="skins/dark/orthographic.png" width="24px"> Orthographic
+				<input type="checkbox" name="tools[]" class="switch" value="orthographic"></p>
 			<input type="checkbox" name="tools[]" value="hotspot" style="display:none">
-			<input type="checkbox" name="tools[]" value="full"> <img src="skins/dark/full.png" width="24px"> Full Screen</br>
+			<p><img src="skins/dark/full.png" width="24px"> Full Screen
+				<input type="checkbox" name="tools[]" class="switch" value="full"></p>
 			<input type="checkbox" name="tools[]" value="help"    style="display:none">
 		</div>
 	</div>
@@ -62,11 +70,16 @@
 		<h5>
 		<img class="restore" title="Reset widgets to default" src="restore.svg" onclick="look.resetWidgets();"> Widgets
 		</h5>
-		<p id="cbl_basegrid"><input type="checkbox" onchange="look.setBaseGrid(this.checked);" id="cb_basegrid"> Base Grid</p>
-		<p id="cbl_tracksphere"><input type="checkbox" onchange="look.setTrackSphere(this.checked);" id="cb_tracksphere"> Track Sphere</p>
-		<p><input type="checkbox" onchange="look.setCanonicalViews(this.checked);" id="cb_canonicalviews"> Canonical Views</p>
-		<p id="cbl_compass"><input type="checkbox" onchange="look.setCompass(this.checked);" id="cb_compass"> Compass</p>
-		<p><input type="checkbox" onchange="look.setNavCube(this.checked);" id="cb_navcube"> Navigation Cube</p>
+		<p id="cbl_basegrid">
+			<input type="checkbox" class="switch" onchange="look.setBaseGrid(this.checked);" id="cb_basegrid"> Base Grid</p>
+		<p id="cbl_tracksphere">
+			<input type="checkbox" class="switch" onchange="look.setTrackSphere(this.checked);" id="cb_tracksphere"> Track Sphere</p>
+		<p>
+			<input type="checkbox" class="switch" onchange="look.setCanonicalViews(this.checked);" id="cb_canonicalviews"> Canonical Views</p>
+		<p id="cbl_compass">
+			<input type="checkbox" class="switch" onchange="look.setCompass(this.checked);" id="cb_compass"> Compass</p>
+		<p>
+			<input type="checkbox" class="switch" onchange="look.setNavCube(this.checked);" id="cb_navcube"> Navigation Cube</p>
 </div>
 
 <hr/>

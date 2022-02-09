@@ -1,8 +1,8 @@
 <div class="col-12">
 	<h5>Object Manipulation</h5>
 	<div class="d-flex" style="gap:10px">
-		<button style="flex-grow:1; flex-basis:0;" class="btn btn-secondary" id="bt_setTurntable" onclick="navigation_config.setTurntable();"><img src="skins/icons/turntable.png" width="80px">TURNTABLE</button>
-		<button style="flex-grow:1; flex-basis:0;" class="btn btn-secondary" id="bt_setSphere" onclick="navigation_config.setSphere();"><img src="skins/icons/sphere.png" width="80px">SPHERE</button>				
+		<button style="flex-grow:1; flex-basis:0;" class="btn btn-secondary btn-sm" id="bt_setTurntable" onclick="navigation_config.setTurntable();"><img src="skins/icons/girabile.png" width="80px">TURNTABLE</button>
+		<button style="flex-grow:1; flex-basis:0;" class="btn btn-secondary btn-sm" id="bt_setSphere" onclick="navigation_config.setSphere();"><img src="skins/icons/trackball.png" width="80px">SPHERE</button>				
 	</div>
 
 	<hr/>
@@ -29,18 +29,21 @@
 
 	<div class="mt-4">
 		<div class="row">
-			<p class="col-6">Start with view:</p>
+			<p class="col-6">Initial projection:</p>
 			<div class="col-6">
 				<select id="i_startCamera"  class="form-control  form-control-sm"  onchange="navigation_config.setStartProjection(this.value);">
 					<option value="perspective">Perspective</option>
 					<option value="orthographic">Orthographic</option>
 				</select>
 			</div>
+
+			<p class="col-12 mt-2"><img src="skins/dark/orthographic.png" width="24px"> 
+				<input type="checkbox" id="i_toggleOrtho" class="switch" onchange="navigation_config.setTool('orthographic', this.checked);" 	checked/>
+				Perspective/Ortho toggle
+			</p>
+
 		</div>
-		<p><img src="skins/dark/orthographic.png" width="24px"> 
-			<input type="checkbox" id="i_toggleOrtho" onchange="navigation_config.setTool('orthographic', this.checked);" checked>
-			Perspective/Ortho toggle</input>
-		</p>
+
 	</div>
 </div>
 

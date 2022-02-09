@@ -71,6 +71,9 @@
 
 
 
+.switch { float:right; }
+
+
 </style>
 <script>
 //needed before initializing the various panels.
@@ -139,6 +142,8 @@
 wizardStep(window.location.hash);
 
 function wizardStep(step) {
+	if(!step)
+		step = '#alignment';
 	for(let li of document.querySelectorAll('.wizard-progress li'))
 		li.classList.remove('active');
 	let li = document.querySelector(`a[href='${step}']`).parentElement;
