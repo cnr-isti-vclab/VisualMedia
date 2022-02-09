@@ -164,21 +164,20 @@ switch(trackball.type) {
 }
 
 let spots = {};
-if(options.spots) {
-	for (let id in options.spots) {
-		spots[id] = {
-			mesh            : "sphere",
-			color           : options.spots[id].color,
-			alpha           : 0.7,
-			alphaHigh       : 0.9,
-			transform : { 
-				translation : options.spots[id].pos,
-				scale : [options.spots[id].radius*options.space.scaleFactor, options.spots[id].radius*options.space.scaleFactor, options.spots[id].radius*options.space.scaleFactor],
-				},
-			visible         : false,
-		}
+for (let id in options.spots) {
+	spots[id] = {
+		mesh            : "sphere",
+		color           : options.spots[id].color,
+		alpha           : 0.7,
+		alphaHigh       : 0.9,
+		transform : { 
+			translation : options.spots[id].pos,
+			scale : [options.spots[id].radius*options.space.scaleFactor, options.spots[id].radius*options.space.scaleFactor, options.spots[id].radius*options.space.scaleFactor],
+			},
+		visible         : false,
 	}
 }
+if(Object.keys(options.spots).length) options.tools.push('hotspot');
 
 let tools = { 
 	home:     { title: "Home",                  icon: "home.png"},

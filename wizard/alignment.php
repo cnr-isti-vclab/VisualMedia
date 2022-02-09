@@ -11,11 +11,11 @@
 
 <div id="straightening_panel" class="col-12">
 	<h5>
-	<img class="restore" title="Reset model orientation" src="restore.svg" onclick="model_config.resetOrientation();">
+	<img class="restore" title="Reset Model Orientation" src="restore.svg" onclick="model_config.resetOrientation();">
 	 Model Orientation
-	</h5>			
+	</h5>
 	<div id="sm_instructions">
-		<p>This is how the viewer will look and navigate. If the model is not in the correct orientation, you can re-orient it using this button:</p>	
+		<p>This is how the viewer will look and navigate. If the model is not in the correct orientation, you can re-orient it using this button:</p>
 		<button class="btn btn-secondary btn-block" id="smStart" onclick="model_config.startStraightMode()">Straighten your model</button>
 	</div>
 	<div class="d-none" id="smControls">
