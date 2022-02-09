@@ -564,24 +564,7 @@ function updateCube(trackState) {
 		transf = "translateZ(-100px) rotateX("+ (-trackState[1]) +"deg) rotateY("+ (-trackState[0]) +"deg)";
 	}
 	else if (trackType === SphereTrackball){
-		//transf = "translateZ(-100px) matrix3d(0.583333, 0.186887, 0.79044, 0, -0.52022, 0.833333, 0.186887, 0, -0.623773, -0.52022, 0.583333, 0, 0, 0, 0, 1)";
-		
-		let m = trackState[0];
-		
-		//transf = "translateZ(-100px) matrix3d(" + m[0] + ", " + m[1] + ", " + m[2] + ", " + m[3] + ", " + m[4] + ", " + m[5] + ", " + m[6] + ", " + m[7] + ", " + m[8] + ", " + m[9] + ", " + m[10] + ", " + m[11] + ", " + m[12] + ", " + m[13] + ", " + m[14] + ", " + m[15] + ")";
-		
-		transf = "translateZ(-100px) matrix3d(" + 
-		m[0]  + ", "  + m[1]  + ", "  + m[2]  + ", "  + m[3]  + ", " + 
-		m[4]  + ", "  + m[5]  + ", "  + m[6]  + ", "  + m[7]  + ", " + 
-		m[8]  + ", "  + m[9]  + ", "  + m[10] + ", "  + m[11] + ", " + 
-		m[12] + ", "  + m[13] + ", "  + m[14] + ", "  + m[15] + ")";
-		
-		transf = "translateZ(-100px) matrix3d(" + 
-		-m[0]  + ", "  + m[1]  + ", "  + -m[2]  + ", "  + m[3]  + ", " + 
-		-m[4]  + ", "  + m[5]  + ", "  + -m[6]  + ", "  + m[7]  + ", " + 
-		-m[8]  + ", "  + m[9]  + ", "  + -m[10] + ", "  + m[11] + ", " + 
-		-m[12] + ", "  + m[13] + ", "  + -m[14] + ", "  + m[15] + ")";
-		
+		let m = trackState[0];	
 		transf = "translateZ(-100px) matrix3d(" + 
 		-m[0]  + ", "  + m[1]  + ", "  + -m[2]  + ", "  + m[3]  + ", " + 
 		-m[4]  + ", "  + m[5]  + ", "  + -m[6]  + ", "  + m[7]  + ", " + 
