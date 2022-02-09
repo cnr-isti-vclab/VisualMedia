@@ -157,6 +157,9 @@ var default_ariadne = {
 		},
 		"compass" : {
 			"atStartup" : false
+		},
+		"navCube" : {
+			"atStartup" : false
 		}		
 	},
 	"spots": {},

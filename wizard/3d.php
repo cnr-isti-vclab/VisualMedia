@@ -10,6 +10,7 @@ $options = json_decode($data);
 <!--STYLESHEET-->
 <link type="text/css" rel="stylesheet" href="stylesheet/3dhop.css"/>
 <link type="text/css" rel="stylesheet" href="stylesheet/3dhop_panels.css"/>
+<link type="text/css" rel="stylesheet" href="stylesheet/3dhop_navcube.css"/>
 <!--SPIDERGL-->
 <script type="text/javascript" src="js/spidergl.js"></script>
 <!--JQUERY-->
@@ -135,6 +136,20 @@ switch($type) {
 	<div id="compass" class="m-2 d-none">
 		<center>
 			<canvas class="mouse" id="compassCanvas" style="width:100; height:100;" onclick="compassClick()"/>
+		<center>
+	</div>
+	<div id="navCube" class="m-2 d-none">
+		<center>
+			<div class="cubeScene mouse">
+			  <div class="cube">
+				<div class="cube__face cube__face--front" onclick="viewFrom('front');">FRONT</div>
+				<div class="cube__face cube__face--back" onclick="viewFrom('back');">BACK</div>
+				<div class="cube__face cube__face--right" onclick="viewFrom('right');">RIGHT</div>
+				<div class="cube__face cube__face--left" onclick="viewFrom('left');">LEFT</div>
+				<div class="cube__face cube__face--top" onclick="viewFrom('top');">ABOVE</div>
+				<div class="cube__face cube__face--bottom" onclick="viewFrom('bottom');">BELOW</div>
+			  </div>
+			</div>
 		<center>
 	</div>	
 	<div id="canonicalViews" class="m-2 d-none">			
@@ -529,12 +544,37 @@ function viewFrom(direction){
 
 //-------------------------------------------------------------------------
 
-// COMPASS
+
 function onTrackballUpdate(trackState){
 	
 	if(options.widgets.compass.atStartup)
 		updateCompass(sglDegToRad(trackState[0]), sglDegToRad(trackState[1]));
+
+	if(options.widgets.navCube.atStartup)
+		updateCube(trackState);
 }
+
+// CUBE
+function updateCube(trackState) {
+	
+	let trackType = presenter._scene.trackball.type;
+	let transf;
+	
+	if(trackType === TurntablePanTrackball){
+		transf = "translateZ(-100px) rotateX("+ (-trackState[1]) +"deg) rotateY("+ (-trackState[0]) +"deg)";
+	}
+	else if (trackType === SphereTrackball){
+		//transf = "translateZ(-100px) matrix3d(0.583333, 0.186887, 0.79044, 0, -0.52022, 0.833333, 0.186887, 0, -0.623773, -0.52022, 0.583333, 0, 0, 0, 0, 1)";
+		
+		let m = trackState[0];
+		
+		transf = "translateZ(-100px) matrix3d(" + m[0] + ", " + m[1] + ", " + m[2] + ", " + m[3] + ", " + m[4] + ", " + m[5] + ", " + m[6] + ", " + m[7] + ", " + m[8] + ", " + m[9] + ", " + m[10] + ", " + m[11] + ", " + m[12] + ", " + m[13] + ", " + m[14] + ", " + m[15] + ")";		
+	}
+	
+    $('.cube').css({"transform":transf});
+}
+
+// COMPASS
 function updateCompass(angle, tilt) {
 	$('#compassCanvas').attr('width', 100);
 	$('#compassCanvas').attr('height',100);
@@ -617,6 +657,8 @@ $(document).ready(function(){
 		document.getElementById("canonicalViews").classList.remove("d-none");
 	if(options.widgets.compass.atStartup)
 		document.getElementById("compass").classList.remove("d-none");
+	if(options.widgets.navCube.atStartup)
+		document.getElementById("navCube").classList.remove("d-none");		
 
 	// TOASTR configuration
 		toastr.options = {

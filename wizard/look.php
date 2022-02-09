@@ -64,9 +64,9 @@
 		</h5>
 		<p id="cbl_basegrid"><input type="checkbox" onchange="look.setBaseGrid(this.checked);" id="cb_basegrid"> Base Grid</p>
 		<p id="cbl_tracksphere"><input type="checkbox" onchange="look.setTrackSphere(this.checked);" id="cb_tracksphere"> Track Sphere</p>
-		<p><input type="checkbox" onchange="look.setCanonicalviews(this.checked);" id="cb_canonicalviews"> Canonical Views</p>
+		<p><input type="checkbox" onchange="look.setCanonicalViews(this.checked);" id="cb_canonicalviews"> Canonical Views</p>
 		<p id="cbl_compass"><input type="checkbox" onchange="look.setCompass(this.checked);" id="cb_compass"> Compass</p>
-			
+		<p><input type="checkbox" onchange="look.setNavCube(this.checked);" id="cb_navcube"> Navigation Cube</p>
 </div>
 
 <hr/>
@@ -129,6 +129,7 @@ class Look extends Config {
 		document.getElementById("cb_basegrid").checked = options.widgets.grid.atStartup;
 		document.getElementById("cb_tracksphere").checked = options.widgets.trackSphere.atStartup;
 		document.getElementById("cb_compass").checked = options.widgets.compass.atStartup;
+		document.getElementById("cb_navcube").checked = options.widgets.navCube.atStartup
 		
 		// depending on which trackball, show the appropriate widget
 		if(options.trackball.type === "TurntablePanTrackball"){
@@ -166,7 +167,7 @@ class Look extends Config {
 		Config.options.widgets.trackSphere.atStartup = value;
 		this.save();
 	}
-	setCanonicalviews(value){	
+	setCanonicalViews(value){	
 		Config.options.widgets.canonicalViews.atStartup = value;
 		this.save();
 	}
@@ -174,7 +175,11 @@ class Look extends Config {
 		Config.options.widgets.compass.atStartup = value;
 		this.save();
 	}
-
+	setNavCube(value){	
+		Config.options.widgets.navCube.atStartup = value;
+		this.save();
+	}
+	
 	resetWidgets(){
 		let trackball = Config.options.trackball;
 		let widgets = Config.options.widgets;
@@ -186,9 +191,9 @@ class Look extends Config {
 			widgets.grid.atStartup = false;
 			widgets.trackSphere.atStartup = default_ariadne.widgets.trackSphere.atStartup;	
 		}	
-		widgets.compass.atStartup = default_ariadne.widgets.compass.atStartup;
 		widgets.canonicalViews.atStartup = default_ariadne.widgets.canonicalViews.atStartup;
 		widgets.compass.atStartup = default_ariadne.widgets.compass.atStartup;		
+		widgets.navCube.atStartup = default_ariadne.widgets.navCube.atStartup;		
 		this.save();
 	}
 }
