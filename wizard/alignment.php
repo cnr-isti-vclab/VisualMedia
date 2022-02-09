@@ -384,7 +384,7 @@ function viewFrom(direction){
 	if(trackType === "TurntablePanTrackball") {
 		presenter.animateToTrackballPosition([...angles[direction], 0.0, 0.0, 0.0, distance]);
 	} else {
-		presenter.animateToTrackballPosition([...axes[direction], 0.0, 0.0, 0.0, distance]);
+		presenter.animateToTrackballPosition([axes[direction], 0.0, 0.0, 0.0, distance]);
 	}
 
 	let div = document.querySelector(`#v${direction}`);
