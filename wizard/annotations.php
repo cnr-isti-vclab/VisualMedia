@@ -1,11 +1,11 @@
-<div id="hotspot_panel">
+<div id="hotspot_panel" class="col-12">
 	<h5>
 	Hotspots
 	</h5>
 
 	<div id="spot_instructions">
-		<p>Hotspots are clickable geometries that you can link to additional information.</br>You can add hotspots to the model by using this button:</p>	
-		<button class="btn btn-secondary btn-block" id="spotStart" onclick="annotations.startSpotMode()">Configure Hotspots</button>
+		<p>Hotspots are clickable geometries that you can link to additional information. You can add hotspots to the model by using this button:</p>
+		<button class="btn btn-secondary btn-block" id="spotStart" onclick="annotations.startSpotInterface()">Configure Hotspots</button>
 	</div>
 	<div class="d-none" id="annotationsControls">
 		<div class="m-1">
@@ -18,7 +18,7 @@
 			<tbody id="spots-panel"></tbody>
 		</table>
 		</div>
-		<button class="btn btn-sm btn-secondary mb-2" title="Exit Discarding Changes" onclick="annotations.reset()">Remove all hotspots</button>		
+		<!--button class="btn btn-sm btn-secondary mb-2" title="Exit Discarding Changes" onclick="annotations.resetAnnotations()">Remove all hotspots</button-->
 		<div class="m-1 text-right">
 			<button class="btn btn-sm btn-danger" title="Exit Discarding Changes" onclick="annotations.cancelSpots()">CANCEL</button>
 			<button class="btn btn-sm btn-success" title="Exit Saving Changes" onclick="annotations.applySpots()">APPLY</button>
@@ -58,8 +58,7 @@ class Annotations extends Config {
 
 		Config.options.spots[newID] = newSpot;
 
-		if(!Config.options.tools.includes('hotspot')) 
-			Config.options.tools.push('hotspot');
+
 
 		Config.options.space.scaleFactor = 0.02/this.presenter.sceneRadiusInv;
 
@@ -160,10 +159,10 @@ class Annotations extends Config {
 		delete Config.options.spots[spotID];
 		this.fillSpotsPanel();
 		this.displaySpots();
-		if(Object.keys(Config.options.spots).length==0) Config.options.tools.splice(Config.options.tools.indexOf('hotspot'), 1);
+
 	}
 
-	startSpotMode() {
+	startSpotInterface() {
 		this.fillSpotsPanel();
 		document.getElementById("spot_instructions").classList.add("d-none");
 		document.getElementById("annotationsControls").classList.remove("d-none");
@@ -175,26 +174,28 @@ class Annotations extends Config {
 		this.presenter.enablePickpointMode(true);
 		this.presenter.setSpotVisibility(256, true, true);
 		this.presenter.enableOnHover(true);
-
-		if(Config.options.trackball.type === "TurntablePanTrackball")
-			this.presenter.animateToTrackballPosition([0.0, 0.0, 0.0, 0.0, 0.0, 1.4]);
-		else if (Config.options.trackball.type === "SphereTrackball")
-			this.presenter.animateToTrackballPosition([[ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ], 0.0, 0.0, 0.0, 1.4]);
+		viewFrom("front");
 	}
 
-	endSpotMode() {
+	endSpotInterface() {
 		document.getElementById("spot_instructions").classList.remove("d-none");
 		document.getElementById("annotationsControls").classList.add("d-none");
 	}
 
 	cancelSpots(){
-		this.endSpotMode();
+		this.endSpotInterface();
 		Config.refresh();
-		annotations = new Annotations('#media', 'update.php');
+		annotations = new Annotations();
 	}
 
 	applySpots() {
-		this.endSpotMode();
+		this.endSpotInterface();
+		this.save();
+	}
+
+	resetAnnotations(){
+		this.endSpotInterface();
+		Config.options.spots = {};
 		this.save();
 	}
 
@@ -212,12 +213,7 @@ class Annotations extends Config {
 //		let options = this.options;
 	}
 
-	reset() {
-		Config.options.spots = {};
-		this.fillSpotsPanel();
-		this.displaySpots();		
-		//this.save();
-	}
+
 }
 
 let annotations = new Annotations();
