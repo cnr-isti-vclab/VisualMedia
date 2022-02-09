@@ -1,6 +1,6 @@
 <div class="col-12">
 	<h5>
-		<img class="restore" title="Reset colors options to default" src="restore.svg" onclick="material_config.materialReset();"> Color
+		<img class="restore" title="Reset colors options to default" src="skins/icons/restore.svg" onclick="material_config.materialReset();"> Color
 	</h5>
 
 	<div class="row">
@@ -15,7 +15,7 @@
 		<p class="col-6">Solid color:</p>
 		<p class="col-6"><input type="color" id="i_solidcolor" onchange="material_config.setSolidColor(this.value);" value="#aaaaaa"></p>
 		<p class="col-12">
-			<img src="skins/dark/color.png" width="24px"> <input type="checkbox" id="i_toggleColor" onchange="material_config.setTool('color', this.checked);" checked> Texture/Solid toggle</input>
+			<img src="skins/dark/color.png" width="24px"> <input type="checkbox" class="switch" id="i_toggleColor" onchange="material_config.setTool('color', this.checked);" checked> Texture/Solid toggle</input>
 		</p>
 		
 		<p class="col-6">Glossiness:</p>
@@ -32,7 +32,7 @@
 	<hr/>
 
 	<h5>
-		<img class="restore" title="Reset lighting options to default" src="restore.svg" onclick="lighting_config.reset();"> Lighting:
+		<img class="restore" title="Reset lighting options to default" src="skins/icons/restore.svg" onclick="lighting_config.reset();"> Lighting:
 	</h5>
 	<div class="row">
 		<p class="col-6">Initial lighting:</p>

@@ -1,6 +1,6 @@
 <div class="col-12">
 	<h5>
-	<img class="restore" title="Reset skin to default" src="restore.svg" onclick="look.resetSkin();"> Skin
+	<img class="restore" title="Reset skin to default" src="skins/icons/restore.svg" onclick="look.resetSkin();"> Skin
 	</h5>
 
 	<div style="display:flex; justify-content:space-around; width:100%">
@@ -12,7 +12,7 @@
 	<hr/>
 
 	<h5>
-	<img class="restore" title="Reset background to default" src="restore.svg" onclick="look.resetBackground();"> Background
+	<img class="restore" title="Reset background to default" src="skins/icons/restore.svg" onclick="look.resetBackground();"> Background
 	</h5>
 	<div class="row">
 		<p class="col-6">Primary color:</p>
@@ -37,7 +37,7 @@
 	<hr/>
 
 	<h5>
-		<img class="restore" title="Reset tools to default" src="restore.svg" onclick="look.resetTools();"> Tools
+		<img class="restore" title="Reset tools to default" src="skins/icons/restore.svg" onclick="look.resetTools();"> Tools
 	</h5>
 	<div class="row">
 		<div class="col-12">
@@ -68,7 +68,7 @@
 	<hr/>
 
 		<h5>
-		<img class="restore" title="Reset widgets to default" src="restore.svg" onclick="look.resetWidgets();"> Widgets
+		<img class="restore" title="Reset widgets to default" src="skins/icons/restore.svg" onclick="look.resetWidgets();"> Widgets
 		</h5>
 		<p id="cbl_basegrid">
 			<input type="checkbox" class="switch" onchange="look.setBaseGrid(this.checked);" id="cb_basegrid"> Base Grid</p>

@@ -8,14 +8,14 @@
 	<hr/>
 
 	<h5>
-		<img class="restore" title="Reset initial view" src="restore.svg" onclick="navigation_config.resetInitialView();"> Initial View
+		<img class="restore" title="Reset initial view" src="skins/icons/restore.svg" onclick="navigation_config.resetInitialView();"> Initial View
 	</h5>
 	<button style="width:100%" class="btn btn-secondary btn-sm" onclick="navigation_config.useCurrentView();">Use Current View</button>
 		
 	<hr/>
 
 	<h5>
-		<img class="restore" title="Reset FOV" src="restore.svg" onclick="navigation_config.resetCamera();"> Field of View
+		<img class="restore" title="Reset FOV" src="skins/icons/restore.svg" onclick="navigation_config.resetCamera();"> Field of View
 	</h5>
 	<div style="display:flex">
 		<span class="h5 m-1" id="labelFOV">---</span>

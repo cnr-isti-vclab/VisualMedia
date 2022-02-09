@@ -11,7 +11,7 @@
 
 <div id="straightening_panel" class="col-12">
 	<h5>
-	<img class="restore" title="Reset Model Orientation" src="restore.svg" onclick="model_config.resetOrientation();">
+	<img class="restore" title="Reset Model Orientation" src="skins/icons/restore.svg" onclick="model_config.resetOrientation();">
 	 Model Orientation
 	</h5>
 	<div id="sm_instructions">
