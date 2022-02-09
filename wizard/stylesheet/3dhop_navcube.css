@@ -1,0 +1,55 @@
+/* 3DCUBE */
+.cubeScene {
+  width: 100px;
+  height: 100px;
+  margin: 20px;
+  perspective: 400px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.cube {
+  width: 100px;
+  height: 100px;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: translateZ(-100px);
+}
+
+.cube__face {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border: 2px solid black;
+  line-height: 100px;
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  user-select: none;
+}
+
+.cube__face--front  { 
+	background: hsla(  0, 0%, 50%, 1.0);
+	transform: rotateY(  0deg) translateZ(50px);	
+}
+.cube__face--right  { 
+	background: hsla( 60, 0%, 50%, 1.0);
+	transform: rotateY( 90deg) translateZ(50px);
+}
+.cube__face--back   { 
+	background: hsla(120, 0%, 50%, 1.0);
+	transform: rotateY(180deg) translateZ(50px);
+}
+.cube__face--left   { 
+	background: hsla(180, 0%, 50%, 1.0);
+	transform: rotateY(-90deg) translateZ(50px);
+}
+.cube__face--top    { 
+	background: hsla(240, 0%, 50%, 1.0);
+	transform: rotateX( 90deg) translateZ(50px);
+}
+.cube__face--bottom { 
+	background: hsla(300, 0%, 50%, 1.0);
+	transform: rotateX(-90deg) translateZ(50px);
+}
+
