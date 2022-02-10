@@ -1,6 +1,6 @@
 <div id="hotspot_panel" class="col-12">
 	<h5>
-	Hotspots
+	<img class="restore" title="Reset Hotspots" src="skins/icons/restore.svg" onclick="if(confirm('All hotspots will be deleted. Are you sure?')) annotations.resetAnnotations()"> Hotspots
 	</h5>
 
 	<div id="spot_instructions">
@@ -63,27 +63,10 @@ class Annotations extends Config {
 	}
 
 	displaySpots() {
-		this.presenter._scene.spots = {};
 		this.presenter._spotsProgressiveID = 1;
-		let spots = Config.options.spots;
-		let scaleFactor = Config.options.space.scaleFactor;
-
-		for (let id in spots) {
-			let newSpot = {
-				mesh            : "sphere",
-				color           : spots[id].color,
-				alpha           : 0.5,
-				alphaHigh       : 0.7,
-				transform : { 
-					translation : spots[id].pos,
-					scale : [spots[id].radius*scaleFactor, spots[id].radius*scaleFactor, spots[id].radius*scaleFactor],
-					},
-				visible         : spots[id].visible,
-			};
-			this.presenter._scene.spots[id] = this.presenter._parseSpot(newSpot);
-		}
-
+		this.presenter._scene.spots = this.presenter._parseSpots(window.frames[0].createSceneSpots(Config.options.spots, Config.options.space.scaleFactor));
 		this.presenter._scenePrepare();
+
 		this.presenter.repaint();
 
 		this.presenter._onEnterSpot = this.onEnterSpot;

@@ -179,21 +179,9 @@ switch(trackball.type) {
 }
 
 let spots = {};
-if(options.spots) {
-	for (let id in options.spots) {
-		spots[id] = {
-			mesh            : "sphere",
-			color           : options.spots[id].color,
-			alpha           : 0.7,
-			alphaHigh       : 0.9,
-			transform : { 
-				translation : options.spots[id].pos,
-				scale : [options.spots[id].radius*options.space.scaleFactor, options.spots[id].radius*options.space.scaleFactor, options.spots[id].radius*options.space.scaleFactor],
-				},
-			visible         : false,
-		}
-	}
-	if(Object.keys(options.spots).length) options.tools.push('hotspot');
+if (options.spots) {
+	spots = createSceneSpots(options.spots, options.space.scaleFactor);
+	options.tools.push('hotspot');
 }
 
 let tools = { 
@@ -281,19 +269,20 @@ function setup3dhop() {
 	presenter._onEndPickingPoint = onEndPick;
 //--POINT PICKING--
 
-//--SECTIONS--
-	sectiontoolInit();
-//--SECTIONS--
-
 //--HOTSPOTS--
 	presenter._onEnterSpot = onEnterSpot;
 	presenter._onLeaveSpot = onLeaveSpot;
 //--HOTSPOTS--
 
+//--SECTIONS--
+	sectiontoolInit();
+//--SECTIONS--
+
 	// start conditions - interface
+	presenter.setSpotVisibility(HOP_ALL, false, false);
 	colorSwitch((options.scene[0].startColor=="color")?false:true);
-	lightingSwitch();
 	cameraSwitch((options.space.cameraType=="orthographic")?false:true);
+	lightingSwitch();
 }
 
 function actionsToolbar(action) {
@@ -360,6 +349,26 @@ function onEndPick(point) {
 //--PICKPOINT--
 
 //--HOTSPOTS--
+function createSceneSpots(optionSpots, scaleFactor){
+	let spots = {};
+
+	for (let id in optionSpots) {
+		spots[id] = {
+			mesh            : "sphere",
+			color           : optionSpots[id].color,
+			alpha           : 0.7,
+			alphaHigh       : 0.9,
+			transform : { 
+				translation : optionSpots[id].pos,
+				scale : [optionSpots[id].radius*scaleFactor, optionSpots[id].radius*scaleFactor, optionSpots[id].radius*scaleFactor],
+				},
+			visible         : optionSpots[id].visible,
+		}
+	}
+
+	return spots;
+}
+
 function onEnterSpot(id) {
 	toastr.options.timeOut = 0;
 	toastr.info(options.spots[id].title);
