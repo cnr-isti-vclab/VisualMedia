@@ -69,6 +69,23 @@ SphereTrackball.prototype = {
 		this._minMaxPanX  = opt.minMaxPanX;
 		this._minMaxPanY  = opt.minMaxPanY;
 		this._minMaxPanZ  = opt.minMaxPanZ;
+	
+		// target paramenters
+		this._quatBegin = [0,0,0,1];
+		this._quatEnd = [0,0,0,1];
+		this._animationStage = 0.0;
+		this._targetPanX = this._startPanX;
+		this._targetPanY = this._startPanY;
+		this._targetPanZ = this._startPanZ;
+		this._targetDistance = this._startDistance;
+	
+		//animation data
+		this._isAnimating = false;
+		this._speedRot = Math.PI;
+		this._speedPanX = 1.0;
+		this._speedPanY = 1.0;
+		this._speedPanZ = 1.0;
+		this._speedDistance = 2.0;		
 		
 		this._pts    = [ [0.0, 0.0], [0.0, 0.0] ];
 		this._past = [0.0, 0.0];
@@ -147,25 +164,153 @@ SphereTrackball.prototype = {
 		this._computeMatrix();
 	},
 
-	animateToState : function (newstate) {
-		this.setState(newstate);	//no animation for sphere, just set
+	animateToState : function (newstate, newtime) {
+		this._isAnimating = false;	// stop animation
+		
+		//setup
+		this._quatBegin = SglQuat.from44(this._rotMatrix);
+		this._quatEnd = SglQuat.from44(newstate[0]);
+		this._targetPanX = this._clamp(newstate[1], this._minMaxPanX[0], this._minMaxPanX[1]);
+		this._targetPanY = this._clamp(newstate[2], this._minMaxPanY[0], this._minMaxPanY[1]);
+		this._targetPanZ = this._clamp(newstate[3], this._minMaxPanZ[0], this._minMaxPanZ[1]);
+		this._targetDistance = this._clamp(newstate[4], this._minMaxDist[0], this._minMaxDist[1]);		
+		
+		// setting base velocities
+		this._speedRot = Math.PI;
+		this._speedPanX = 1.0;
+		this._speedPanY = 1.0;
+		this._speedPanZ = 1.0;
+		this._speedDistance = 2.0;
+		
+		let timeAngle    = Math.abs(sglDegToRad(this._angle(this._quatBegin,this._quatEnd)) / this._speedRot);
+		let timeDistance = Math.abs((this._targetDistance - this._distance) / this._speedDistance);
+		let timePanX     = Math.abs((this._targetPanX - this._panX) / this._speedPanX);
+		let timePanY     = Math.abs((this._targetPanY - this._panY) / this._speedPanY);
+		let timePanZ     = Math.abs((this._targetPanZ - this._panZ) / this._speedPanZ);		
+		
+		let animationtime = 1.0;
+		if(newtime) 
+			animationtime = newtime;
+		else {
+			let maxtime = Math.max( timeAngle, Math.max( timeDistance, Math.max( timePanX, Math.max( timePanY, timePanZ ))));
+			animationtime = this._clamp(maxtime, 0.5, 2.0);	
+		}
+		
+		this._speedRot     = 1.0 / animationtime;
+		this._speedDistance *= timeDistance / animationtime;
+		this._speedPanX     *= timePanX / animationtime;
+		this._speedPanY     *= timePanY / animationtime;
+		this._speedPanZ     *= timePanZ / animationtime;		
+				
+		//start
+		this._animationStage = 0.0;		
+		this._isAnimating = true;
 	},
 
 	recenter : function (newpoint) {
-		this._panX = (newpoint[0]-this.myPresenter.sceneCenter[0]) * this.myPresenter.sceneRadiusInv;
-		this._panY = (newpoint[1]-this.myPresenter.sceneCenter[1]) * this.myPresenter.sceneRadiusInv;
-		this._panZ = (newpoint[2]-this.myPresenter.sceneCenter[2]) * this.myPresenter.sceneRadiusInv;
-		this._panX = this._clamp(this._panX, this._minMaxPanX[0], this._minMaxPanX[1]);
-		this._panY = this._clamp(this._panY, this._minMaxPanY[0], this._minMaxPanY[1]);
-		this._panZ = this._clamp(this._panZ, this._minMaxPanZ[0], this._minMaxPanZ[1]);
+		this._isAnimating = false;	// stop animation
+		
+		var newpanX = (newpoint[0]-this.myPresenter.sceneCenter[0]) * this.myPresenter.sceneRadiusInv;
+		var newpanY = (newpoint[1]-this.myPresenter.sceneCenter[1]) * this.myPresenter.sceneRadiusInv;
+		var newpanZ = (newpoint[2]-this.myPresenter.sceneCenter[2]) * this.myPresenter.sceneRadiusInv;
 
-		this._distance *= 0.6;
-		this._distance = this._clamp(this._distance, this._minMaxDist[0], this._minMaxDist[1]);
-		this._computeMatrix();
+		this.animateToState([this._rotMatrix, newpanX, newpanY, newpanZ, (this._distance * 0.6)]);		
 	},
 
 	tick : function (dt) {
-		return false;
+		if(!this._isAnimating) return false;
+		
+		var deltaRot      = this._speedRot * dt;		
+		var deltaDistance = this._speedDistance * dt;
+		var deltaPanX     = this._speedPanX * dt;
+		var deltaPanY     = this._speedPanY * dt;
+		var deltaPanZ     = this._speedPanZ * dt;		
+		
+		var diffDistance = this._targetDistance - this._distance;
+		var diffPanX     = this._targetPanX - this._panX;
+		var diffPanY     = this._targetPanY - this._panY;
+		var diffPanZ     = this._targetPanZ - this._panZ;		
+	
+		this._animationStage += deltaRot;
+		let quatNow = this._slerp(this._quatBegin, this._quatEnd, this._animationStage);
+		this._rotMatrix = SglQuat.to44(quatNow);	
+	
+		if (diffDistance > deltaDistance)
+			this._distance += deltaDistance;
+		else if (diffDistance < -deltaDistance)
+			this._distance -= deltaDistance;
+		else
+			this._distance = this._targetDistance;
+
+		if (diffPanX > deltaPanX)
+			this._panX += deltaPanX;
+		else if (diffPanX < -deltaPanX)
+			this._panX -= deltaPanX;
+		else
+			this._panX = this._targetPanX;
+
+		if (diffPanY > deltaPanY)
+			this._panY += deltaPanY;
+		else if (diffPanY < -deltaPanY)
+			this._panY -= deltaPanY;
+		else
+			this._panY = this._targetPanY;
+
+		if (diffPanZ > deltaPanZ)
+			this._panZ += deltaPanZ;
+		else if (diffPanZ < -deltaPanZ)
+			this._panZ -= deltaPanZ;
+		else
+			this._panZ = this._targetPanZ;	
+		
+		if(this._distance == this._targetDistance)
+			if(this._panX == this._targetPanX)
+				if(this._panY == this._targetPanY)
+					if(this._panZ == this._targetPanZ)
+						if(this._animationStage >= 1.0)	{
+							this._isAnimating = false;
+							if(typeof onTrackballArrived != "undefined")
+								onTrackballArrived(this.getState());
+						}
+
+		this._computeMatrix();
+		return true;
+	},
+
+	_angle : function (qa, qb) {
+		let cosHalfTheta = qa[3] * qb[3] + qa[0] * qb[0] + qa[1] * qb[1] + qa[2] * qb[2];
+		if (Math.abs(cosHalfTheta) >= 1.0) return 0.0;
+		return sglRadToDeg(2.0 * Math.acos(cosHalfTheta));
+	},
+
+	_slerp : function(qa, qb, value) {	
+		if (value<=0.0) return qa;
+		if (value>=1.0) return qb;
+		
+		let qm = [0.0,0.0,0.0,1.0];
+		let cosHalfTheta = qa[3] * qb[3] + qa[0] * qb[0] + qa[1] * qb[1] + qa[2] * qb[2];
+		if (Math.abs(cosHalfTheta) >= 1.0){
+			return qa;
+		}
+		
+		let halfTheta = Math.acos(cosHalfTheta);
+		let sinHalfTheta = Math.sqrt(1.0 - cosHalfTheta*cosHalfTheta);
+		if (Math.abs(sinHalfTheta) < 0.001){
+			qm[3] = (qa[3] * 0.5 + qb[3] * 0.5);
+			qm[0] = (qa[0] * 0.5 + qb[0] * 0.5);
+			qm[1] = (qa[1] * 0.5 + qb[1] * 0.5);
+			qm[2] = (qa[2] * 0.5 + qb[2] * 0.5);
+			return qm;
+		}
+
+		let ratioA = Math.sin((1 - value) * halfTheta) / sinHalfTheta;
+		let ratioB = Math.sin(value * halfTheta) / sinHalfTheta; 
+	
+		qm[3] = (qa[3] * ratioA + qb[3] * ratioB);
+		qm[0] = (qa[0] * ratioA + qb[0] * ratioB);
+		qm[1] = (qa[1] * ratioA + qb[1] * ratioB);
+		qm[2] = (qa[2] * ratioA + qb[2] * ratioB);
+		return qm;
 	},
 
 	set action(a) { if(this._action != a) this._new_action = true; this._action = a;},
@@ -180,7 +325,7 @@ SphereTrackball.prototype = {
 		this._matrix = SglMat4.identity();
 		this._action = SGL_TRACKBALL_NO_ACTION;
 		this._new_action = true;
-		this._pts    = [ [0.0, 0.0], [0.0, 0.0] ];
+		this._pts = [ [0.0, 0.0], [0.0, 0.0] ];
 		
 		this._rotMatrix = this._startMatrix;
 		this._panX = this._startPanX;
@@ -188,11 +333,13 @@ SphereTrackball.prototype = {
 		this._panZ = this._startPanZ;
 		this._distance = this._startDistance;
 
+		this._isAnimating = false;
+
 		this._computeMatrix();
 	},
 
 	track : function(m, x, y, z) {
-		
+		this._isAnimating = false; //stopping animation		
 		if(this._new_action) {
 			this._past[0] = this.myPresenter.x;
 			this._past[1] = this.myPresenter.y;
