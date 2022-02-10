@@ -8,11 +8,11 @@
     "skin": "light",
     "tools": [
         "home",
+        "light",
         "measure",
         "sections",
         "full",
-        "help",
-        "light"
+        "help"
     ],
     "space": {
         "centerMode": "scene",
@@ -63,7 +63,7 @@
             "matrix": null,
             "startColor": "color",
             "solidColor": "#aaaaaa",
-            "specular": 6
+            "specular": 2
         }
     ],
     "widgets": {
@@ -84,7 +84,7 @@
             "atStartup": false
         }
     },
-    "spots": [],
+    "spots": null,
     "bookmark": {
         "ID": {
             "view": {

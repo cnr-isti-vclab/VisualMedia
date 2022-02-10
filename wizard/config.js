@@ -163,7 +163,7 @@ var default_ariadne = {
 			"atStartup" : false
 		}		
 	},
-	"spots": {},
+	"spots": null,
 	"bookmark": {
 		"ID": {
 			"view": {

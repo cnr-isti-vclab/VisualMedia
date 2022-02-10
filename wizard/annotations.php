@@ -56,8 +56,6 @@ class Annotations extends Config {
 
 		Config.options.spots[newID] = newSpot;
 
-
-
 		Config.options.space.scaleFactor = 0.02/this.presenter.sceneRadiusInv;
 
 		this.fillSpotsPanel();
@@ -155,9 +153,9 @@ class Annotations extends Config {
 
 	deleteSpot(spotID){
 		delete Config.options.spots[spotID];
+		if(!Object.keys(Config.options.spots).length) Config.options.spots = null;
 		this.fillSpotsPanel();
 		this.displaySpots();
-
 	}
 
 	startSpotInterface() {
@@ -193,7 +191,7 @@ class Annotations extends Config {
 
 	resetAnnotations(){
 		this.endSpotInterface();
-		Config.options.spots = {};
+		Config.options.spots = null;
 		this.save();
 	}
 
@@ -210,7 +208,6 @@ class Annotations extends Config {
 	update() {
 //		let options = this.options;
 	}
-
 
 }
 
