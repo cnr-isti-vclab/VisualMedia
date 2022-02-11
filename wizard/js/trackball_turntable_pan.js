@@ -449,15 +449,16 @@ TurntablePanTrackball.prototype = {
 	},
 
 	rotate: function(m, dx, dy) {
-		this._phi += dx;
+		var rotSpeed = Math.max(Math.min(3.0, this._distance*2.0),1.0);
+
+		this._phi += dx * rotSpeed;
 		if(this._limitPhi)
 			this._phi = this._clamp(this._phi, this._minMaxPhi[0], this._minMaxPhi[1]);
-
 		// avoid eternal accumulation of rotation, just for the sake of cleanliness
 		if (this._phi > (2.0*Math.PI)) this._phi = this._phi - (2.0*Math.PI);
 		if (this._phi < (-2.0*Math.PI)) this._phi = this._phi + (2.0*Math.PI);
 
-		this._theta += dy;
+		this._theta += dy * rotSpeed;
 		this._theta = this._clamp(this._theta, this._minMaxTheta[0], this._minMaxTheta[1]);
 	},
 
