@@ -15,8 +15,28 @@
 	 Model Orientation
 	</h5>
 	<div id="sm_instructions">
-		<p>This is how the viewer will look and navigate. If the model is not in the correct orientation, you can re-orient it using this button:</p>
-		<button class="btn btn-secondary btn-block" id="smStart" onclick="model_config.startStraightMode()">Straighten your model</button>
+		<p class="mb-4">This is how the viewer will look and navigate. If the model is not in the correct orientation, you can re-orient it using these commands, or use advanced straightening for manual dragging.</p>
+		
+		<div style="display:flex; gap:7px;">
+			<button class="btn btn-secondary" style="flex-grow:1; flex-basis:0;" onclick="resetMatrix()">Original Orientation</button>		
+			<button class="btn btn-secondary" style="flex-grow:1; flex-basis:0;" onclick="setZUP()">Model Z is up</button>
+		</div>
+		
+
+		<div style="display:flex">
+			<span class="h5 m-1" id="">X </span>
+			<input style="flex-grow:1" type="range" id="rrx" min="-180" max="180" step="1.0" id="rangeX" onInput="updatingRot('x',-this.value);" onChange="setMatrix();">
+		</div>
+		<div style="display:flex">
+			<span class="h5 m-1" id="">Y </span>
+			<input style="flex-grow:1" type="range" id="rry" min="-180" max="180" step="1.0" id="rangeX" onInput="updatingRot('y',this.value);" onChange="setMatrix();">
+		</div>
+		<div style="display:flex">
+			<span class="h5 m-1" id="">Z </span>
+			<input style="flex-grow:1" type="range" id="rrz" min="-180" max="180" step="1.0" id="rangeX" onInput="updatingRot('z',-this.value);" onChange="setMatrix();">
+		</div>
+		</br>
+		<button class="btn btn-secondary btn-block" id="smStart" onclick="model_config.startStraightMode()">Advanced Straightening</button>
 	</div>
 	<div class="d-none" id="smControls">
 		<div class="m-1">
@@ -117,8 +137,8 @@ class ModelConfig extends Config {
 	}
 	
 	startStraightMode(){
-		let frame = window.frames[0];
-		presenter = frame.presenter; // get current presenter instance
+		frame = window.frames[0];
+		presenter = frame.presenter; // get current presenter instance		
 		frame.document.getElementById("toolbar").classList.add("d-none");
 		frame.document.getElementById("panel_widgets").classList.add("d-none");
 		
@@ -177,14 +197,113 @@ class ModelConfig extends Config {
 		this.save();
 	}
 
-
-
 }
 
 let model_config = new ModelConfig(); 
 
+var frame = null; 		// viewer frame
 var presenter = null;	// current presenter instance from iframe
 
+//-----------------------------------------------------------------
+
+function setZUP() {
+	let newmatrix = SglMat4.identity();
+	newmatrix = SglMat4.rotationAngleAxis(sglDegToRad(-90), [1.0, 0.0, 0.0]);
+	updateMatrix(newmatrix);
+}
+function resetMatrix() {
+	let newmatrix = SglMat4.identity();
+	updateMatrix(newmatrix);
+}
+function updateMatrix(newmatrix){
+	window.frames[0].presenter._scene.modelInstances["model_1"].transform.matrix = newmatrix;
+	window.frames[0].presenter.repaint();
+
+	if(Config.options.widgets.grid.atStartup)
+		window.frames[0].startupGrid();
+	if(Config.options.widgets.trackSphere.atStartup)
+		window.frames[0].startupTrackSphere();
+
+	Config.options.scene[0].matrix = newmatrix;
+	model_config.save(true);	// save, but not reload the frame	
+}
+
+function updatingRot(axis,angle) {
+	var rotAxis;
+	switch(axis) {
+        case "x": rotAxis = [1.0, 0.0, 0.0, 1.0];
+            break;
+        case "y": rotAxis = [0.0, 1.0, 0.0, 1.0];
+            break;
+        case "z": rotAxis = [0.0, 0.0, 1.0, 1.0];
+            break;
+	}
+	var rotMat = SglMat4.rotationAngleAxis(sglDegToRad(angle), rotAxis);	
+	var newmatrix = SglMat4.mul(rotMat, Config.options.scene[0].matrix);
+	window.frames[0].presenter._scene.modelInstances["model_1"].transform.matrix = newmatrix;	
+	window.frames[0].presenter.repaint();
+	addRotHelper(axis);
+	if(angle=0)	removeRotHelper();
+	
+	if(Config.options.widgets.grid.atStartup)
+		window.frames[0].startupGrid();
+	if(Config.options.widgets.trackSphere.atStartup)
+		window.frames[0].startupTrackSphere();
+}
+function setMatrix() {
+	document.getElementById("rrx").value =0;
+	document.getElementById("rry").value =0;
+	document.getElementById("rrz").value =0;	
+	Config.options.scene[0].matrix = window.frames[0].presenter._scene.modelInstances["model_1"].transform.matrix;
+	model_config.save(true);	// save, but not reload the frame
+	removeRotHelper();
+}
+
+
+function addRotHelper(axis) {
+	var rad = 0.5 / window.frames[0].presenter.sceneRadiusInv;
+	var bb = window.frames[0].getBBox("model_1");
+	
+	var XC = (bb[0] + bb[3]) / 2.0;
+	var YC = (bb[1] + bb[4]) / 2.0;
+	var ZC = (bb[2] + bb[5]) / 2.0;
+
+	var sStep,sStepNum;	
+	sStepNum = 32;
+	sStep = (2 * Math.PI) / sStepNum;
+	
+	var linesBuffer, sphere, ii;
+	linesBuffer = [];
+	for (ii = 0; ii < sStepNum; ii+=1)
+	{
+		if(axis=='x'){
+			linesBuffer.push([XC , YC + (Math.cos(ii*sStep) * rad), ZC + (Math.sin(ii*sStep) * rad)]);
+			linesBuffer.push([XC , YC + (Math.cos((ii+1)*sStep) * rad), ZC + (Math.sin((ii+1)*sStep) * rad)]);
+		}
+		else if(axis=='y'){
+			linesBuffer.push([XC + (Math.cos(ii*sStep) * rad), YC, ZC + (Math.sin(ii*sStep) * rad)]);
+			linesBuffer.push([XC + (Math.cos((ii+1)*sStep) * rad), YC, ZC + (Math.sin((ii+1)*sStep) * rad)]);
+		}
+		else if(axis=='z'){
+			linesBuffer.push([XC + (Math.cos(ii*sStep) * rad), YC + (Math.sin(ii*sStep) * rad), ZC]);
+			linesBuffer.push([XC + (Math.cos((ii+1)*sStep) * rad), YC + (Math.sin((ii+1)*sStep) * rad), ZC]);
+		}
+	}	
+	
+	sphere = window.frames[0].presenter.createEntity("rotHelper", "lines", linesBuffer);
+	if(axis=='x')
+		sphere.color = [0.9, 0.3, 0.3, 0.8];
+	else if(axis=='y')
+		sphere.color = [0.3, 0.9, 0.3, 0.8];	
+	else if(axis=='z')
+		sphere.color = [0.3, 0.3, 0.9, 0.8];
+	sphere.zOff = 0.0;
+	sphere.useTransparency = true;
+	window.frames[0].presenter.repaint();
+}
+function removeRotHelper() {
+	window.frames[0].presenter.deleteEntity("rotHelper");
+}
 
 
 //-------------------------------------------------------------------------
@@ -348,10 +467,6 @@ class Reference {
 		this.refgridZ.transform.matrix = matrix;
 	}
 }
-
-
-
-
 
 //-------------------------------------------------------------------------
 function viewFrom(direction){
