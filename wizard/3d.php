@@ -636,10 +636,10 @@ function compassClick(){
 	dirY = dirY / len;
 	var targetA = sglRadToDeg(Math.atan2(dirX, dirY));
 	var currpos = presenter.getTrackballPosition();
-	targetA = currpos[0] + targetA;
+	targetA = currpos[0] + targetA + 180;
 	targetA = targetA < 0 ? ((targetA % 360) + 360) : (targetA % 360);
 	targetA = Math.floor((targetA + 45) / 90.0) * 90.0;
-	currpos[0] = targetA
+	currpos[0] = targetA;
 	presenter.animateToTrackballPosition(currpos);
 }
 
