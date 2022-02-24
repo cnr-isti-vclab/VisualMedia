@@ -19,7 +19,8 @@
         "radiusMode": "scene",
         "cameraFOV": 60,
         "sceneLighting": true,
-        "cameraType": "perspective"
+        "cameraType": "perspective",
+        "sceneRadius": 1
     },
     "trackball": {
         "type": "TurntablePanTrackball",

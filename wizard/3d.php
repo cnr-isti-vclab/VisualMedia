@@ -180,7 +180,7 @@ switch(trackball.type) {
 
 let spots = {};
 if (options.spots) {
-	spots = createSceneSpots(options.spots, options.space.scaleFactor);
+	spots = createSceneSpots(options.spots);
 	options.tools.push('hotspot');
 }
 
@@ -349,8 +349,10 @@ function onEndPick(point) {
 //--PICKPOINT--
 
 //--HOTSPOTS--
-function createSceneSpots(optionSpots, scaleFactor){
+function createSceneSpots(optionSpots){
 	let spots = {};
+	let scaleFactor = 1;
+	this.presenter ? scaleFactor = 0.02 / this.presenter.sceneRadiusInv : scaleFactor = 0.02 * options.space.sceneRadius;
 
 	for (let id in optionSpots) {
 		spots[id] = {
@@ -360,7 +362,7 @@ function createSceneSpots(optionSpots, scaleFactor){
 			alphaHigh       : 0.9,
 			transform : { 
 				translation : optionSpots[id].pos,
-				scale : [optionSpots[id].radius*scaleFactor, optionSpots[id].radius*scaleFactor, optionSpots[id].radius*scaleFactor],
+				scale : [optionSpots[id].radius * scaleFactor, optionSpots[id].radius * scaleFactor, optionSpots[id].radius * scaleFactor],
 				},
 			visible         : optionSpots[id].visible,
 		}

@@ -35,8 +35,6 @@ class Annotations extends Config {
 	}
 
 	pickSpot(pos) {
-		if(!this.presenter)
-			this.presenter = window.frames[0].presenter;
 		this.presenter._pickValid = false;
 
 		if(!Config.options.spots)
@@ -55,8 +53,7 @@ class Annotations extends Config {
 		newSpot.tags = [];
 
 		Config.options.spots[newID] = newSpot;
-
-		Config.options.space.scaleFactor = 0.02/this.presenter.sceneRadiusInv;
+		Config.options.space.sceneRadius = 1/this.presenter.sceneRadiusInv;
 
 		this.fillSpotsPanel();
 		this.displaySpots();
@@ -64,13 +61,10 @@ class Annotations extends Config {
 
 	displaySpots() {
 		this.presenter._spotsProgressiveID = 1;
-		this.presenter._scene.spots = this.presenter._parseSpots(window.frames[0].createSceneSpots(Config.options.spots, Config.options.space.scaleFactor));
+		this.presenter._scene.spots = this.presenter._parseSpots(window.frames[0].createSceneSpots(Config.options.spots));
 		this.presenter._scenePrepare();
 
 		this.presenter.repaint();
-
-		this.presenter._onEnterSpot = this.onEnterSpot;
-		this.presenter._onLeaveSpot = this.onLeaveSpot;
 	}
 
 	fillSpotsPanel() {
@@ -100,7 +94,7 @@ class Annotations extends Config {
 			content += `
 			<tr>
 			<td>
-				<textarea class='form-control' rows='1' style='resize:none;' onchange='annotations.updateSpotTitle("${spot}",this.value);' title='Title'>${Config.options.spots[spot].title}<\/textarea>
+				<textarea class='form-control' rows='1' style='resize:none;' oninput='annotations.updateSpotTitle("${spot}",this.value);' title='Title'>${Config.options.spots[spot].title}<\/textarea>
 			<\/td>
 			<td style="text-align:center">
 				<input type='number' min='1' max='9' value='${Config.options.spots[spot].radius}' onchange='annotations.updateSpotRadius("${spot}",this.value);' style='cursor:hand;width:3em;' title='Radius'>
@@ -149,6 +143,7 @@ class Annotations extends Config {
 		window.frames[0].closeAllTools();
 		window.frames[0].document.getElementById("draw-canvas").style.cursor = 'crosshair';
 		this.presenter = window.frames[0].presenter;
+		this.presenter._onEnterSpot = (id) => this.onEnterSpot(id);
 		this.presenter._onEndPickingPoint = (pos) => this.pickSpot(pos);
 		this.presenter.enablePickpointMode(true);
 		this.presenter.setSpotVisibility(256, true, true);
@@ -181,11 +176,6 @@ class Annotations extends Config {
 	onEnterSpot(id){
 		window.frames[0].toastr.options.timeOut = 0;
 		window.frames[0].toastr.info(Config.options.spots[id].title);
-	}
-
-	onLeaveSpot(id){
-		window.frames[0].toastr.remove();
-		window.frames[0].toastr.options.timeOut = 2000;
 	}
 
 	update() {
