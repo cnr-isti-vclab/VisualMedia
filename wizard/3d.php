@@ -354,16 +354,28 @@ function createSceneSpots(optionSpots){
 	let scaleFactor = 1;
 	this.presenter ? scaleFactor = 0.02 / this.presenter.sceneRadiusInv : scaleFactor = 0.02 * options.space.sceneRadius;
 
+//	let newMatrix = SglMat4.identity();
+//	let tMatrix = SglMat4.identity();
+//	let sMatrix = SglMat4.identity();
+//	if(options.scene[0].matrix) newMatrix = options.scene[0].matrix;
+
+	let sceneMatrix = SglMat4.identity();
+	if(options.scene[0].matrix) sceneMatrix = options.scene[0].matrix;
+
 	for (let id in optionSpots) {
+//		tMatrix = SglMat4.translation(optionSpots[id].pos);
+//		sMatrix = SglMat4.scaling([optionSpots[id].radius * scaleFactor, optionSpots[id].radius * scaleFactor, optionSpots[id].radius * scaleFactor]);
+
 		spots[id] = {
 			mesh            : "sphere",
 			color           : optionSpots[id].color,
 			alpha           : 0.7,
 			alphaHigh       : 0.9,
+//			transform       : { matrix: SglMat4.mul(newMatrix, SglMat4.mul(tMatrix, sMatrix)) },
 			transform : { 
-				translation : optionSpots[id].pos,
+				translation : SglMat4.mul3(sceneMatrix, optionSpots[id].pos),
 				scale : [optionSpots[id].radius * scaleFactor, optionSpots[id].radius * scaleFactor, optionSpots[id].radius * scaleFactor],
-				},
+			},
 			visible         : optionSpots[id].visible,
 		}
 	}

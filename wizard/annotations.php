@@ -43,6 +43,10 @@ class Annotations extends Config {
 		let newID = 1;
 		if(Object.keys(Config.options.spots).length) newID = parseInt(Object.keys(Config.options.spots).pop())+1;
 
+		let sceneMatrix = SglMat4.identity();
+		if(Config.options.scene[0].matrix) sceneMatrix = Config.options.scene[0].matrix;
+		pos = SglMat4.mul3(SglMat4.inverse(sceneMatrix), pos);
+
 		let newSpot = {};
 		newSpot.pos = pos;
 		newSpot.visible = true;
