@@ -240,7 +240,7 @@ function setup3dhop() {
 	//presenter.toggleDebugMode();
 
 	//specular color
-	let specularColor = 
+//	let specularColor = 
 
 	presenter.setScene({
 		meshes: {
@@ -351,27 +351,21 @@ function onEndPick(point) {
 //--HOTSPOTS--
 function createSceneSpots(optionSpots){
 	let spots = {};
-	let scaleFactor = 1;
-	this.presenter ? scaleFactor = 0.02 / this.presenter.sceneRadiusInv : scaleFactor = 0.02 * options.space.sceneRadius;
 
-//	let newMatrix = SglMat4.identity();
-//	let tMatrix = SglMat4.identity();
-//	let sMatrix = SglMat4.identity();
-//	if(options.scene[0].matrix) newMatrix = options.scene[0].matrix;
+	let scaleFactor = 1;
+	if(presenter) scaleFactor = 0.02 / presenter.sceneRadiusInv;
+		else scaleFactor = 0.02 * options.space.sceneRadius;
 
 	let sceneMatrix = SglMat4.identity();
-	if(options.scene[0].matrix) sceneMatrix = options.scene[0].matrix;
+	if(presenter) sceneMatrix = presenter._scene.modelInstances["model_1"].transform.matrix;
+		else if(options.scene[0].matrix) sceneMatrix = options.scene[0].matrix;
 
 	for (let id in optionSpots) {
-//		tMatrix = SglMat4.translation(optionSpots[id].pos);
-//		sMatrix = SglMat4.scaling([optionSpots[id].radius * scaleFactor, optionSpots[id].radius * scaleFactor, optionSpots[id].radius * scaleFactor]);
-
 		spots[id] = {
 			mesh            : "sphere",
 			color           : optionSpots[id].color,
 			alpha           : 0.7,
 			alphaHigh       : 0.9,
-//			transform       : { matrix: SglMat4.mul(newMatrix, SglMat4.mul(tMatrix, sMatrix)) },
 			transform : { 
 				translation : SglMat4.mul3(sceneMatrix, optionSpots[id].pos),
 				scale : [optionSpots[id].radius * scaleFactor, optionSpots[id].radius * scaleFactor, optionSpots[id].radius * scaleFactor],
@@ -381,6 +375,16 @@ function createSceneSpots(optionSpots){
 	}
 
 	return spots;
+}
+
+function updateSceneSpots(optionSpots){
+	if(!optionSpots) return;
+
+	presenter._spotsProgressiveID = 1;
+	presenter._scene.spots = presenter._parseSpots(createSceneSpots(optionSpots));
+	presenter._scenePrepare();
+
+	document.querySelector('#hotspot_on').style.visibility == 'hidden' ? presenter.setSpotVisibility(HOP_ALL, false, true) : presenter.setSpotVisibility(HOP_ALL, true, true);
 }
 
 function onEnterSpot(id) {

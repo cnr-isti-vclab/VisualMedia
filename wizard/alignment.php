@@ -225,7 +225,9 @@ function updateMatrix(newmatrix){
 		window.frames[0].startupTrackSphere();
 
 	Config.options.scene[0].matrix = newmatrix;
-	model_config.save(true);	// save, but not reload the frame	
+	model_config.save(true);	// save, but not reload the frame
+
+	window.frames[0].updateSceneSpots(Config.options.spots);
 }
 
 function updatingRot(axis,angle) {
@@ -238,9 +240,11 @@ function updatingRot(axis,angle) {
         case "z": rotAxis = [0.0, 0.0, 1.0, 1.0];
             break;
 	}
-	var rotMat = SglMat4.rotationAngleAxis(sglDegToRad(angle), rotAxis);	
-	var newmatrix = SglMat4.mul(rotMat, Config.options.scene[0].matrix);
-	window.frames[0].presenter._scene.modelInstances["model_1"].transform.matrix = newmatrix;	
+	var sceneMatrix = SglMat4.identity();
+	if(Config.options.scene[0].matrix) sceneMatrix = Config.options.scene[0].matrix;
+	var rotMat = SglMat4.rotationAngleAxis(sglDegToRad(angle), rotAxis);
+	var newmatrix = SglMat4.mul(rotMat, sceneMatrix);
+	window.frames[0].presenter._scene.modelInstances["model_1"].transform.matrix = newmatrix;
 	window.frames[0].presenter.repaint();
 	addRotHelper(axis);
 	if(angle=0)	removeRotHelper();
@@ -249,6 +253,8 @@ function updatingRot(axis,angle) {
 		window.frames[0].startupGrid();
 	if(Config.options.widgets.trackSphere.atStartup)
 		window.frames[0].startupTrackSphere();
+
+	window.frames[0].updateSceneSpots(Config.options.spots);
 }
 function setMatrix() {
 	document.getElementById("rrx").value =0;
@@ -304,7 +310,6 @@ function addRotHelper(axis) {
 function removeRotHelper() {
 	window.frames[0].presenter.deleteEntity("rotHelper");
 }
-
 
 //-------------------------------------------------------------------------
 // mini sphere-trackball 
