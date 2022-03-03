@@ -624,9 +624,35 @@ function updateCompass(angle, tilt) {
     ctx.rotate(angle);
 
 	ctx.beginPath();
+    ctx.arc(0, 0, 20, -0.75 * Math.PI, -0.25 * Math.PI, false);
+    ctx.lineWidth = 30;
+    ctx.strokeStyle = '#77444480';
+    ctx.stroke();
+
+	ctx.beginPath();
+    ctx.arc(0, 0, 20, -0.25 * Math.PI, 0.25 * Math.PI, false);
+    ctx.lineWidth = 30;
+    ctx.strokeStyle = '#77777780';
+    ctx.stroke();
+	
+	ctx.beginPath();
+    ctx.arc(0, 0, 20, -1.25 * Math.PI, -0.75 * Math.PI, false);
+    ctx.lineWidth = 30;
+    ctx.strokeStyle = '#77777780';
+    ctx.stroke();	
+
+	// external arc
+	ctx.beginPath();
     ctx.arc(0, 0, 35, 0, 2 * Math.PI, false);
     ctx.lineWidth = 4;
     ctx.strokeStyle = '#44337766';
+    ctx.stroke();
+
+	// center
+	ctx.beginPath();
+    ctx.arc(0, 0, 5, 0, 2 * Math.PI, false);
+    ctx.lineWidth = 8;
+    ctx.strokeStyle = '#667799';
     ctx.stroke();
 	
 	ctx.font = "28px Verdana";
@@ -647,17 +673,22 @@ function updateCompass(angle, tilt) {
     ctx.restore();
 }
 function compassClick(){
-	var dirX = (event.offsetX - (event.srcElement.width / 2.0)) / event.srcElement.width;
-	var dirY = (event.offsetY - (event.srcElement.height / 2.0)) / event.srcElement.height;
-	var len = Math.sqrt((dirX * dirX) + (dirY * dirY));
-	dirX = dirX / len;
-	dirY = dirY / len;
-	var targetA = sglRadToDeg(Math.atan2(dirX, dirY));
 	var currpos = presenter.getTrackballPosition();
-	targetA = currpos[0] + targetA + 180;
-	targetA = targetA < 0 ? ((targetA % 360) + 360) : (targetA % 360);
-	targetA = Math.floor((targetA + 45) / 90.0) * 90.0;
-	currpos[0] = targetA;
+	if((Math.abs((event.offsetX - (event.srcElement.width / 2.0)))<10.0)&&(Math.abs((event.offsetY - (event.srcElement.height / 2.0)))<10.0)){
+		currpos[1] = 90.0;
+	}
+	else{
+		var dirX = (event.offsetX - (event.srcElement.width / 2.0)) / event.srcElement.width;
+		var dirY = (event.offsetY - (event.srcElement.height / 2.0)) / event.srcElement.height;
+		var len = Math.sqrt((dirX * dirX) + (dirY * dirY));
+		dirX = dirX / len;
+		dirY = dirY / len;
+		var targetA = sglRadToDeg(Math.atan2(dirX, dirY));
+		targetA = currpos[0] + targetA + 180;
+		targetA = targetA < 0 ? ((targetA % 360) + 360) : (targetA % 360);
+		targetA = Math.floor((targetA + 45) / 90.0) * 90.0;
+		currpos[0] = targetA;
+	}
 	presenter.animateToTrackballPosition(currpos);
 }
 
