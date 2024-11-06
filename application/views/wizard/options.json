@@ -1,0 +1,125 @@
+{
+    "background": {
+        "type": "radial",
+        "color0": "#aaaaaa",
+        "color1": "#000000",
+        "image": "light.jpg"
+    },
+    "skin": "light",
+    "tools": [
+        "home",
+        "light",
+        "measure",
+        "sections",
+        "full",
+        "help"
+    ],
+    "space": {
+        "centerMode": "scene",
+        "radiusMode": "scene",
+        "cameraFOV": 60,
+        "sceneLighting": true,
+        "cameraType": "perspective",
+        "sceneRadius": 1
+    },
+    "trackball": {
+        "type": "TurntablePanTrackball",
+        "trackOptions": {
+            "startPhi": 30,
+            "startTheta": 25,
+            "startDistance": 1.5,
+            "startPanX": 0,
+            "startPanY": 0,
+            "startPanZ": 0,
+            "minMaxPhi": [
+                -180,
+                180
+            ],
+            "minMaxTheta": [
+                -90,
+                90
+            ],
+            "minMaxDist": [
+                0.1,
+                3
+            ],
+            "minMaxPanX": [
+                -1,
+                1
+            ],
+            "minMaxPanY": [
+                -1,
+                1
+            ],
+            "minMaxPanZ": [
+                -1,
+                1
+            ]
+        }
+    },
+    "scene": [
+        {
+            "id": "mesh",
+            "url": "",
+            "matrix": null,
+            "startColor": "color",
+            "solidColor": "#aaaaaa",
+            "specular": 2
+        }
+    ],
+    "widgets": {
+        "grid": {
+            "step": 0,
+            "atStartup": true
+        },
+        "trackSphere": {
+            "atStartup": false
+        },
+        "canonicalViews": {
+            "atStartup": true
+        },
+        "compass": {
+            "atStartup": false
+        },
+        "navCube": {
+            "atStartup": false
+        }
+    },
+    "spots": null,
+    "bookmark": {
+        "ID": {
+            "view": {
+                "position": [
+                    0,
+                    0,
+                    0
+                ],
+                "target": [
+                    0,
+                    0,
+                    0
+                ],
+                "up": [
+                    0,
+                    0,
+                    0
+                ]
+            },
+            "title": "",
+            "text": "",
+            "tags": [],
+            "state": {
+                "camera": "ortho",
+                "solid": false,
+                "transparency": false,
+                "lighting": true,
+                "lightDir": [
+                    0,
+                    0,
+                    0
+                ]
+            }
+        },
+        "viewsNewIndex": 2
+    }
+}
