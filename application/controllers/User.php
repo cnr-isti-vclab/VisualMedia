@@ -92,15 +92,15 @@ class User  extends MY_Controller {
 			'protocol'  => 'smtp',
 			'smtp_host' => 'smtp-out.isti.cnr.it',
 			'smtp_port' =>  587,
-			'smtp_user' => 'ponchio',
-			'smtp_pass' => 'maldipancismo',
+			'smtp_user' => '',
+			'smtp_pass' => '',
 			'smtp_crypto' => 'tls',
 			'mailtype'  => 'html',
 			'charset'   => 'utf-8'
 		);
 		$this->email->initialize($config);
 
-		$this->email->from('ponchio@isti.cnr.it', 'Visual Media Service');
+		$this->email->from('', 'Visual Media Service');
 		$this->email->to($email);
 
 		$this->email->subject('Visual Media Service login link');

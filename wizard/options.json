@@ -8,7 +8,6 @@
     "skin": "light",
     "tools": [
         "home",
-        "light",
         "measure",
         "sections",
         "full",
@@ -17,7 +16,7 @@
     "space": {
         "centerMode": "scene",
         "radiusMode": "scene",
-        "cameraFOV": 60,
+        "cameraFOV": "32",
         "sceneLighting": true,
         "cameraType": "perspective",
         "sceneRadius": 1
@@ -25,9 +24,9 @@
     "trackball": {
         "type": "TurntablePanTrackball",
         "trackOptions": {
-            "startPhi": 30,
-            "startTheta": 25,
-            "startDistance": 1.5,
+            "startPhi": 143.58194176602223,
+            "startTheta": 10.780609463906572,
+            "startDistance": 2.7,
             "startPanX": 0,
             "startPanY": 0,
             "startPanZ": 0,
@@ -61,10 +60,27 @@
         {
             "id": "mesh",
             "url": "",
-            "matrix": null,
+            "matrix": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                6.123233995736766e-17,
+                -1,
+                0,
+                0,
+                1,
+                6.123233995736766e-17,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
             "startColor": "color",
             "solidColor": "#aaaaaa",
-            "specular": 2
+            "specular": 4
         }
     ],
     "widgets": {
