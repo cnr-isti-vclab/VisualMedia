@@ -5,21 +5,46 @@
 
 Postgtres version is 10.23, but it's probably not important.
 
-##PHP
-
-php7.1 (we might need to upgrade to something more recent)
-
-```sudo apt-get install php7.1
-sudo apt-get install php7.1-pgsql
-sudo apg-get install php7.2-curl
+```
+sudo apt install postgresql-common
+sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh
+sudo -i -u postgres
+createuser --interactive 
+#pick vms as role
+createdb vms
+sudo -u postgres psql
+    CREATE ROLE vms LOGIN PASSWORD 'mondotrottolo'; #actually pick a sensible password.
+psql -d vms -a -f database.sql
 ```
 
-Edit: /etc/php/7.1/apache2/php.ini
+##Mysql
+
+```sudo apt install mysql-server
+sudo mysql
+CREATE USER 'vms'@'localhost' IDENTIFIED BY 'password';
+CREATE DATABASE vms;
+GRANT ALL PRIVILEGES ON vms.* TO 'vms'@'localhost' WITH GRANT OPTION;
+```
+
+##PHP
+
+php8.1 (we might need to upgrade to something more recent)
+
+```sudo apt install php8.1
+sudo apt install php8.1-pgsql
+sudo apg install php8.1-curl
+```
+
+Edit: /etc/php/8.1/apache2/php.ini
 
 ```short_open_tag = On
 post_max_size = 4000M
 upload_max_filesize = 4000M
 max_execution_time = 120
+```
+
+```
+sudo service apache2 restart
 ```
 
 ##Apache

@@ -1,6 +1,21 @@
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+SET search_path TO public;
+
 -- Table: object
 DROP TABLE media;
-CREATE TABLE media
+
+CREATE TABLE public.media
 (
   id serial NOT NULL,
   label text NOT NULL, -- Name used in urls to identify media.
@@ -13,28 +28,25 @@ CREATE TABLE media
   url text, -- Url to resource.
   creation timestamp without time zone,
   userid integer,
-
   processed integer DEFAULT 0, --if processed (in case we are reprocessing)
   status text, --thi is the status of the processing uploading, on queue, processing, ready, failed
   error text, --refers to the last processing operation
   publish integer DEFAULT 0,
   path text,  -- path where the files are stored, usually just the label
   thumbnail text,
-
   width integer, -- metadata of the processed files
   height integer,
   mtri integer,
   mm integer,   -- size of a pixel or a unit
   size integer, -- Size on disk in Kb.
-
   secret text, -- backward compatibility.
-
   options text, -- JSON options
-  CONSTRAINT id_media_pk PRIMARY KEY (id),
-  CONSTRAINT label_media_u UNIQUE (label)
+  picked integer,
+  words tsvector,
+  expire timestamp without time zone
 )
 WITH ( OIDS=FALSE );
-ALTER TABLE media OWNER TO ariadne;
+ALTER TABLE media OWNER TO vms;
 
 -- Table: media
 DROP TABLE files;
@@ -58,7 +70,7 @@ CREATE TABLE files
   processing_end timestamp without time zone
 )
 WITH ( OIDS=FALSE );
-ALTER TABLE files OWNER TO ariadne;
+ALTER TABLE files OWNER TO vms;
 
 
 
@@ -78,7 +90,7 @@ CREATE TABLE collections
   CONSTRAINT label_collections_u UNIQUE (label)
 )
 WITH ( OIDS=FALSE );
-ALTER TABLE collections OWNER TO ariadne;
+ALTER TABLE collections OWNER TO vms;
 
 
 
@@ -91,7 +103,7 @@ CREATE TABLE collections_media
   CONSTRAINT collections_media_key PRIMARY KEY (collection, media)
 )
 WITH ( OIDS=FALSE );
-ALTER TABLE collections_media OWNER TO ariadne;
+ALTER TABLE collections_media OWNER TO vms;
 
 
 
@@ -116,8 +128,8 @@ CREATE TABLE users
 
 )
 WITH ( OIDS=FALSE );
-ALTER TABLE users OWNER TO ariadne;
-GRANT ALL ON TABLE users TO ariadne;
+ALTER TABLE users OWNER TO vms;
+GRANT ALL ON TABLE users TO vms;
 
 
 
@@ -140,5 +152,5 @@ CREATE TABLE identities
   CONSTRAINT token_identities_u UNIQUE (token)
 )
 WITH ( OIDS=FALSE );
-ALTER TABLE identities OWNER TO ariadne;
-GRANT ALL ON TABLE identities TO ariadne;
+ALTER TABLE identities OWNER TO vms;
+GRANT ALL ON TABLE identities TO vms;

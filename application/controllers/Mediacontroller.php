@@ -200,6 +200,8 @@ class Mediacontroller extends MY_Controller {
 		$media = $this->media->ownsMedia($label, $this->user());
 
 		if(!$media) {
+			$contact = VMS_PROPERTIES->contact;
+
 //			$media = $this->media->byLabel($secret, false); //return also private medias
 			if(!$media)
 				$error = "<p>The link does not seems to be valid:</p>\n".
@@ -209,7 +211,7 @@ class Mediacontroller extends MY_Controller {
 					"<li>the media is not currently published or\n".
 					"<li>the link is wrong\n".
 					"</ul>\n".
-					"<p>Contact us for help: <a href='mailto:ponchio@isti.cnr.it'>ponchio@isti.cnr.it</a></p>\n";
+					"<p>Contact us for help: <a href='mailto:$contact'>$contact</a></p>\n";
 
 				$this->error($error);
 
@@ -506,6 +508,8 @@ EOD;
 			$media = $this->media->bySecret($label);
 
 		if(!$media) {
+			$contact = VMS_PROPERTIES->contact;
+
 			$this->error("<p>The link does not seems to be valid:</p>\n".
 				"<ul>\n".
 				"<li>some problem occourred moving to the version or\n".
@@ -513,7 +517,7 @@ EOD;
 				"<li>the media is not currently published or\n".
 				"<li>the link is wrong\n".
 				"</ul>\n".
-				"<p>Contact us for help: <a href='mailto:ponchio@isti.cnr.it'>ponchio@isti.cnr.it</a></p>\n"
+				"<p>Contact us for help: <a href='mailto:$contact'>$contact</a></p>\n"
 			);
 		}
 

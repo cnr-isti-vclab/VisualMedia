@@ -37,11 +37,12 @@ class User  extends MY_Controller {
 
 
 		$remoteip = $_SERVER['REMOTE_ADDR'];
+		$remote = ip2long($remoteip);
 
+/* disable ips from certain countries if needed 
 		$lines = file_get_contents("russia.txt");
 		$lines = explode("\n", $lines);
 
-		$remote = ip2long($remoteip);
 #check russia and moldova
 		$lines = file_get_contents("russia.txt");
                 $lines = explode("\n", $lines);
@@ -71,7 +72,7 @@ class User  extends MY_Controller {
 			$this->render('unavailable');
 			return;
 		}
-
+*/
 
 		if($email == 'abuse@dynadot.com') {
 			$this->render('passwordless');
@@ -90,10 +91,10 @@ class User  extends MY_Controller {
 		$this->load->library('email');
 		$config = array(
 			'protocol'  => 'smtp',
-			'smtp_host' => 'smtp-out.isti.cnr.it',
-			'smtp_port' =>  587,
-			'smtp_user' => '',
-			'smtp_pass' => '',
+			'smtp_host' => VMS_PARAMETERS->smtp->host,
+			'smtp_port' => VMS_PARAMETERS->smtp->port,
+			'smtp_user' => VMS_PARAMETERS->smtp->user,
+			'smtp_pass' => VMS_PARAMETERS->smtp->pass,
 			'smtp_crypto' => 'tls',
 			'mailtype'  => 'html',
 			'charset'   => 'utf-8'
@@ -106,13 +107,19 @@ class User  extends MY_Controller {
 		$this->email->subject('Visual Media Service login link');
 		$this->email->message($body);
 
+		try {
+			if(!$this->email->send(FALSE)) {
+				$contact = VMS_PARAMETERS->contact;
 
-		if(!$this->email->send(FALSE)) {
+				$this->data['msg'] = '<p>Mail could not be sent because of a technical problem, <br/>'.
+					"you can try again or write to <a href='mailto:$contact'>$contact</a></p>";
+			} else {
+				$this->data['msg'] = "<p>A mail has been sent to your address: $email.<br/>".
+					'Check your email and follow the link.</p>';
+			}
+		} catch(Exception $e) {
 			$this->data['msg'] = '<p>Mail could not be sent because of a technical problem, <br/>'.
-				'you can try again or write to <a href="mailto:ponchio@isti.cnr.it">ponchio@isti.cnr.it.it</a></p>';
-		} else {
-			$this->data['msg'] = "<p>A mail has been sent to your address: $email.<br/>".
-				'Check your email and follow the link.</p>';
+				"you can try again or write to <a href='mailto:$contact'>$contact</a></p>";
 		}
 		//this should be sent to the modal interface, for the moment is a page.
 		$this->render('passwordless');

@@ -17,6 +17,12 @@ from email.mime.text import MIMEText
 
 quit = False
 
+#TODO read 
+
+host = 'https://visual.ariadne-infrastructure.eu'
+admin_user  = 'ponchio'
+admin_email = 'ponchio@isti.cnr.it'
+admin_pass  = ''
 
 upload_path = '/data/vms_upload/'
 data_path   = '/data/vms_data/'
@@ -74,22 +80,22 @@ class Ariadne(Daemon):
 
 Most probably the media was in a format we do not support, please check under
 
-    http://visual.ariadne-infrastructure.eu/help#supported
+    %(host)s/help#supported
 
 for the details of the supported media.
 
 You can still access your media info (and delete it) from:
 
-    http://visual.ariadne-infrastructure.eu/media/%(label)s
+    %(host)s/media/%(label)s
 
 If you think the media was the correct format, or for any other reason, please
 contact us at
 
-ponchio@isti.cnr.it
+%(admin_email)s
 
 Thank you for using our service, and sorry for the trouble
 
-Visual Media Service.""" % media
+Visual Media Service.""" % media, admin_email=admin_email, host=host
 
 		self.sendMsg(media, user, '[AMS] Bummer! %s processing failed.' % media["title"], text)
 
@@ -103,21 +109,21 @@ Visual Media Service.""" % media
 
 You can view the result privately here:
 
-    http://visual.ariadne-infrastructure.eu/%(media_type)s/%(secret)s
+    %(host)s/%(media_type)s/%(secret)s
 
 and if you allowed it publicly here:
 
-    http://visual.ariadne-infrastructure.eu/%(media_type)s/%(label)s
+    %(host)s/%(media_type)s/%(label)s
 
 you can edit the related information, download the result, or delete it here:
 
-    http://visual.ariadne-infrastructure.eu/media/%(label)s
+    %(host)s/media/%(label)s
 
 Thank you for using our service, 
 
 Visual Media Service.
 
-P.S. If you need to contact us write to: ponchio@isti.cnr.it""" %  media
+P.S. If you need to contact us write to: %(admin_email)s""" %  media, admin_email=admin_email, host=host
 
 		self.sendMsg(media, user, '[AMS] %s is ready.' % media["title"], text)
 
@@ -130,7 +136,7 @@ P.S. If you need to contact us write to: ponchio@isti.cnr.it""" %  media
 			self.send4science(media, user["d4science"]["token"], subject, text)
 		else:
 			self.sendEmail(media["email"], subject, text)
-		self.sendEmail("ponchio@gmail.com", subject, text)
+		self.sendEmail(admin_email, subject, text)
 
 
 	def sendEmail(self, email, subject, text):
@@ -141,7 +147,7 @@ P.S. If you need to contact us write to: ponchio@isti.cnr.it""" %  media
 		# me == the sender's email address
 		# you == the recipient's email address
 		msg['Subject'] = subject
-		msg['From'] = 'ponchio@isti.cnr.it'
+		msg['From'] = admin_email
 		msg['To'] = email
 
 		smtp = smtplib.SMTP('smtp-out.isti.cnr.it', 587)
@@ -152,9 +158,9 @@ P.S. If you need to contact us write to: ponchio@isti.cnr.it""" %  media
 			if smtp.has_extn('STARTTLS'):
 				smtp.starttls()
 				smtp.ehlo()
-				smtp.login('ponchio', 'maldipancismo')
+				smtp.login(admin_user, admin_password)
 
-				smtp.sendmail('ponchio@isti.cnr.it', [email], msg.as_string())
+				smtp.sendmail(admin_email, [email], msg.as_string())
 		except:
 			logging.debug("Failed to send email.." % str(email))
 		finally:

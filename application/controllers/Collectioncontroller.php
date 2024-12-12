@@ -15,17 +15,20 @@ class Collectioncontroller extends MY_Controller {
 	}
 
 	function notFound() {
+		$contact = VMS_PARAMETERS->contact;
 		$error = "<p>The link does not seems to be valid:</p>\n".
 			"<ul>\n".
 			"<li>the collection might have been removed or\n".
 			"<li>the media is not currently published or\n".
 			"<li>the link is wrong\n".
 			"</ul>\n".
-			"<p>Contact us for help: <a href='mailto:ponchio@isti.cnr.it'>ponchio@isti.cnr.it</a></p>\n";
+			"<p>Contact us for help: <a href='mailto:$contact'>$contact</a></p>\n";
 		$this->error($error);
 	}
 
 	function show($label) {
+		$contact = VMS_PARAMETERS->contact;
+
 		$collection = $this->collection->ownsByLabel($label, $this->user());
 
 		if(!$collection)
@@ -39,7 +42,7 @@ class Collectioncontroller extends MY_Controller {
 				"<li>the collection is not currently published or\n".
 				"<li>the link is wrong\n".
 				"</ul>\n".
-				"<p>Contact us for help: <a href='mailto:ponchio@isti.cnr.it'>ponchio@isti.cnr.it</a></p>\n"
+				"<p>Contact us for help: <a href='mailto:$contact'>$contact</a></p>\n"
 			);
 		}
 		$this->collection->addMedia($collection);
@@ -160,12 +163,13 @@ class Collectioncontroller extends MY_Controller {
 	}
 
 	function invalid() {
+		$contact = VMS_PARAMETERS->contact;
 		$error = "<p>The link does not seems to be valid:</p>\n".
 				"<ul>\n".
 				"<li>the collection doesn't exists\n".
 				"<li>you are not the owner of the collection\n".
 				"</ul>\n".
-				"<p>Contact us for help: <a href='mailto:ponchio@isti.cnr.it'>ponchio@isti.cnr.it</a></p>\n";
+				"<p>Contact us for help: <a href='mailto:$contact'>$contact</a></p>\n";
 		$this->error($error);
 	}
 

@@ -16,8 +16,8 @@ As an example of an archival service which provides features for presentation of
 <h3>Contacts</h3>
 
 <img width="25%" src="/images/co-funded-h2020-horiz_en.svg" style='float: right; margin-top: -35px;'/>
-
-<p>Please send comments or queries to:   <a href="mailto:ponchio@isti.cnr.it">ponchio@isti.cnr.it</a></p>
+<? 		$contact = VMS_PARAMETERS->contact; ?>
+<p>Please send comments or queries to:   <a href="mailto:<?=$contact?>"><?=$contact?></a></p>
 
 
 
