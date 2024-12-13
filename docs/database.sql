@@ -13,8 +13,6 @@ SET default_with_oids = false;
 SET search_path TO public;
 
 -- Table: object
-DROP TABLE media;
-
 CREATE TABLE public.media
 (
   id serial NOT NULL,
@@ -49,7 +47,6 @@ WITH ( OIDS=FALSE );
 ALTER TABLE media OWNER TO vms;
 
 -- Table: media
-DROP TABLE files;
 CREATE TABLE files
 (
   id serial NOT NULL,
@@ -75,7 +72,6 @@ ALTER TABLE files OWNER TO vms;
 
 
 -- Table: collections
-DROP TABLE collections;
 CREATE TABLE collections
 (
   id serial NOT NULL,
@@ -95,7 +91,6 @@ ALTER TABLE collections OWNER TO vms;
 
 
 -- Table: collections_media
-DROP TABLE collections_media;
 CREATE TABLE collections_media
 (
   collection integer NOT NULL,
@@ -108,7 +103,6 @@ ALTER TABLE collections_media OWNER TO vms;
 
 
 -- Table: users
-DROP TABLE users;
 CREATE TABLE users
 (
   id serial NOT NULL,
@@ -134,7 +128,6 @@ GRANT ALL ON TABLE users TO vms;
 
 
 -- Table: identities
-DROP TABLE identities;
 CREATE TABLE identities
 (
   userid integer, -- in table users

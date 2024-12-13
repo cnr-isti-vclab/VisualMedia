@@ -3,12 +3,12 @@
 import sys, time, psycopg2, logging, signal, os, subprocess, re, json
 import psycopg2.extras
 from pprint import pprint
-from daemon import Daemon
+#from daemon import Daemon
 from datetime import datetime
 
 import json
 import urllib
-import urllib2
+import urllib.request as urllib2
 import requests
 import smtplib
 import shutil 
@@ -26,13 +26,13 @@ admin_pass  = ''
 
 upload_path = '/data/vms_upload/'
 data_path   = '/data/vms_data/'
-log_path    = '/home/vcg/ariadne.log'
+log_path    = '/home/ubuntu/ariadne.log'
 
-palma    = '/home/vcg/bin/webGLRtiMaker'
-relight  = '/home/vcg/bin/relight-cli'
-nexus    = '/home/vcg/bin/nxsbuild'
-nxsedit  = '/home/vcg/bin/nxsedit'
-deepzoom = '/home/vcg/bin/build_deepzoom.sh'
+palma    = '/home/ubuntu/bin/webGLRtiMaker'
+relight  = '/home/ubuntu/bin/relight-cli'
+nexus    = '/home/ubuntu/bin/nxsbuild'
+nxsedit  = '/home/ubuntu/bin/nxsedit'
+deepzoom = '/home/ubuntu/bin/build_deepzoom.sh'
 onetile  = 'onetile' 
 
 
@@ -45,7 +45,8 @@ def sigterm_handler(_signo, _stack_frame):
 
 signal.signal(signal.SIGTERM, sigterm_handler)
 
-class Ariadne(Daemon):
+#class Ariadne(Daemon):
+class Ariadne():
 	con = None
 	cur = None
 
@@ -95,7 +96,7 @@ contact us at
 
 Thank you for using our service, and sorry for the trouble
 
-Visual Media Service.""" % media, admin_email=admin_email, host=host
+Visual Media Service.""" % media
 
 		self.sendMsg(media, user, '[AMS] Bummer! %s processing failed.' % media["title"], text)
 
@@ -105,7 +106,7 @@ Visual Media Service.""" % media, admin_email=admin_email, host=host
 	def sendMsgSuccess(self, media, user):
 
 		text = """Dear %(name)s,
-   the media (%(title)s) you uploaded has been processed succesfully.
+   the media (%(title)s) you uploaded has been processed successfully.
 
 You can view the result privately here:
 
@@ -123,7 +124,7 @@ Thank you for using our service,
 
 Visual Media Service.
 
-P.S. If you need to contact us write to: %(admin_email)s""" %  media, admin_email=admin_email, host=host
+P.S. If you need to contact us write to: %(admin_email)s""" %  media
 
 		self.sendMsg(media, user, '[AMS] %s is ready.' % media["title"], text)
 
@@ -700,22 +701,23 @@ WHERE status in ('on queue', 'processing', 'download', 'remove') OR (expire is n
 
 if __name__ == "__main__":
 
-	daemon = Ariadne('/tmp/ariadne-vms.pid')
-#	daemon.run()
+	#daemon = Ariadne('/tmp/ariadne-vms.pid')
+	daemon = Ariadne()
+	daemon.run()
 
-	if len(sys.argv) == 2:
-		if 'start' == sys.argv[1]:
-			daemon.start()
-		elif 'stop' == sys.argv[1]:
-			daemon.stop()
-		elif 'restart' == sys.argv[1]:
-			daemon.restart()
-		else:
-			print("Unknown command")
-			sys.exit(2)
-		sys.exit(0)
-	else:
-		print("usage: %s start|stop|restart" % sys.argv[0])
-		sys.exit(2)
+	# if len(sys.argv) == 2:
+	# 	if 'start' == sys.argv[1]:
+	# 		daemon.start()
+	# 	elif 'stop' == sys.argv[1]:
+	# 		daemon.stop()
+	# 	elif 'restart' == sys.argv[1]:
+	# 		daemon.restart()
+	# 	else:
+	# 		print("Unknown command")
+	# 		sys.exit(2)
+	# 	sys.exit(0)
+	# else:
+	# 	print("usage: %s start|stop|restart" % sys.argv[0])
+	# 	sys.exit(2)
 
 
