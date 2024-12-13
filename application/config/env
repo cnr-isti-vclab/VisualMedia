@@ -1,0 +1,19 @@
+{
+    "database": {
+        "driver": "postgre",
+        "host": "localhost",
+        "port": "5432",
+        "dbname": "vms",
+        "user": "vms",
+        "password" : ""
+    },
+    "contact": "user@domain",
+    "smtp": {
+        "user": "username",
+        "pass": "passwrd",
+        "host": "smtp host",
+        "port": 587
+    },
+    "upload": "/data/VisualMedia/uploads",
+    "data": "/data/VisualMedia/data"
+}
