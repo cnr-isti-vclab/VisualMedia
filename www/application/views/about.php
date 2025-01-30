@@ -23,6 +23,10 @@ As an example of an archival service which provides features for presentation of
 
 <hr/>
 <h3>Changelog</h3>
+<h5 class="text-info">November 2024</h5>
+<ul>
+	<li>Completed Dockerization</li>
+</ul>
 
 <h5 class="text-info">November 2018.</h5>
 <ul>
