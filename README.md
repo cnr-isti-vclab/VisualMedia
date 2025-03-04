@@ -11,7 +11,7 @@ The repository supports common 3D formats for meshes and point clouds, such as .
 Relightable images (RTI) can be imported using the old .ptm and .rti format or the more recent [Relight](https://github.com/cnr-isti-vclab/relight) format.
 
 ## Authentication
-
+Authentication is based on OAuth protocol, alternatively a simple email-based passwprdless authentication can be used. 
 
 ## Storage
 
