@@ -17,8 +17,13 @@ Authentication is based on OAuth protocol, alternatively a simple email-based pa
 
 ## Installation
 
+Still in development:
 ```
 docker compose up
+```
 
-docker run -ti -v ${PWD}/www:/var/html/www -v ${PWD}/scripts:/scripts visualmedia-php bash
+
+### To run manually the visualmedia-php container
+```
+docker run -ti -v ${PWD}/www:/var/html/www visualmedia-php bash
 ```

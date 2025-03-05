@@ -18,3 +18,7 @@ services:
       - 80:80
     volumes:
       - ./www:/var/www/html/
+      - data:/data
+
+volumes:
+  data:
