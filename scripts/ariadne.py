@@ -26,7 +26,7 @@ admin_pass  = ''
 
 upload_path = '/data/vms_upload/'
 data_path   = '/data/vms_data/'
-log_path    = '/home/ubuntu/ariadne.log'
+log_path    = '/data/ariadne.log'
 
 palma    = '/home/ubuntu/bin/webGLRtiMaker'
 relight  = '/home/ubuntu/bin/relight-cli'
@@ -635,8 +635,8 @@ P.S. If you need to contact us write to: %(admin_email)s""" %  media
 		os.umask(0o002)
 
 		try:
-			print("Line 631: Fill database password and commend this line!");
-			self.con = psycopg2.connect(host="localhost", database='vms', user='ariadne', password='')
+			# print("Line 631: Fill database password and commend this line!");
+			self.con = psycopg2.connect(host="postgres", database='vms', user='vms', password='S3cret')
 			self.cur = self.con.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
 			logging.debug('Connected to DB')
