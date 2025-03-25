@@ -2,14 +2,13 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 
-$string = file_get_contents(dirname(__FILE__)."/.env");
+
+$string = file_get_contents(dirname(__FILE__)."../../.env");
 $parameters = json_decode($string);
 if(!$parameters) {
 	echo("Failed parsing ".dirname(__FILE__)."/.env");
 	exit(0);
 }
-
-define('VMS_PARAMETERS', $parameters);
 
 define('UPLOAD_DIR', $parameters->upload);
 define('DATA_DIR'  , $parameters->data);

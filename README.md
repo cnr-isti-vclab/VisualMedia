@@ -15,7 +15,21 @@ Authentication is based on OAuth protocol, alternatively a simple email-based pa
 
 ## Storage
 
-## Installation
+## Installation with docker
+
+### Configuration
+
+env file in VisualMedia folder. 
+
+POSTGRES_PASSWORD
+POSTGRES_USER
+POSTGRES_DB
+ADMIN_EMAIL
+SMTP_USER
+SMTP_PASSWD
+SMTP_HOST
+SMTP_PORT
+
 
 Still in development:
 ```
@@ -25,5 +39,19 @@ docker compose up
 
 ### To run manually the visualmedia-php container
 ```
+docker run -ti -v --env-file ./env visualmedia-php bash
+
 docker run -ti -v ${PWD}/www:/var/html/www visualmedia-php bash
 ```
+
+## Installation without docker
+
+See Docker file for scripts:
+
+Setup apache (virtual host, php.ini (see scripts/php_settings.sh)
+Setup posgres
+Setup codeigniter
+Setup python
+Move env file into www/application/config/
+
+

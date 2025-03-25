@@ -6,21 +6,33 @@ services:
     volumes:
       - ./dbdata/:/var/lib/postgresql/data
       - ./docs/database.sql:/docker-entrypoint-initdb.d/create_database.sql
-    environment:
-      - POSTGRES_PASSWORD=S3cret
-      - POSTGRES_USER=vms
-      - POSTGRES_DB=vms
-    # run psql -d vms -a -f database.sql
+    env_file:
+    - env
+#    environment:
+#      - POSTGRES_PASSWORD=S3cret
+#      - POSTGRES_USER=vms
+#      - POSTGRES_DB=vms
+#    # run psql -d vms -a -f database.sql
 
   php:
-    build: .
+    build: ./docker-php
     depends_on:
       - postgres
     ports:
-      - 80:80
+      - 8080:80
     volumes:
       - ./www:/var/www/html/
-      - data:/data
-
+      - ./data:/data
+    env_file:
+    - env
+    
+  python:
+    build: ./docker-python
+    depends_on:
+      - postgres
+    volumes:
+      - ./data:/data
+    env_file:
+    - env
 volumes:
   data:

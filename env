@@ -1,0 +1,8 @@
+POSTGRES_PASSWORD=S3cret
+POSTGRES_USER=vms
+POSTGRES_DB=vms
+ADMIN_EMAIL=user@domain.com
+SMTP_USER=username
+SMTP_PASSWD=password
+SMTP_HOST=smtp.host.com
+SMTP_PORT=587
