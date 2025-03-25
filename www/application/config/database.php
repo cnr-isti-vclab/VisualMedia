@@ -73,15 +73,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $active_group = 'default';
 $query_builder = TRUE;
 
-$database = VMS_PARAMETERS->database;
-
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => $database->host,
-	'username' => $database->user,
-	'password' => $database->password,
-	'database' => $database->dbname,
-	'dbdriver' => $database->driver,
+	'hostname' => POSTGRES_HOST,
+	'username' => POSTGRES_USER,
+	'password' => POSTGRES_PASSWORD,
+	'database' => POSTGRES_DB,
+	'dbdriver' => 'postgre',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
 	'db_debug' => (ENVIRONMENT !== 'production'),

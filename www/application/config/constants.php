@@ -2,16 +2,16 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 
-
-$string = file_get_contents(dirname(__FILE__)."../../.env");
-$parameters = json_decode($string);
-if(!$parameters) {
-	echo("Failed parsing ".dirname(__FILE__)."/.env");
+$env = parse_ini_file('.env', false, INI_SCANNER_RAW);
+if(!$env) {
+	echo("Failed parsing ".dirname(__FILE__)."../../.env");
 	exit(0);
 }
-
-define('UPLOAD_DIR', $parameters->upload);
-define('DATA_DIR'  , $parameters->data);
+foreach($env as $key=>$value) {
+	define($key, $value);
+}
+define('UPLOAD_DIR', '/data/vms_uploads');
+define('DATA_DIR'  , '/data/vms_data');
 
 /*
 |--------------------------------------------------------------------------
