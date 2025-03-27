@@ -1,0 +1,261 @@
+openapi: 3.0.0
+info:
+  title: 3D Model Processing API
+  description: API for processing 3D models on a server.
+  version: 1.0.0
+servers:
+  - url: https://api.example.com/v1
+    description: Main server
+
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://auth.example.com/oauth2/authorize
+          tokenUrl: https://auth.example.com/oauth2/token
+          scopes:
+            read: Grants read access
+            write: Grants write access
+            admin: Grants access to admin operations
+
+security:
+  - OAuth2:
+      - read
+      - write
+
+paths:
+  /models:
+    post:
+      summary: Upload a small 3D model
+      description: Uploads a small 3D model file to the server for processing. Returns a secret_id for managing the model.
+      security:
+        - OAuth2:
+            - write
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Model uploaded successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  secret_id:
+                    type: string
+                    example: "12345"
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+
+    get:
+      summary: Provide URLs, title, type for processing
+      description: Provides URLs, title, type, and the files will be downloaded and processed to a temporary dataset. Returns a secret_id for managing and visualizing the model.
+      security:
+        - OAuth2:
+            - write
+      responses:
+        '200':
+          description: URLs processed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  secret_id:
+                    type: string
+                    example: "12345"
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+
+  /models/{secret_id}/status:
+    get:
+      summary: Get model processing status
+      description: Retrieves the processing status of a 3D model.
+      security:
+        - OAuth2:
+            - read
+      parameters:
+        - name: secret_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Status retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  secret_id:
+                    type: string
+                  status:
+                    type: string
+                    example: "processing"
+        '404':
+          description: Model not found
+        '500':
+          description: Internal server error
+
+  /models/{secret_id}/remove:
+    delete:
+      summary: Remove the model
+      description: Removes the model. Requires authentication.
+      security:
+        - OAuth2:
+            - write
+      parameters:
+        - name: secret_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Model removed successfully
+        '404':
+          description: Model not found
+        '500':
+          description: Internal server error
+
+  /models/{secret_id}/download:
+    get:
+      summary: Download the entire dataset
+      description: Downloads the entire dataset.
+      security:
+        - OAuth2:
+            - read
+      parameters:
+        - name: secret_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: File downloaded successfully
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Model not found
+        '500':
+          description: Internal server error
+
+  /models/{secret_id}/info:
+    get:
+      summary: Get model info
+      description: Returns JSON with info about the object bounding box, volume, orientation, etc.
+      security:
+        - OAuth2:
+            - read
+      parameters:
+        - name: secret_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Info retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  boundingBox:
+                    type: object
+                  volume:
+                    type: number
+                  orientation:
+                    type: string
+        '404':
+          description: Model not found
+        '500':
+          description: Internal server error
+
+  /models/{secret_id}/process:
+    post:
+      summary: Start a processing task
+      description: Starts a Python processing task with the command specified in the params. Generates another model and adds it to the user's list. Only one processing at a time per model is allowed. Returns a new version number.
+      security:
+        - OAuth2:
+            - write
+      parameters:
+        - name: secret_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                params:
+                  type: object
+      responses:
+        '200':
+          description: Processing started successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  version:
+                    type: string
+                    example: "1.1"
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+
+  /models/{secret_id}/publish:
+    post:
+      summary: Publish the model
+      description: Makes the model visible to everyone. Requires some variables.
+      security:
+        - OAuth2:
+            - write
+      parameters:
+        - name: secret_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                visibility:
+                  type: string
+                  example: "public"
+      responses:
+        '200':
+          description: Model published successfully
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
