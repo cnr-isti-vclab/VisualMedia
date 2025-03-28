@@ -17,6 +17,30 @@ Authentication is based on OAuth protocol, alternatively a simple email-based pa
 
 ## Installation with docker
 
+To try in your machine the Visual Media Service, you just need to have [docker](https://docs.docker.com/) installed.
+
+Then, from the root of the repository, just run:
+
+```
+docker compose up
+```
+
+or, in detached mode:
+
+```
+docker compose up --detach
+```
+
+And you can access to the service from a browser, at http://localhost.
+
+If you need to change the port, you can edit the [docker-compose.yml](docker-compose.yml) file and change the port mapping in the `php` service section.
+
+To stop the service, you can run:
+
+```
+docker compose down
+```
+
 ### Configuration
 
 env file in VisualMedia folder. 
@@ -29,20 +53,6 @@ SMTP_USER
 SMTP_PASSWD
 SMTP_HOST
 SMTP_PORT
-
-
-Still in development:
-```
-docker compose up
-```
-
-
-### To run manually the visualmedia-php container
-```
-docker run -ti -v --env-file ./env visualmedia-php bash
-
-docker run -ti -v ${PWD}/www:/var/html/www visualmedia-php bash
-```
 
 ## Installation without docker
 
