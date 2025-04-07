@@ -14,6 +14,8 @@ createuser --interactive
 createdb vms
 sudo -u postgres psql
     CREATE ROLE vms LOGIN PASSWORD 'mondotrottolo'; #actually pick a sensible password.
+
+grant create on schema public to public;
 psql -d vms -a -f database.sql
 ```
 

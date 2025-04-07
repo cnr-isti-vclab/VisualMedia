@@ -1,3 +1,5 @@
+<div class="row">
+<div class="col">
 <h3>About</h3>
 
 <p>The Visual Media Service provides easy publication and presentation on the web of complex visual media assets. It is an automatic service that allows to upload visual media files on an  server and to transform them into an efficient web format, making them ready for web-based visualization.</p>
@@ -16,7 +18,7 @@ As an example of an archival service which provides features for presentation of
 <h3>Contacts</h3>
 
 <img width="25%" src="/images/co-funded-h2020-horiz_en.svg" style='float: right; margin-top: -35px;'/>
-<? 		$contact = VMS_PARAMETERS->contact; ?>
+<? 		$contact = ADMIN_EMAIL; ?>
 <p>Please send comments or queries to:   <a href="mailto:<?=$contact?>"><?=$contact?></a></p>
 
 
@@ -70,4 +72,5 @@ As an example of an archival service which provides features for presentation of
 			<li>presentation customization</li>
 		</ul>
 </ul>
-
+</div>
+</div>
