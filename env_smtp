@@ -2,13 +2,8 @@ WEBSITE_HOST=visualmediaservice.isti.cnr.it
 
 ADMIN_EMAIL=user@domain.com
 SMTP_USER=username
-SMTP_PASSWD=password
+SMTP_PASSWORD=password
 SMTP_HOST=smtp.host.com
 SMTP_PORT=587
-
-POSTGRES_PASSWORD=S3cret
-POSTGRES_USER=vms
-POSTGRES_DB=vms
-POSTGRES_HOST=postgres
 
 

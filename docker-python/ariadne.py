@@ -21,11 +21,11 @@ quit = False
 
 host = os.environ['WEBSITE_HOST']
 admin_user  = os.environ['SMTP_USER']
-admin_pass = os.environ['SMTP_PASSWD']
+admin_pass = os.environ['SMTP_PASSWORD']
 admin_email = os.environ['ADMIN_EMAIL']
 
 postgres_user = os.environ['POSTGRES_USER']
-postgres_pass = os.environ['POSTGRES_PASSWD']
+postgres_pass = os.environ['POSTGRES_PASSWORD']
 postgres_host = os.environ['POSTGRES_HOST']
 postgres_db   = os.environ['POSTGRES_DB']
 
@@ -160,7 +160,7 @@ P.S. If you need to contact us write to: %(admin_email)s""" %  media
 			if smtp.has_extn('STARTTLS'):
 				smtp.starttls()
 				smtp.ehlo()
-				smtp.login(admin_user, admin_pass
+				smtp.login(admin_user, admin_pass)
 
 				smtp.sendmail(admin_email, [email], msg.as_string())
 		except:
@@ -637,7 +637,7 @@ P.S. If you need to contact us write to: %(admin_email)s""" %  media
 
 		try:
 			# print("Line 631: Fill database password and commend this line!");
-			self.con = psycopg2.connect(host=postgres_host, database=postgres_db, user=posgres_user, password=postgres_pass)
+			self.con = psycopg2.connect(host=postgres_host, database=postgres_db, user=postgres_user, password=postgres_pass)
 			self.cur = self.con.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
 			logging.debug('Connected to DB')

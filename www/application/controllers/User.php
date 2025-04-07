@@ -94,7 +94,7 @@ class User  extends MY_Controller {
 			'smtp_host' => SMTP_HOST,
 			'smtp_port' => SMTP_PORT,
 			'smtp_user' => SMTP_USER,
-			'smtp_pass' => SMTP_PASSWD,
+			'smtp_pass' => SMTP_PASSWORD,
 			'smtp_crypto' => 'tls',
 			'mailtype'  => 'html',
 			'charset'   => 'utf-8'

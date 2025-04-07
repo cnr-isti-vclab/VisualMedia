@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-foreach(['SMTP_PASSWD', 'SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 
+foreach(['SMTP_PASSWORD', 'SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 
 	'POSTGRES_PASSWORD', 'POSTGRES_USER', 'POSTGRES_DB', 'POSTGRES_HOST'] as $key) {
 	if(!getenv($key)) {
 		echo("Environment variable $key not set");
