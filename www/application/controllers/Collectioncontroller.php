@@ -15,7 +15,7 @@ class Collectioncontroller extends MY_Controller {
 	}
 
 	function notFound() {
-		$contact = VMS_PARAMETERS->contact;
+		$contact = ADMIN_EMAIL;
 		$error = "<p>The link does not seems to be valid:</p>\n".
 			"<ul>\n".
 			"<li>the collection might have been removed or\n".
@@ -27,7 +27,7 @@ class Collectioncontroller extends MY_Controller {
 	}
 
 	function show($label) {
-		$contact = VMS_PARAMETERS->contact;
+		$contact = ADMIN_EMAIL;
 
 		$collection = $this->collection->ownsByLabel($label, $this->user());
 
@@ -163,7 +163,7 @@ class Collectioncontroller extends MY_Controller {
 	}
 
 	function invalid() {
-		$contact = VMS_PARAMETERS->contact;
+		$contact = ADMIN_EMAIL;
 		$error = "<p>The link does not seems to be valid:</p>\n".
 				"<ul>\n".
 				"<li>the collection doesn't exists\n".

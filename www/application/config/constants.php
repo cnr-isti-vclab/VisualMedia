@@ -1,14 +1,13 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-
-$env = parse_ini_file('.env', false, INI_SCANNER_RAW);
-if(!$env) {
-	echo("Failed parsing ".dirname(__FILE__)."../../.env");
-	exit(0);
-}
-foreach($env as $key=>$value) {
-	define($key, $value);
+foreach(['SMTP_PASSWD', 'SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 
+	'POSTGRES_PASSWORD', 'POSTGRES_USER', 'POSTGRES_DB', 'POSTGRES_HOST'] as $key) {
+	if(!getenv($key)) {
+		echo("Environment variable $key not set");
+		exit(0);
+	}
+	define($key, getenv($key));
 }
 define('UPLOAD_DIR', '/data/vms_uploads');
 define('DATA_DIR'  , '/data/vms_data');

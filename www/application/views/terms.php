@@ -46,7 +46,7 @@ dell’Informazione of the Italian National Research Council , a public research
 Postal address: CNR-ISTI, Area della Ricerca CNR di Pisa, Via G. Moruzzi 1, 
 56124 Pisa ITALY
 Web: http://www.isti.cnr.it/ 
-Email address: <?=VMS_PARAMETERS->contact?> 
+Email address: <?=ADMIN_EMAIL?> 
 </pre>
 
 <h2>Website and Services access:</h2>

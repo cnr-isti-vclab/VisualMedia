@@ -91,10 +91,10 @@ class User  extends MY_Controller {
 		$this->load->library('email');
 		$config = array(
 			'protocol'  => 'smtp',
-			'smtp_host' => VMS_PARAMETERS->smtp->host,
-			'smtp_port' => VMS_PARAMETERS->smtp->port,
-			'smtp_user' => VMS_PARAMETERS->smtp->user,
-			'smtp_pass' => VMS_PARAMETERS->smtp->pass,
+			'smtp_host' => SMTP_HOST,
+			'smtp_port' => SMTP_PORT,
+			'smtp_user' => SMTP_USER,
+			'smtp_pass' => SMTP_PASSWD,
 			'smtp_crypto' => 'tls',
 			'mailtype'  => 'html',
 			'charset'   => 'utf-8'
@@ -109,7 +109,7 @@ class User  extends MY_Controller {
 
 		try {
 			if(!$this->email->send(FALSE)) {
-				$contact = VMS_PARAMETERS->contact;
+				$contact = ADMIN_EMAIL;
 
 				$this->data['msg'] = '<p>Mail could not be sent because of a technical problem, <br/>'.
 					"you can try again or write to <a href='mailto:$contact'>$contact</a></p>";

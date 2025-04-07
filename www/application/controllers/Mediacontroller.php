@@ -200,7 +200,7 @@ class Mediacontroller extends MY_Controller {
 		$media = $this->media->ownsMedia($label, $this->user());
 
 		if(!$media) {
-			$contact = VMS_PROPERTIES->contact;
+			$contact = ADMIN_EMAIL;
 
 //			$media = $this->media->byLabel($secret, false); //return also private medias
 			if(!$media)
@@ -508,7 +508,7 @@ EOD;
 			$media = $this->media->bySecret($label);
 
 		if(!$media) {
-			$contact = VMS_PROPERTIES->contact;
+			$contact = ADMIN_EMAIL;
 
 			$this->error("<p>The link does not seems to be valid:</p>\n".
 				"<ul>\n".

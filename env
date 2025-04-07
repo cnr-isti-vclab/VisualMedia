@@ -1,3 +1,5 @@
+WEBSITE_HOST=visualmediaservice.isti.cnr.it
+
 ADMIN_EMAIL=user@domain.com
 SMTP_USER=username
 SMTP_PASSWD=password

@@ -19,23 +19,24 @@ quit = False
 
 #TODO read 
 
-host = 'https://visual.ariadne-infrastructure.eu'
-admin_user  = 'ponchio'
-admin_email = 'ponchio@isti.cnr.it'
-admin_pass  = ''
+host = os.environ['WEBSITE_HOST']
+admin_user  = os.environ['SMTP_USER']
+admin_pass = os.environ['SMTP_PASSWD']
+admin_email = os.environ['ADMIN_EMAIL']
+
+postgres_user = os.environ['POSTGRES_USER']
+postgres_pass = os.environ['POSTGRES_PASSWD']
+postgres_host = os.environ['POSTGRES_HOST']
+postgres_db   = os.environ['POSTGRES_DB']
 
 upload_path = '/data/vms_upload/'
 data_path   = '/data/vms_data/'
 log_path    = '/data/ariadne.log'
 
-palma    = '/home/ubuntu/bin/webGLRtiMaker'
 relight  = '/home/ubuntu/bin/relight-cli'
 nexus    = '/home/ubuntu/bin/nxsbuild'
 nxsedit  = '/home/ubuntu/bin/nxsedit'
 deepzoom = '/home/ubuntu/bin/build_deepzoom.sh'
-onetile  = 'onetile' 
-
-
 
 
 def sigterm_handler(_signo, _stack_frame):
@@ -159,7 +160,7 @@ P.S. If you need to contact us write to: %(admin_email)s""" %  media
 			if smtp.has_extn('STARTTLS'):
 				smtp.starttls()
 				smtp.ehlo()
-				smtp.login(admin_user, admin_password)
+				smtp.login(admin_user, admin_pass
 
 				smtp.sendmail(admin_email, [email], msg.as_string())
 		except:
@@ -441,7 +442,7 @@ P.S. If you need to contact us write to: %(admin_email)s""" %  media
 			try:
 				output = subprocess.call(['rm', '-rf', outdir + "_files"], shell=False)
 				output = subprocess.call(['vips', 'dzsave', file['filename'], outdir,
-					'--layout', 'dz', '--tile-size', '256', '--overlap', '0', '--depth', onetile, '--suffix', '.jpg[Q=95]']);
+					'--layout', 'dz', '--tile-size', '256', '--overlap', '0', '--depth', 'onetile', '--suffix', '.jpg[Q=95]']);
 
 			except subprocess.CalledProcessError as e:
 				logging.debug("there was a problem")
@@ -636,7 +637,7 @@ P.S. If you need to contact us write to: %(admin_email)s""" %  media
 
 		try:
 			# print("Line 631: Fill database password and commend this line!");
-			self.con = psycopg2.connect(host="postgres", database='vms', user='vms', password='S3cret')
+			self.con = psycopg2.connect(host=postgres_host, database=postgres_db, user=posgres_user, password=postgres_pass)
 			self.cur = self.con.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
 			logging.debug('Connected to DB')
