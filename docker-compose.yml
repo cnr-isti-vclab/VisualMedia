@@ -5,7 +5,7 @@ services:
       - ./dbdata/:/var/lib/postgresql/data
       - ./docs/database.sql:/docker-entrypoint-initdb.d/create_database.sql
     env_file:
-    - env_postgres
+    - postgres.env
 
   php:
     build: ./docker-php
@@ -17,8 +17,8 @@ services:
       - ./www:/var/www/html/
       - ./data:/data
     env_file:
-    - env_postgres
-    - env_smtp
+    - postgres.env
+    - smtp.env
     
   python:
     build: ./docker-python
@@ -27,7 +27,7 @@ services:
     volumes:
       - ./data:/data
     env_file:
-    - env_postgres
-    - env_smtp
+    - postgres.env
+    - smtp.env
 volumes:
   data:

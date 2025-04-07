@@ -15,11 +15,15 @@ Authentication is based on OAuth protocol, alternatively a simple email-based pa
 
 ## Storage
 
+## Configuration
+
+Copy the `smtp_template.env` file to `smtp.env` and edit the SMTP settings to your needs.
+
 ## Installation with docker
 
 To try in your machine the Visual Media Service, you just need to have [docker](https://docs.docker.com/) installed.
 
-Then, from the root of the repository, just run:
+Configure the `smtp.env` file. Then, from the root of the repository, just run:
 
 ```
 docker compose up
@@ -40,19 +44,6 @@ To stop the service, you can run:
 ```
 docker compose down
 ```
-
-### Configuration
-
-env file in VisualMedia folder. 
-
-POSTGRES_PASSWORD
-POSTGRES_USER
-POSTGRES_DB
-ADMIN_EMAIL
-SMTP_USER
-SMTP_PASSWD
-SMTP_HOST
-SMTP_PORT
 
 ## Installation without docker
 
