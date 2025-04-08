@@ -34,10 +34,9 @@ data_path   = '/data/vms_data/'
 log_path    = '/data/ariadne.log'
 
 relight  = '/home/ubuntu/relight/usr/bin/relight-cli'
+deepzoom = '/home/ubuntu/relight/build_deepzoom.sh'
 nexus    = '/home/ubuntu/nexus/usr/bin/nxsbuild'
 nxsedit  = '/home/ubuntu/nexus/usr/bin/nxsedit'
-deepzoom = '/home/ubuntu/bin/build_deepzoom.sh'
-
 
 def sigterm_handler(_signo, _stack_frame):
 	global quit

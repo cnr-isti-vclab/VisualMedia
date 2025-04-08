@@ -5,6 +5,7 @@ RUN apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
         libegl1 \
         libgl1 \
         libopengl0 \
+        libvips-tools \
         python3 \
         python3-pip \
         python3-venv \
@@ -25,13 +26,21 @@ RUN python3 -m venv ariadne-venv && \
     python -m pip install --upgrade pip && \
     python -m pip install psycopg2-binary daemon requests
 
+# set Relight version
+ENV RELIGHT_VERSION=2024.11
+
 # download relight
 RUN cd /home/ubuntu && \
     mkdir -p relight && \
     cd relight && \
-    wget https://github.com/cnr-isti-vclab/relight/releases/download/RelightLab-2024.11/RelightLab2024.11-linux.tar.gz && \
-    tar -xzf RelightLab2024.11-linux.tar.gz && \
-    rm RelightLab2024.11-linux.tar.gz
+    wget https://github.com/cnr-isti-vclab/relight/releases/download/RelightLab-$RELIGHT_VERSION/RelightLab$RELIGHT_VERSION-linux.tar.gz && \
+    tar -xzf RelightLab$RELIGHT_VERSION-linux.tar.gz && \
+    rm RelightLab$RELIGHT_VERSION-linux.tar.gz && \
+    wget https://github.com/cnr-isti-vclab/relight/archive/refs/tags/RelightLab-$RELIGHT_VERSION.tar.gz && \
+    tar -xzf RelightLab-$RELIGHT_VERSION.tar.gz relight-RelightLab-$RELIGHT_VERSION/scripts/build_deepzoom.sh && \
+    mv relight-RelightLab-$RELIGHT_VERSION/scripts/build_deepzoom.sh /home/ubuntu/relight && \
+    rm -rf relight-RelightLab-$RELIGHT_VERSION && \
+    rm -rf RelightLab-$RELIGHT_VERSION.tar.gz
 
 # clean
 RUN apt-get -y autoremove && \
