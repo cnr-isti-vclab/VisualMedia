@@ -33,9 +33,9 @@ upload_path = '/data/vms_upload/'
 data_path   = '/data/vms_data/'
 log_path    = '/data/ariadne.log'
 
-relight  = '/home/ubuntu/bin/relight-cli'
-nexus    = '/home/ubuntu/bin/nxsbuild'
-nxsedit  = '/home/ubuntu/bin/nxsedit'
+relight  = '/home/ubuntu/relight/usr/bin/relight-cli'
+nexus    = '/home/ubuntu/nexus/usr/bin/nxsbuild'
+nxsedit  = '/home/ubuntu/nexus/usr/bin/nxsedit'
 deepzoom = '/home/ubuntu/bin/build_deepzoom.sh'
 
 
