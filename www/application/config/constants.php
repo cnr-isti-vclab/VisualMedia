@@ -9,8 +9,8 @@ foreach(['SMTP_PASSWORD', 'SMTP_HOST', 'SMTP_PORT', 'SMTP_USER',
 	}
 	define($key, getenv($key));
 }
-define('UPLOAD_DIR', '/data/vms_uploads');
-define('DATA_DIR'  , '/data/vms_data');
+define('UPLOAD_DIR', '/data/vms_upload/');
+define('DATA_DIR'  , '/data/vms_data/');
 
 /*
 |--------------------------------------------------------------------------

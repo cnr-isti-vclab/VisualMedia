@@ -99,6 +99,11 @@ class User  extends MY_Controller {
 			'mailtype'  => 'html',
 			'charset'   => 'utf-8'
 		);
+
+		echo(var_dump($config));
+		echo(var_dump($body));
+		echo(var_dump($email));
+
 		$this->email->initialize($config);
 
 		$this->email->from('', 'Visual Media Service');
