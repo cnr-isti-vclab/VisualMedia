@@ -1,4 +1,4 @@
-FROM php:8.3-apache
+FROM --platform=linux/amd64 php:8.3-apache
 
 RUN apt-get update && \
     apt-get install -y libpq-dev && \
