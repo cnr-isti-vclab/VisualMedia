@@ -160,10 +160,8 @@ class Mediacontroller extends MY_Controller {
 		$media['owner']       = $this->input->post('owner');
 
 		$result = $this->media->create($media);
-		if(isset($result['error']))
-			$this->jsonError($result['error']);
-
-		$$this->render(array('label'=> $label), 'json');
+		
+		$this->render($result, 'json');
 	}
 
 

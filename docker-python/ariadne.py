@@ -412,13 +412,16 @@ P.S. If you need to contact us write to: %(admin_email)s""" %  media
 # get image size
 # careful with tif.
 			try:
-				output = subprocess.check_output(["identify", "-format", "%w %h\n", file["filename"]])
+				output = subprocess.check_output(["vipsheader", file["filename"]], text=True)
 				output = output.split('\n')[0]
-				w, h = output.split(' ')
+				# Example: "file.jpg: 1920x1080 uchar, 3 bands, srgb, jpegload"
+				dims = output.split(':')[1].split('x')
+				w = dims[0].strip()
+				h = dims[1].split(' ')[0].strip()
 				self.setSize(media["id"], w, h)
-			except:
-				logging.debug("failed identify");
-				error = "Failed processing image: " + file["filename"]
+			except Exception as e:
+				logging.debug("Failed vipsheader: {e}");
+				error = "Failed to identify image: " + file["filename"]
 				break;
 
 #create thumb
@@ -639,7 +642,7 @@ P.S. If you need to contact us write to: %(admin_email)s""" %  media
 			self.con = psycopg2.connect(host=postgres_host, database=postgres_db, user=postgres_user, password=postgres_pass)
 			self.cur = self.con.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
-			logging.debug('Connected to DB')
+			logging.debug('Connected to DB 2')
 
 			while quit == False:
 				try:
@@ -655,6 +658,8 @@ WHERE status in ('on queue', 'processing', 'download', 'remove') OR (expire is n
 
 					if job is not None:
 						logging.debug(str(job['id']) + ' ' + job['status'])
+						job["host"] = host
+						job["admin_email"] = admin_email
 						if job['expired'] or job['status'] == 'remove':
 							self.removeJob(job)
 
