@@ -230,14 +230,19 @@ P.S. If you need to contact us write to: %(admin_email)s""" %  media
 		return (True, "")
 
 	def peekPly(self, filename):
+		logging.debug("peekPly: " + filename)
 		if not os.path.exists(filename):
 			return (False, "Could not find file: " + filename)
-		with open(filename) as file:
-			line = next(file)
+		with open(filename, "rb") as file:
+			line = file.readline().decode("ascii").strip()
+			if not line:
+				return (False, filename + " is empty")
+
+			#line = next(file)
 			if not line.startswith('ply'):
 				return (False, filename + "is not a .ply file")
 			for x in range(100):
-				line = next(file)
+				line = file.readline().decode("ascii").strip()
 				if line == "" or line == "\n" or line.startswith('end_header'):
 					break
 				if line.lower().startswith("comment texturefile "):
@@ -282,9 +287,11 @@ P.S. If you need to contact us write to: %(admin_email)s""" %  media
 		args = [nexus, '-o', 'test.nxs'] + plys
 		error = None
 		
+		logging.debug("nxsbuild: " + str(plys))
+
 #nxsbuilder
 		try:
-			output = subprocess.check_output(args, stderr=subprocess.STDOUT)
+			output = subprocess.check_output(args, text=True, stderr=subprocess.STDOUT)
 		#subprocess.check_output("dir /f",shell=True,stderr=subprocess.STDOUT)
 
 		except OSError as e:
@@ -301,7 +308,7 @@ P.S. If you need to contact us write to: %(admin_email)s""" %  media
 		try:
 			filesize = os.stat('test.nxs').st_size
 			if filesize > 300000:
-				output = subprocess.check_output([nxsedit, "-z", "test.nxs", "-o", "test.nxz"],stderr=subprocess.STDOUT)
+				output = subprocess.check_output([nxsedit, "-z", "test.nxs", "-o", "test.nxz"], text=True, stderr=subprocess.STDOUT)
 			else:
 				subprocess.check_output(["cp", "test.nxs", "test.nxz"])
 
@@ -317,9 +324,9 @@ P.S. If you need to contact us write to: %(admin_email)s""" %  media
 
 #cleanup
 		try:
-			subprocess.check_output(["mv", "test.nxz", path + media["label"] + ".nxz"], stderr=subprocess.STDOUT)
-			subprocess.check_output(["rm", "test.nxs"], stderr=subprocess.STDOUT)
-			subprocess.check_output(['rm -f cache_stream* cache_plyvertex* cache_tree*'], shell=True, stderr=subprocess.STDOUT)
+			subprocess.check_output(["mv", "test.nxz", path + media["label"] + ".nxz"], text=True, stderr=subprocess.STDOUT)
+			subprocess.check_output(["rm", "test.nxs"], text=True, stderr=subprocess.STDOUT)
+			subprocess.check_output(['rm -f cache_stream* cache_plyvertex* cache_tree*'], shell=True, text=True, stderr=subprocess.STDOUT)
 		except subprocess.CalledProcessError as e:
 			logging.error(e.output)
 			return e.output
@@ -345,11 +352,11 @@ P.S. If you need to contact us write to: %(admin_email)s""" %  media
 			try:
 #process rti
 				if file["ext"] == 'json':
-					output = subprocess.check_output(['mkdir', '-p', outdir])
+					output = subprocess.check_output(['mkdir', '-p', outdir], text=True, )
 					output = subprocess.check_output(['cp info.json plane_*.jpg ' + outdir], shell=True)
 				else:
 					logging.debug("RTI process %s %s %s" % (relight, file["filename"], outdir))
-					output = subprocess.check_output([relight, file["filename"], outdir], stderr=subprocess.STDOUT)
+					output = subprocess.check_output([relight, file["filename"], outdir], text=True, stderr=subprocess.STDOUT)
 
 				output = subprocess.call([deepzoom, outdir]);
 
