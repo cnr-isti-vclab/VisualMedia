@@ -9,5 +9,5 @@ if [ ! -d "/data/vms_data" ]; then
 fi
 
 . ariadne-venv/bin/activate
-python3 /ariadne.py
+python3 /app/ariadne.py
 

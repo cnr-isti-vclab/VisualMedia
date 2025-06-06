@@ -12,3 +12,6 @@ RUN chmod +x /php_settings.sh && \
     /php_settings.sh && \
     rm -rf /php_settings.sh 
 
+# on production TODO:
+# - clone repo 
+# - copy files from ./www to /var/www/html
