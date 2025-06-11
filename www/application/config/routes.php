@@ -101,7 +101,8 @@ $route['upload/(:any)'] = 'home/upload/$1';
 
 $route['media/create']             = 'mediacontroller/create';
 $route['media/delete/(:any)']      = 'mediacontroller/delete/$1';
-$route['media/upload/file']        = 'mediacontroller/uploadFile';
+$route['media/upload/file'] = 'mediacontroller/uploadFile';
+$route['media/upload/file/(:any)'] = 'mediacontroller/uploadFile/$1';
 $route['media/delete/file/(:any)'] = 'mediacontroller/deleteFile/$1';
 $route['media/process/(:any)']     = 'mediacontroller/process/$1';
 $route['media/update']             = 'mediacontroller/update';

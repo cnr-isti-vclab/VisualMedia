@@ -68,7 +68,9 @@
 	</div>
   </div>
 
-</div> <!-- formcontainer -->
+
+
+
 
 <hr/>
 
@@ -94,92 +96,22 @@
 	</div>
 </div>
 
+<div class="row">
+		<div class="col">
+			<input type="file" id="fileInput" multiple />
+		</div>
+		<ul id="fileList"></ul>
 
+	</div> 
+
+	<div class="form-group row">
+	<div class="offset-sm-10 col-sm-2">
+	  <input type="submit" class="form-control btn btn-success" id="submit" value="Create media"/>
+	</div>
+  </div>
+	</div> <!-- formcontainer -->
 
 </form>
-
-	<div id="actions" class="row">
-		<div class="col-lg-7">
-			<span class="btn btn-success fileinput-button">
-				<i class="fas fa-plus"></i>
-				<span>Add files...</span>
-			</span>
-			<button type="submit" class="btn btn-primary start">
-				<i class="fas fa-upload"></i>
-				<span>Start upload</span>
-			</button>
-			<button type="reset" class="btn btn-warning cancel">
-				<i class="fas fa-ban"></i>
-				<span>Cancel upload</span>
-			</button>
-		</div>
-
-		<div class="col-lg-5">
-			<!-- The global file processing state -->
-			<span class="fileupload-process">
-				<div id="total-progress" class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-					<div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div>
-				</div>
-			</span>
-		</div>
-	</div>
-
-
-	<div class="row">
-		<div class="col">
-			<form action="/upload/job" class="dropzone" id="fileform" style="display:none">
-				<input type="hidden" name="media" value="aa" />
-			</form>
-		</div>
-	</div> <!-- row -->
-
-
-<!-- File list -->
-	<div class="row" class="files" id="previews">
-
-		<div id="template" class="col-12 mt-4">
-			<div class="d-flex justify-content-between align-items-end">
-				<div>
-					<p class="name mb-1" data-dz-name></p>
-					<strong class="error text-danger" data-dz-errormessage></strong>
-					<p class="size mb-1" data-dz-size></p>
-				</div>
-
-				<div class="mb-1">
-					<button data-dz-remove class="btn btn-warning cancel">
-						<i class="glyphicon glyphicon-ban-circle"></i>
-						<span>Cancel</span>
-					</button>
-					<button data-dz-remove class="btn btn-danger delete">
-						<i class="glyphicon glyphicon-trash"></i>
-						<span>Delete</span>
-					</button>
-				</div>
-			</div>
-
-			<div>
-				<div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-					<div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress>
-					</div>
-				</div>
-			</div>
-		</div>
-
-	</div> <!-- row -->
-
-
-
-<? if(0 && $user && $user->provider == "d4science") { ?>
-	<label for="label" class="col-sm-2 control-label">File</label>
-	<div class="col-sm-4">
-<button type="button" class="btn btn-success" data-toggle="modal" data-target="#filexplorer">
-  Select file from workspace...
-</button>
-	</div>
-
-<? } ?>
-
-
 </div>
 
 
@@ -189,11 +121,89 @@
 var simplemde = new SimpleMDE({ element: $('textarea')[0], forceSync: true, hideIcons: ['side-by-side', 'fullscreen'], spellChecker: false, status: false });
 </script>
 
-<script src="/js/dropzone.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tus-js-client@latest/dist/tus.js"></script>
 <script>
+
+const fileInput = document.getElementById("fileInput");
+const createBtn = document.getElementById("submit");
+const fileList = document.getElementById("fileList");
+
+let selectedFiles = [];
+
+fileInput.addEventListener("change", () => {
+  selectedFiles = Array.from(fileInput.files);
+  fileList.innerHTML = "";
+
+  selectedFiles.forEach(file => {
+	const li = document.createElement("li");
+	li.textContent = file.name;
+	fileList.appendChild(li);
+  });
+});
+
+createBtn.addEventListener("click", async (e) => {
+	e.preventDefault();
+
+	let form = document.getElementById('form');
+	if(!form.checkValidity()) {
+		form.reportValidity();
+		return;
+	}
+	if(selectedFiles.length == 0) {
+		alert("Select at least a file");
+		return;
+	}
+
+	const formData = new FormData(form);
+	selectedFiles.forEach((file, i) => { formData.append(`filenames[]`, file.name); });
+	const params = new URLSearchParams(formData);
+
+	const res = await fetch('/media/create', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: params.toString()
+	});
+
+	const result = await res.json();
+	if(result.error) {
+		alert(result.error);
+		return;
+	}
+	const mediaId = result.id;
+	
+	selectedFiles.forEach(file => {
+		const upload = new tus.Upload(file, {
+		endpoint: "/media/upload/file",
+		metadata: {
+			filename: file.name,
+			filetype: file.type,
+		},
+		onError: error => {
+			console.error("Upload failed:", error);
+		},
+		onProgress: (bytesUploaded, bytesTotal) => {
+			console.log(`${file.name}: ${(bytesUploaded / bytesTotal * 100).toFixed(1)}%`);
+		},
+		onSuccess: () => {
+			console.log(`Finished uploading ${file.name}`);
+		}
+	});
+
+	upload.start();
+  });
+});
+</script>
+
+<!--<script src="/js/dropzone.js"></script> -->
+<script>
+
 //Dropzone.options.myAwesomeDropzone = false;
 var media_id = null;
 
+
+/*
 
 
 var previewNode = document.querySelector("#template");
@@ -201,12 +211,9 @@ previewNode.id = "";
 var previewTemplate = previewNode.parentNode.innerHTML;
 previewNode.parentNode.removeChild(previewNode);
 
+
 var dropzone = new Dropzone(document.body, { // Make the whole body a dropzone
-/*  accept: function(file, done) {
-	console.log(file);
-	  done("Naha, you don't.");
-	 // done(); to accept.
-  }, */
+
 	timeout: 1000*60*60*8,
 	maxFiles: 100,
 	maxFilesize: 4000, // 4Gb
@@ -292,7 +299,7 @@ document.querySelector("#actions .cancel").onclick = function() {
   dropzone.removeAllFiles(true);
 };
 
-
+*/
 
 
 

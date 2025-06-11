@@ -1,5 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); 
 
+
+
 class Media extends CI_Model {
 	var $allowed_types = array(
 		'img'   => array('jpg', 'jpeg', 'png', 'gif', 'tif', 'tiff'),
@@ -28,8 +30,16 @@ class Media extends CI_Model {
 		$label = urldecode($label);
 		$admincheck = $user->role == 'admin' ? 'TRUE' : 'FALSE';
 		$media = $this->db->query("SELECT * FROM media WHERE (label = ? AND (userid = ? OR $admincheck))", array($label, $user->id))->row();
-		$this->addFiles($media);
+		//$this->addFiles($media);
 		return $media;
+	}
+
+	public function ownsModel($id, $user) {
+		if(!$user) return null;
+
+		$admincheck = $user->role == 'admin' ? 'TRUE' : 'FALSE';
+		$model = $this->db->query("SELECT mo.* FROM model mo JOIN media m ON mo.media = m.id WHERE (mo.id = ? AND (m.userid = ? OR $admincheck))", array($label, $user->id))->row();
+		return $model;
 	}
 
 	public function ownsFile($id, $user) {
@@ -40,13 +50,13 @@ class Media extends CI_Model {
 
 	public function byLabel($label) {
 		$media = $this->db->query("SELECT * FROM media WHERE label = ? AND publish = 1", $label)->row();
-		$this->addFiles($media);
+		//$this->addFiles($media);
 		return $media;
 	}
 
 	public function bySecret($secret) {
 		$media = $this->db->query("SELECT * FROM media WHERE secret = ?", $secret)->row();
-		$this->addFiles($media);
+		//$this->addFiles($media);
 		return $media;
 	}
 
@@ -55,13 +65,21 @@ class Media extends CI_Model {
 			JOIN collections_media cm on cm.media = ? and cm.collection = c.id", $media->id)->result();
 	}
 
+	public function addModels($media) {
+		$media->{'models'} = $this->db->query("SELECT mo.* FROM models WHERE media = ? order by label", $media->id)->result();
+	}
+
 	public function addFiles($media) {
 		if($media)
 			$media->{'files'} = $this->db->query("SELECT f.*, m.path as mediapath FROM files f JOIN media m on m.id = f.media WHERE media = ? order by label", $media->id)->result();
+//		$this->addCollections($media);
 	}
 
+	public function setModelStatus($model, $status) {
+		$this->db->update('models', array('status'=>$status), array('id'=>$model->id));
+	}
 
-	public function setStatus($media, $status) {
+	public function setMediaStatus($media, $status) {
 		//uploading, on queue, processing, ready, failed
 		$this->db->update('media', array('status'=>$status), array('id'=>$media->id));
 	}
@@ -231,6 +249,45 @@ class Media extends CI_Model {
 		$this->db->insert('media', $media);
 		$id = $this->db->insert_id();
 		return ['label'=> $label, 'id' => $id];
+	}
+
+	public function createModel($mediaid, $files) {
+
+		$preferred3D = ['obj', 'ply', 'nxs', 'nxz'];
+		$imageTypes = ['jpg', 'jpeg', 'png'];
+		
+		$label = null;
+		
+		// Normalize to lowercase extensions and check priority
+		foreach ($filenames as $f) {
+			$ext = strtolower(pathinfo($f, PATHINFO_EXTENSION));
+		
+			if (in_array($ext, $preferred3D)) {
+				$label = pathinfo($f, PATHINFO_FILENAME);
+				break;
+			}
+		}
+		
+		if (!$label) {
+			foreach ($filenames as $f) {
+				$ext = strtolower(pathinfo($f, PATHINFO_EXTENSION));
+		
+				if (in_array($ext, $imageTypes)) {
+					$label = pathinfo($f, PATHINFO_FILENAME);
+					break;
+				}
+			}
+		}
+		
+		if (!$label && count($filenames) > 0)
+			$label = pathinfo($filenames[0], PATHINFO_FILENAME);
+
+		$model = [
+			'media' => $mediaid, 
+			'label' => $label
+		];
+		$this->db->insert('models', $model);
+
 	}
 
 	public function update($data) {

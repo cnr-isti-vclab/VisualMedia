@@ -1,0 +1,6 @@
+{
+    "require": {
+        "ankitpokhrel/tus-php": "^2.4",
+        "maennchen/zipstream-php": "^3.1"
+    }
+}

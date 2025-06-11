@@ -33,6 +33,18 @@ class Mediacontroller extends MY_Controller {
 		return $media;
 	}
 
+	public function ownsModel($model, $user = NULL) {
+		if(!$user) $user = $this->user();
+		if(!$user)
+			$this->jsonError('Please login');
+
+		$model = $this->media->ownsModel($model, $user);
+
+		if(!$model)
+			$this->jsonError("Invalid, missing or unauthorized media");
+		return $model;
+	}
+
 	public function ownsFile($id, $user = NULL) {
 		if(!$user)
 			$user = $this->user();
@@ -84,14 +96,19 @@ class Mediacontroller extends MY_Controller {
 		
 		$this->data['user'] = $user = $this->db->query("select * from users where username = 'switchboard'")->row();
 
-					//look for media 
 		$this->data['media'] = $media = $this->db->query("select * from media where userid = ? and url = ?", [$user->id, $url])->row();
 
 		
 		if($media) {
-			if($media->status == 'failed') { //just redownload
-				$this->db->query("update media set status = 'download' where id = ?", $media->id);
-				$media->status = 'download';
+			$model = $this->db->query("select * from models where media = ?", $media->id)->row();
+			if(!$model) {
+				//render error about url not having a model
+				$this->error("The media does not have a model associated with it. Please upload a model first.");
+				exit(0);
+			}
+			if($model->status == 'failed') { //just redownload
+				$this->db->query("update model set status = 'download' where id = ?", $model->id);
+				$media->status = 'download';//TODO do we need a media status?
 			}
 
 		} else {
@@ -119,6 +136,14 @@ class Mediacontroller extends MY_Controller {
 			$this->db->insert('media', $media);
 			$id = $this->db->insert_id();
 			$media = $this->data['media'] = (object)$media;
+
+
+			$model['media'] = $id;
+			$model['model_type'] = $type;
+			$model['status'] = 'download';
+			$model['url'] = $url;
+			$this->db->insert('model', $model);
+			$model['id'] = $this->db->insert_id();
 		}
 
 
@@ -165,11 +190,47 @@ class Mediacontroller extends MY_Controller {
 	}
 
 
-	
+	public function createModel() {
+		if(!$this->isLogged())
+			$this->jsonError('Please log in to upload.');
+
+		$label= $this->input->post('media');
+		$media = $this->owns($label);
+
+		$files = $this->input->post('filenames');
+		
+		$result = $this->model->createModel($media->id, $files);
+		$this->render($result, 'json');
+	}
 
 	public function uploadFile() {
 
-		if(!isset($_FILES['file']))
+		$server = new \TusPhp\Tus\Server('file');
+
+		$server->setApiPath('/media/upload/file');                // path dell'endpoint
+		$server->setUploadDir('/data'); // cartella dove salvare i file
+
+		// Listen to the complete event
+        $server->event()->addListener('tus-server.upload.complete', function (TusEvent $event) {
+            $upload = $event->getFile();
+
+            $filePath = $upload->getFilePath(); // full path to temp uploaded file
+            $filename = $upload->getName();     // original filename
+            $metadata = $upload->details()['metadata'];
+
+            $modelid = $metadata['modelid'] ?? 'unknown';
+
+            // Move or rename the file
+            $dest = FCPATH . 'final_uploads/' . $label . '_' . $filename;
+            rename($filePath, $dest);
+        });
+
+		$response = $server->serve();
+		$response->send();
+
+		
+
+		/*if(!isset($_FILES['file']))
 			$this->jsonError('No file.');
 
 		$label = $this->input->post('media');
@@ -178,11 +239,13 @@ class Mediacontroller extends MY_Controller {
 		$media = $this->owns($label);
 		$file = $_FILES['file'];
 
+		$model = $this->input->post('model');
+
 		$result = $this->media->uploadFile($media, $file, FALSE);
 		if(isset($result['error']))
 			$this->jsonError($result['error']);
 
-		$this->render(array('id'=>$result['id'], 'debug'=>$debug), 'json');
+		$this->render(array('id'=>$result['id'], 'debug'=>$debug), 'json'); */
 	}
 
 
@@ -220,6 +283,7 @@ class Mediacontroller extends MY_Controller {
 		}
 
 		$media->link = $this->media->link($media);
+		$this->media->addFiles($media);
 		$media->secretlink = $this->media->secretlink($media);
 
 		$this->data['allowed'] = $this->media->allowed($media);
@@ -235,6 +299,18 @@ class Mediacontroller extends MY_Controller {
 			$this->sendError("The media is being processed. Try again, later.");
 
 		$this->media->setStatus($media, 'remove');
+		$this->render(array(), 'json');
+	}
+
+	public function deleteModel($id) {
+		$model = $this->model->ownsModel($id, $this->user());
+		if(!$model)
+			$this->jsonError("Unauthorized");
+
+		if($model->status == 'processing')
+			$this->sendError("The model is being processed. Try again, later.");
+
+		$this->model->deleteModel($model);
 		$this->render(array(), 'json');
 	}
 

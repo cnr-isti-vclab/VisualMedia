@@ -186,9 +186,7 @@ class User  extends MY_Controller {
 		redirect('', 'refresh');
 	}
 
-
-
-
+// List files in D4Science file repository: TODO remove this.
 	public function listFiles() {
 		$path = $_POST['path'];
 		if(!$this->session->userdata('loggedIn')) return;

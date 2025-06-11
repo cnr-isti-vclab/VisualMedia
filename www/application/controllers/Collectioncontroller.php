@@ -193,7 +193,8 @@ class Collectioncontroller extends MY_Controller {
 		$collection->files = $this->db->query(
 			"SELECT f.filename, m.id as mediaid ".
 			"from files f ".
-			"join media m on f.media = m.id ".
+			"join models mo on mo.id = f.models ".
+			"join media m on mo.media = m.id ".
 			"join collections_media cm on cm.media = m.id and cm.collection = ?",
 			array($collection->id))->result();
 		$this->render($collection, 'json');
@@ -209,7 +210,8 @@ class Collectioncontroller extends MY_Controller {
 
 		//look for file in collection with same name
 		$record = $this->db->query("SELECT m.id from media m ".
-			"join files f on f.media = m.id ".
+			"join models mo on mo.media =  m.id".
+			"join files f on f.model = mo.id ".
 			"join collections_media cm on cm.media = m.id and cm.collection = $collectionid ".
 			"where f.filename = ?", array($file['name']))->row();
 

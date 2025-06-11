@@ -46,23 +46,58 @@ CREATE TABLE public.media
 WITH ( OIDS=FALSE );
 ALTER TABLE media OWNER TO vms;
 
+CREATE TABLE public.models (
+    id integer NOT NULL,
+    label text NOT NULL,
+    media integer NOT NULL, -- media id
+    model_type text,
+    url text, -- url to the model for download
+    status text,  -- uploading, nexus, meshlab, processing, ready, failed
+    operation text, -- operation to be performed on the media, json witth operation and parameters
+    error text,
+    info text,
+    set integer DEFAULT 0
+);
+
+ALTER TABLE public.models OWNER TO vms;
+
+--
+-- Name: models_id_seq; Type: SEQUENCE; Schema: public; Owner: vms
+--
+
+CREATE SEQUENCE public.models_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.models_id_seq OWNER TO vms;
+
+--
+-- Name: models_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: vms
+--
+
+ALTER SEQUENCE public.models_id_seq OWNED BY public.models.id;
+
 -- Table: media
 CREATE TABLE files
 (
   id serial NOT NULL,
   label text, -- used as a savefile name.
-  media integer NOT NULL,
+  model integer NOT NULL,
   format text, -- img 3d rti etc.
-  ext text, --extension
+  ext text, -- extension
   description text, -- used by img collections
-  options text, --json options such as trackball, etc.
+  options text, -- json options such as trackball, etc.
   ordering integer, -- in case of sets, books
   width integer,
   height integer,
   mtri integer,
   size integer, -- Size on disk in Kb.
-  filename text, --local filename
-  original text, --remote filename, used for checking
+  filename text, -- local filename
+  original text, -- remote filename, used for checking
   processing_start timestamp without time zone,
   processing_end timestamp without time zone
 )
