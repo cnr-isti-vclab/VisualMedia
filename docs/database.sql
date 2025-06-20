@@ -26,85 +26,58 @@ CREATE TABLE public.media
   url text, -- Url to resource.
   creation timestamp without time zone,
   userid integer,
-  processed integer DEFAULT 0, --if processed (in case we are reprocessing)
-  status text, --thi is the status of the processing uploading, on queue, processing, ready, failed
-  error text, --refers to the last processing operation
+  status text, -- uploading, on queue, processing, ready, failed, remove
   publish integer DEFAULT 0,
+  picked integer,
   path text,  -- path where the files are stored, usually just the label
   thumbnail text,
-  width integer, -- metadata of the processed files
-  height integer,
-  mtri integer,
-  mm integer,   -- size of a pixel or a unit
-  size integer, -- Size on disk in Kb.
-  secret text, -- backward compatibility.
-  options text, -- JSON options
-  picked integer,
-  words tsvector,
+  secret text,
+  options text, -- JSON viewer options
   expire timestamp without time zone
 )
 WITH ( OIDS=FALSE );
 ALTER TABLE media OWNER TO vms;
 
+
+
+
 CREATE TABLE public.models (
-    id integer NOT NULL,
+    id serial NOT NULL,
     label text NOT NULL,
     media integer NOT NULL, -- media id
+    current integer NOT NULL, -- current variant id
     model_type text,
     url text, -- url to the model for download
-    status text,  -- uploading, nexus, meshlab, processing, ready, failed
-    operation text, -- operation to be performed on the media, json witth operation and parameters
+    status text,  -- uploading, on queue, processing, ready, failed
+    todo text, -- operation to be performed on the media, json witth operation and parameters
+    variants text,
     error text,
-    info text,
-    set integer DEFAULT 0
-);
+    thumbnail text, -- this is a model thumbnail, stored in the model folder, 
+    info text -- json with
+)
+WITH ( OIDS=FALSE );
 
 ALTER TABLE public.models OWNER TO vms;
 
---
--- Name: models_id_seq; Type: SEQUENCE; Schema: public; Owner: vms
---
 
-CREATE SEQUENCE public.models_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.models_id_seq OWNER TO vms;
-
---
--- Name: models_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: vms
---
-
-ALTER SEQUENCE public.models_id_seq OWNED BY public.models.id;
-
--- Table: media
-CREATE TABLE files
-(
-  id serial NOT NULL,
-  label text, -- used as a savefile name.
-  model integer NOT NULL,
-  format text, -- img 3d rti etc.
-  ext text, -- extension
-  description text, -- used by img collections
-  options text, -- json options such as trackball, etc.
-  ordering integer, -- in case of sets, books
-  width integer,
-  height integer,
-  mtri integer,
-  size integer, -- Size on disk in Kb.
-  filename text, -- local filename
-  original text, -- remote filename, used for checking
-  processing_start timestamp without time zone,
-  processing_end timestamp without time zone
+CREATE TABLE public.files (
+    id serial NOT NULL,
+    model integer NOT NULL, -- model id
+    status text, -- uploading, ready, remove 
+    format text, -- img 3d rti etc.
+    ext text, --extension
+    description text, -- used by img collections
+    ordering integer, -- in case of sets, books
+    width integer,
+    height integer,
+    mtri integer,
+    size integer, -- Size on disk in Kb.
+    filename text, --local filename
+    original text --remote filename, used for checking
 )
 WITH ( OIDS=FALSE );
-ALTER TABLE files OWNER TO vms;
 
-
+ALTER TABLE public.files OWNER TO vms;
 
 -- Table: collections
 CREATE TABLE collections

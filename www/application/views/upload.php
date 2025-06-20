@@ -155,7 +155,7 @@ createBtn.addEventListener("click", async (e) => {
 	}
 
 	const formData = new FormData(form);
-	selectedFiles.forEach((file, i) => { formData.append(`filenames[]`, file.name); });
+	selectedFiles.forEach((file, i) => { formData.append(`files[]`, file.name); });
 	const params = new URLSearchParams(formData);
 
 	const res = await fetch('/media/create', {
@@ -171,7 +171,8 @@ createBtn.addEventListener("click", async (e) => {
 		alert(result.error);
 		return;
 	}
-	const mediaId = result.id;
+	const mediaLabel = result.label;
+	const modelId = result.model_id;
 	
 	selectedFiles.forEach(file => {
 		const upload = new tus.Upload(file, {
@@ -179,6 +180,8 @@ createBtn.addEventListener("click", async (e) => {
 		metadata: {
 			filename: file.name,
 			filetype: file.type,
+			media: mediaLabel,
+			model: modelId
 		},
 		onError: error => {
 			console.error("Upload failed:", error);

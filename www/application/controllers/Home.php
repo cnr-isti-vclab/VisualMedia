@@ -8,7 +8,7 @@ class Home extends MY_Controller {
 
 	public function index() {
 		$this->data['page'] = 'home';
-		$this->data['media'] = $this->media->search(array("publish = 1", "processed = 1", "picked = 1"));
+		$this->data['media'] = $this->media->search(array("publish = 1", "status = 'ready'", "picked = 1"));
 		$this->data['browsertable'] = $this->load->view('browsertable', $this->data, TRUE);
 		$this->render('home');
 	}
@@ -37,7 +37,7 @@ class Home extends MY_Controller {
 		$this->data['page'] = 'browse';
 		$this->data['title'] = 'Broswe - Visual Media Service';
 		$this->data['description'] = 'Ariadne visual media service job monitor';
-		$this->data['media'] = $this->media->search(array("publish = 1", "processed = 1"));
+		$this->data['media'] = $this->media->search(array("publish = 1", "status = 'ready'"));
 		$this->data['browsertable'] = $this->load->view('browsertable', $this->data, TRUE);
 		$this->render('browse');
 	}

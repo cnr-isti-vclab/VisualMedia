@@ -131,7 +131,7 @@ td.expand { text-overflow: ellipsis; }
 		<td class="ex"> <a href="/media/<?=$j->collection?>"><?=$j->collection?></a></td>
 		<td class="shrink"><?=$j->status?></td>    
 		<td class="shrink"><?=date_format(date_create($j->creation), 'Y-m-d')?></td>
-		<td class="shrink"><?=$j->size?human_filesize($j->size):''?></td>
+		<td class="shrink"><?='TODO'/*$j->size?human_filesize($j->size):'' */?></td> 
 		<td class="shrink"><? if($j->publish == 't') { ?><span class="fas fa-check"></span><? } ?></td>
 		<td class="shrink"><button data-title="<?=$j->title?>" data-removemedia="<?=$j->label?>" class="btn btn-danger">
 			<i class="fas fa-trash"></i></button></td>
@@ -144,21 +144,30 @@ td.expand { text-overflow: ellipsis; }
 
 <script>
 
-$('button[data-removemedia]').click(function() {
-	var line = $(this).closest('tr');
-	var media = $(this).attr('data-removemedia');
-	var title = $(this).attr('data-title');
-	var r = confirm("We are deleting the model '" + title + "'. Proceed?");
-	if(!r) return;
+document.querySelectorAll('button[data-removemedia]').forEach(button => {
+	button.addEventListener('click', function () {
+		const line = this.closest('tr');
+		const media = this.getAttribute('data-removemedia');
+		const title = this.getAttribute('data-title');
 
-	$.getJSON('/media/delete/' + media, function(d) {
-		if(d.error) {
-			alert(d.error);
-			return;
-		}
-		line.remove();
+		if (!confirm("We are deleting the model '" + title + "'. Proceed?")) return;
+
+		fetch('/media/delete/' + media)
+			.then(response => response.json())
+			.then(d => {
+				if (d.error) {
+					alert(d.error);
+					return;
+				}
+				line.remove();
+			})
+			.catch(err => {
+				alert("Error contacting server.");
+				console.error(err);
+			});
 	});
 });
+
 
 $('input[name=username]').on('input', function() {
     var input = $(this);

@@ -25,36 +25,26 @@ class Mediacontroller extends MY_Controller {
 		if(!$user) $user = $this->user();
 		if(!$user)
 			$this->jsonError('Please login');
-
-		$media = $this->media->ownsMedia($label, $user);
+		$media = $this->media->ownsByLabel($label, $user);
 
 		if(!$media)
-			$this->jsonError("Invalid, missing or unauthorized media");
+			$this->jsonError("Invalid, missing or unauthorized media ");
 		return $media;
 	}
 
+/*
 	public function ownsModel($model, $user = NULL) {
 		if(!$user) $user = $this->user();
 		if(!$user)
 			$this->jsonError('Please login');
 
-		$model = $this->media->ownsModel($model, $user);
+		$model = $this->model->owns($model, $user);
 
 		if(!$model)
-			$this->jsonError("Invalid, missing or unauthorized media");
+			$this->jsonError("Invalid, missing or unauthorized model");
 		return $model;
 	}
-
-	public function ownsFile($id, $user = NULL) {
-		if(!$user)
-			$user = $this->user();
-		if(!$user)
-			$this->jsonError('Please login');
-		$file = $this->media->ownsFile($id, $user);
-		if(!$file)
-			$this->jsonError("Invalid, missing or unauthorized file");
-		return $file;
-	}
+		*/
 
 	//parameters: url (for the moment)
 	//will create a temporary account and identity, save cookie
@@ -183,8 +173,9 @@ class Mediacontroller extends MY_Controller {
 		$media['url']         = $this->input->post('url');
 		$media['collection']  = $this->input->post('collection');
 		$media['owner']       = $this->input->post('owner');
+		$files                = $this->input->post('files');
 
-		$result = $this->media->create($media);
+		$result = $this->media->create($media, $files);
 		
 		$this->render($result, 'json');
 	}
@@ -197,33 +188,59 @@ class Mediacontroller extends MY_Controller {
 		$label= $this->input->post('media');
 		$media = $this->owns($label);
 
-		$files = $this->input->post('filenames');
+		$files = $this->input->post('files');
 		
 		$result = $this->model->createModel($media->id, $files);
 		$this->render($result, 'json');
 	}
 
-	public function uploadFile() {
+	function parseTusMetadata(string $raw): array {
+		$out = [];
+		foreach (explode(',', $raw) as $pair) {
+			if (strpos($pair, ' ') !== false) {
+				[$key, $val] = explode(' ', $pair, 2);
+				$out[$key] = base64_decode($val);
+			}
+		}
+		return $out;
+	}
 
+	public function uploadFile($key = NULL) {
 		$server = new \TusPhp\Tus\Server('file');
 
 		$server->setApiPath('/media/upload/file');                // path dell'endpoint
-		$server->setUploadDir('/data'); // cartella dove salvare i file
+
+		if ($this->input->method() == 'post') {
+			$rawMetadata = $this->input->get_request_header('Upload-Metadata', TRUE);
+
+			$metadata = $rawMetadata ? $this->parseTusMetadata($rawMetadata) : [];
+			$media = $this->owns($metadata['media']);
+			if(!$media) {
+				http_response_code(403);
+				echo 'Unauthorized';
+				exit;
+			}
+			$model = $this->model->owns($metadata['model'], $this->user());
+			$path = $this->model->currentUploadPath($media, $model);
+			$server->setUploadDir($path); // cartella dove salvare i file
+		}
 
 		// Listen to the complete event
-        $server->event()->addListener('tus-server.upload.complete', function (TusEvent $event) {
-            $upload = $event->getFile();
+		$server->event()->addListener('tus-server.upload.complete', function ($event) {
+			$upload = $event->getFile();
 
-            $filePath = $upload->getFilePath(); // full path to temp uploaded file
-            $filename = $upload->getName();     // original filename
-            $metadata = $upload->details()['metadata'];
+			$filePath = $upload->getFilePath(); // full path to temp uploaded file
 
-            $modelid = $metadata['modelid'] ?? 'unknown';
+			$filename = $upload->getName();     // original filename
+			$metadata = $upload->details()['metadata'];
 
-            // Move or rename the file
-            $dest = FCPATH . 'final_uploads/' . $label . '_' . $filename;
-            rename($filePath, $dest);
-        });
+			$modelid = $metadata['model'] ?? 'unknown';
+
+			$file = $event->getFile();
+			$metadata = $file->details()['metadata'];
+			$model = $this->model->owns($metadata['model'], $this->user());
+			$this->model->fileUploaded($model, $filename);
+		});
 
 		$response = $server->serve();
 		$response->send();
@@ -258,7 +275,7 @@ class Mediacontroller extends MY_Controller {
 			$this->error("</p>It looks like you are not logged in. Maybe the session expired or the cookies were deleted.</p>".
 				"<p>Please login and try again...</p>");
 
-		$media = $this->media->ownsMedia($label, $this->user());
+		$media = $this->media->ownsByLabel($label, $this->user());
 
 		if(!$media) {
 			$contact = ADMIN_EMAIL;
@@ -283,7 +300,7 @@ class Mediacontroller extends MY_Controller {
 		}
 
 		$media->link = $this->media->link($media);
-		$this->media->addFiles($media);
+		$this->media->addModels($media);
 		$media->secretlink = $this->media->secretlink($media);
 
 		$this->data['allowed'] = $this->media->allowed($media);
@@ -302,20 +319,11 @@ class Mediacontroller extends MY_Controller {
 		$this->render(array(), 'json');
 	}
 
-	public function deleteModel($id) {
-		$model = $this->model->ownsModel($id, $this->user());
-		if(!$model)
-			$this->jsonError("Unauthorized");
-
-		if($model->status == 'processing')
-			$this->sendError("The model is being processed. Try again, later.");
-
-		$this->model->deleteModel($model);
-		$this->render(array(), 'json');
-	}
 
 	public function deleteFile($id) {
-		$files = explode(',', $id);
+		return jsonError('This method is deprecated, use /media/deleteFiles instead.');
+
+		/*$files = explode(',', $id);
 		foreach($files as $file) {
 			$file = $this->ownsFile($file);
 			//TODO not really race condition proof
@@ -323,7 +331,7 @@ class Mediacontroller extends MY_Controller {
 				$this->sendError("The file is being processed. Try again, later.");
 			$this->media->deleteFile($file);
 		}
-		$this->render(array(), 'json');
+		$this->render(array(), 'json'); */
 	}
 	
 	public function update() {
@@ -371,7 +379,7 @@ class Mediacontroller extends MY_Controller {
 	}
 
 	public function config($label) {
-		$media = $this->media->ownsMedia($label, $this->user());
+		$media = $this->media->owns($label, $this->user());
 		if(!$media)
 			$this->error("Unauthorized.");
 
@@ -573,7 +581,7 @@ EOD;
 
 	public function show($label) {
 		//owner, admin, label + public or secret
-		$media = $this->media->ownsMedia($label, $this->user());
+		$media = $this->media->ownsByLabel($label, $this->user());
 
 		if(!$media)
 			$media = $this->media->byLabel($label);
@@ -672,7 +680,7 @@ EOD;
 	}
 
 	public function download($label) {
-		$media = $this->media->ownsMedia($label, $this->user());
+		$media = $this->media->owns($label, $this->user());
 		if(!$media)
 			$this->error("Unauthorized");
 
@@ -745,13 +753,13 @@ EOD;
 	}
 
 	public function status($label) {
-		$media = $this->media->ownsMedia($label, $this->user());
+		$media = $this->media->ownsByLabel($label, $this->user());
 		if(!$media)
 			$media = $this->media->bySecret($label);
 
 		if(!$media)
 			$this->error("Unauthorized");
-		$this->render(array('processed'=>$media->processed, 'status'=>$media->status, 'error'=>$media->error), 'json');
+		$this->render(['status'=>$media->status], 'json');
 	}
 }
 

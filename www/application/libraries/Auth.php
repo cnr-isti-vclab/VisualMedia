@@ -40,11 +40,11 @@ public function createPasswordless($email) {
 	date_default_timezone_set('UTC');
 
 	if(!$user)
-		$this->adduser(array('email'=>$email), array('provider'=>'passwordless', 'uid'=>$this->hash($user->id)));
+		$this->addUser(array('email'=>$email), array('provider'=>'passwordless', 'uid'=>$this->hash($email)));
 
 	//userid is used only to test if at least a passwordless identity is associated with the user
-	if(!$user->userid)
-		$this->addidentity(array('userid'=>$user->id, 'provider'=>'passwordless', 'uid'=>$this->hash($user->id)));
+	else if(!$user->userid)
+		$this->addidentity(array('userid'=>$user->id, 'provider'=>'passwordless', 'uid'=>$this->hash($email)));
 
 
 	$user = $this->db->query("SELECT * from users u JOIN identities i on i.userid = u.id WHERE provider='passwordless' AND email = ?", $email)->row();

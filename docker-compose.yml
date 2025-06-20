@@ -3,7 +3,7 @@ services:
     platform: "linux/amd64"
     image: postgres:17-alpine
     volumes:
-#      - ./dbdata/:/var/lib/postgresql/data
+      - ./dbdata/:/var/lib/postgresql/data
       - ./docs/database.sql:/docker-entrypoint-initdb.d/create_database.sql
     env_file:
     - postgres.env

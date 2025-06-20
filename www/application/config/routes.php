@@ -99,12 +99,15 @@ $route['upload'] = 'home/preupload';
 $route['upload/(:any)'] = 'home/upload/$1';
 
 
+$route['media/(:any)']             = 'mediacontroller/manage/$1';
 $route['media/create']             = 'mediacontroller/create';
 $route['media/delete/(:any)']      = 'mediacontroller/delete/$1';
-$route['media/upload/file'] = 'mediacontroller/uploadFile';
+
+$route['media/upload/file']        = 'mediacontroller/uploadFile';
 $route['media/upload/file/(:any)'] = 'mediacontroller/uploadFile/$1';
 $route['media/delete/file/(:any)'] = 'mediacontroller/deleteFile/$1';
 $route['media/process/(:any)']     = 'mediacontroller/process/$1';
+
 $route['media/update']             = 'mediacontroller/update';
 $route['media/publish']            = 'mediacontroller/publish';
 $route['media/unpublish']          = 'mediacontroller/unpublish';
@@ -113,7 +116,7 @@ $route['media/update/config/(:any)']      = 'mediacontroller/updateConfig/$1';
 $route['media/download/(:any)']    = 'mediacontroller/download/$1';
 $route['media/status/(:any)']      = 'mediacontroller/status/$1';
 
-$route['media/(:any)']             = 'mediacontroller/manage/$1';
+$route['model/(:num)']             = 'modelcontroller/show/$1';
 
 //user space
 

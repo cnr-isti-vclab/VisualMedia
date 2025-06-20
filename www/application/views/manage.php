@@ -7,7 +7,7 @@
 	case 'ready':      $class = 'badge-success'; $icon = 'ok'; break;
 	case 'processing': $class = 'badge-warning'; $icon = 'cog'; break;
 	case 'failed':     $class = 'badge-danger';  $icon = 'exclamation-sign'; break; 
-	default: $class = 'badge-danger';  $icon = 'exclamation-sign'; $media->status = 'imported'; break; 
+	default: $class = 'badge-danger';  $icon = 'exclamation-sign'; break; 
 	}
 
 	$formats = array('other' => 'far fa-question-circle', 'unknown'=>'far fa-question-circle', '3d'=>'fas fa-cube', 'img'=>'far fa-image', 'rti'=>'far fa-lightbulb');
@@ -19,7 +19,7 @@
 	<div class="col-12">
 		<h2>
 <? if($media->media_type) { ?><img src="/images/<?=$media->media_type?>32.png"> <? } ?>
-<? if($media->processed) { ?><a href="<?=$media->link?>">	<?=ucfirst($media->title)?></a>
+<? if($media->status == 'ready') { ?><a href="<?=$media->link?>">	<?=ucfirst($media->title)?></a>
 <? } else { ?>
 	<?=$media->title?>
 <? } ?>
@@ -63,8 +63,7 @@
 <? } ?>
 
 <div class="row">
-
-<? if ($media->processed) { ?>
+<? if ($media->status == 'ready') { ?>
 	<div class="col-lg-9">
 		<div style="width:100%; padding-bottom:66%; position:relative;">
 			<iframe id="thumb" allowfullscreen allow="fullscreen" style="position:absolute; top:0px; left:0px; width:100%; height:100%; border-width:0px" src="<?=$media->link?>?standalone"></iframe>
@@ -188,53 +187,43 @@ td.expand { text-overflow: ellipsis; }
 </style>
 	<div class="row mt-5">
 		<div class="col-12">
-			<h4>Files</h4>
+			<h4>Models</h4>
 		</div>
 	</div>
-
+<!--
 	<div class="form-group row">
 		<div class="col-sm-12">
 			<button <?=$disabled?> id="add-file" class="btn btn-primary">
-				<i class="fas fa-upload"></i> Add files...</button>
+				<i class="fas fa-upload"></i> Add models...</button>
 
 			<button <?=$disabled?> id="process" class="btn btn-info" <? if($media->status != 'uploading' && $media->status != 'failed') { ?>disablesd<? } ?>>
 				<i class="fas fa-cog"></i> Reprocess</button>
 		</div>
-	</div>
+	</div> -->
 
 	<div class="row">
 		<div class="col-12">
-
-	<table id="filetable" class="table table-striped files">
-	<thead>
-		<tr>
-			<th>format</th>
-			<th>filename</th>
-			<th>size</th>
-<!--			<th></th> -->
-			<th></th>
-
-			<th><button id="removemultiple" class="btn btn-danger">
-			<i class="fas fa-trash"></i></button></th>
-		</tr>
-	</thead>
-	<tbody>
-<? foreach($media->files as $f) { ?>
-		<tr>
-
-		<td class="shrink"><i style="font-size:32px" class="<?=$formats[$f->format]?>"></i></td>
-		<td class="expand"><?=$f->filename?></td>    
-		<td class="shrink"><?=human_filesize($f->size)?></td>
-<!--		<td class="shrink"><button data-filename="<?=$f->filename?>" data-replacefile="<?=$f->id?>" class="btn btn-warning replacefile">
-			<i class="fas fa-sync"></i> Replace</button></td> -->
-		<td class="shrink"><button data-filename="<?=$f->filename?>" data-removefile="<?=$f->id?>" class="btn btn-danger removefile">
-			<i class="fas fa-trash"></i></button></td>
-		<td class="shrink"><input type="checkbox" name="removefile" value="<?=$f->id?>"></td>
-		</tr>
+		<table id="modeltable" class="table table-striped models">
+			<thead>
+				<tr>
+					<th>label</th>
+					<th>type</th>
+					<th>size</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+<? foreach($media->models as $m) { ?>
+				<tr>
+					<td class="expand"><a href="/model/<?=$m->id?>"><?=$m->label?></a></td>    
+					<td class="shrink"><?=$m->model_type?></td>
+					<td class="shrink">??</td>
+					<td class="shrink"><button data-modellabel="<?=$m->label?>" data-modelid="<?=$m->id?>" class="btn btn-danger removemodel">
+						<i class="fas fa-trash"></i></button></td>
+				</tr>
 <? } ?>
-
-	</tbody>
-	</table>
+			</tbody>
+		</table>
 	</div>
 </div>
 
@@ -263,29 +252,6 @@ $(document).ready(function() {
 });
 </script>
 
-
-<form class="dropzone" id="fileform" style="display:none">
-	<input type="hidden" name="media" value="aa" />
-</form>
-
-
-
-<table style="display:none;">
-	<tr id="template">
-
-	<td class="shrink"><i class=""></i></td>
-	<td class="expand"><p data-dz-name></p><strong class="error text-danger" data-dz-errormessage></strong>
-		<div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-			<div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress>
-		</div>
-	</td>
-	<td class="shrink" data-dz-size></td>
-<!--	<td class="shrink"><button data-filename="" class="btn btn-warning">
-		<i class="fas fa-sync"></i> Replace</button></td> -->
-	<td class="shrink"><button data-filename="" data-removefile="" class="btn btn-danger">
-		<i class="fas fa-trash"></i></button></td>
-	</tr>
-</table>
 
 
 </div> <!-- formcontainer -->
@@ -352,8 +318,8 @@ $('#metadata').submit(function(e) {
 	});
 
 
-function removefiles(str) {
-	$.getJSON('/media/delete/file/' + str, function(d) {
+function removemodel(str) {
+	$.getJSON('/media/delete/model/' + str, function(d) {
 		if(d.error) {
 			alert(d.error);
 			return;
@@ -362,14 +328,14 @@ function removefiles(str) {
 	e.preventDefault();
 }
 
-$('#filetable').on('click', 'button[data-removefile]', function(e) {
+$('#modeltable').on('click', 'button[data-removemodel]', function(e) {
 	var line = $(this).closest('tr');
-	var fileid = $(this).attr('data-removefile');
-	var title = $(this).attr('data-filename');
+	var modelid = $(this).attr('data-modelid');
+	var title = $(this).attr('data-modellabel');
 	var r = confirm("We are deleting the file '" + title + "'. Proceed?");
 	if(!r) return;
 
-	$.getJSON('/media/delete/file/' + fileid, function(d) {
+	$.getJSON('/media/delete/model/' + modelid, function(d) {
 		if(d.error) {
 			alert(d.error);
 			return;
@@ -378,33 +344,6 @@ $('#filetable').on('click', 'button[data-removefile]', function(e) {
 
 	}).fail(function() { alert("Network or server problem."); });
 	e.preventDefault();
-});
-
-$('#removemultiple').click(function() {
-	var inputs = [];
-	$('input[name=removefile]:checked').each((i, j)=>{ inputs.push($(j).val()); });
-	
-	var r = confirm("We are deleting " + inputs.length + " files. Proceed?");
-	if(!r) return;
-
-	removefiles(inputs.join(','));
-});
-
-
-$('button[data-replacefile]').click(function() {
-	alert('todo!');
-	return;
-	var line = $(this).closest('tr');
-	var media = '<?=$media->label?>';
-
-	if(!r) return;
-
-	$.getJSON('/media/delete/' + media, function(d) {
-		if(d.error) {
-			alert(d.error);
-			return;
-		}
-	}).fail(function() { alert("Network or server problem."); });
 });
 
 
@@ -509,91 +448,6 @@ $('#publish').click(function(e) {
 });
 
 
-
-
-//DROPZONE!!!
-
-Dropzone.options.myAwesomeDropzone = false;
-Dropzone.autoDiscover = false;
-
-var previewNode = document.querySelector("#template");
-previewNode.id = "";
-var previewTemplate = previewNode.parentNode.innerHTML;
-previewNode.parentNode.removeChild(previewNode);
-
-var dropzone = new Dropzone(document.body, { // Make the whole body a dropzone
-/*  accept: function(file, done) {
-	console.log(file);
-	  done("Naha, you don't.");
-	 // done(); to accept.
-  }, */
-	timeout: 1000*60*60*8,
-	maxFiles: 100,
-	maxFilesize: 2900, // 2Gb
-	acceptedFiles: "<?=implode(',', array_map(function($a) { return '.'.$a; }, $allowed))?>", //.jpg,.png,.tif,.ply,.zip",
-	url: "/media/upload/file",
-	createImageThumbnails: false,
-	parallelUploads: 4,
-	previewTemplate: previewTemplate,
-	autoQueue: true,               // Make sure the files aren't queued until manually added
-	previewsContainer: ".files", 
-	clickable: "#add-file",  // Define the element that should be used as click trigger to select files.
-
-	addedfile: function(file) {
-		var table = document.createElement("table");
-		table.innerHTML = this.options.previewTemplate.trim();
-		var tr = $(table).find('tr');
-		tr.find('p[data-dz-name]')[0].innerHTML = file.name;
-		tr.find('td[data-dz-size]')[0].innerHTML = file.size;
-		tr.find('button').prop('disabled', true);
-		$('.files').append(tr);
-		file.previewElement = tr[0];
-		$('#process').prop('disabled', true);
-	},
-});
-
-dropzone.on("queuecomplete", function(progress) {
-	$('#process').prop('disabled', false);
-});
-
-dropzone.on("error", function(a, error) {
-	alert(error);
-//	console.log(a, error);
-});
-
-dropzone.on("complete", function(file) {
-	if(file.status == "error" || file.accepted == false) {
-		$(file.previewElement).remove();
-		return;
-	}
-
-	try {
-		var response = JSON.parse(file.xhr.response);
-	} catch(e) {
-		alert("There was a problem uploading the file.");
-		$(file.previewElement).remove();
-		return;
-	}
-	if(response.error) {
-		alert(response.error);
-		$(file.previewElement).remove();
-		return;
-	}
-	var button = $(file.previewElement).find('button[data-removefile]');
-	button.attr('data-removefile', response.id);
-	button.attr('data-filename',  file.name);
-	button.prop('disabled', false);
-});
-
-dropzone.on("sending", function(file, xhr, formData) {
-	formData.append("media", '<?=$media->label?>'); // Append all the additional input data of your form here!
-	$("#total-progress").css('opacity', '1');
-});
-
-
-//dropzone.on("complete", function(file) {
-//	$(file.previewElement).find('button').hide(); 
-//});
 
 
 <? if($media->status != 'ready') { ?>
