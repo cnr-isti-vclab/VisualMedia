@@ -15,7 +15,7 @@ services:
     ports:
       - 80:80
     volumes:
-      - ./www:/var/www/html
+      - ./www:/var/www/html # TODO: remove on production
       - ./data:/data
       - ./data/vms_data:/var/www/html/data
     env_file:
@@ -28,6 +28,7 @@ services:
       - postgres
     volumes:
       - ./data:/data
+      - ./docker-python:/app # TODO: remove on production
     env_file:
     - postgres.env
     - smtp.env

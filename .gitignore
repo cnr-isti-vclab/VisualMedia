@@ -19,6 +19,8 @@ application/logs/*
 /vendor/
 
 dbdata/*
+data/vms_upload/*
+data/vms_data/*
 
 # smtp env file
 smtp.env

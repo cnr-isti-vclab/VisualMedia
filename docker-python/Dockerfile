@@ -20,7 +20,7 @@ COPY ./ariadne-entrypoint.sh /
 
 RUN chmod +x /ariadne-entrypoint.sh
 
-COPY ./ariadne.py /
+COPY ./ariadne.py /app
 RUN python3 -m venv ariadne-venv && \
     . ariadne-venv/bin/activate && \
     python -m pip install --upgrade pip && \
