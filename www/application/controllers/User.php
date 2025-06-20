@@ -113,7 +113,7 @@ class User  extends MY_Controller {
 		$this->email->message($body);
 
 		try {
-			if(!$this->email->send(FALSE)) {
+			if(!@$this->email->send(FALSE)) {
 				$contact = ADMIN_EMAIL;
 
 				$this->data['msg'] = '<p>Mail could not be sent because of a technical problem, <br/>'.

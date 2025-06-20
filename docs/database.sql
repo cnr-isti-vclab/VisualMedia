@@ -52,6 +52,9 @@ CREATE TABLE files
   id serial NOT NULL,
   label text, -- used as a savefile name.
   media integer NOT NULL,
+  status text, -- status of the file, such as uploading, processing, ready, failed
+  todo text, -- operation to be performed on the media, json witth operation and parameters
+  variants text,
   format text, -- img 3d rti etc.
   ext text, --extension
   description text, -- used by img collections

@@ -23,13 +23,10 @@ class Media extends CI_Model {
 
 	//TODO: clean up this mess and addFiles should be done where needed.
 
-	public function ownsMedia($label, $user) {
+		public function ownsByLabel($label, $user) {
 		if(!$user) return null;
 		$label = urldecode($label);
-		$admincheck = $user->role == 'admin' ? 'TRUE' : 'FALSE';
-		$media = $this->db->query("SELECT * FROM media WHERE (label = ? AND (userid = ? OR $admincheck))", array($label, $user->id))->row();
-		$this->addFiles($media);
-		return $media;
+		return $this->owns('label = ?', $label, $user);
 	}
 
 	public function ownsFile($id, $user) {
@@ -40,13 +37,11 @@ class Media extends CI_Model {
 
 	public function byLabel($label) {
 		$media = $this->db->query("SELECT * FROM media WHERE label = ? AND publish = 1", $label)->row();
-		$this->addFiles($media);
 		return $media;
 	}
 
 	public function bySecret($secret) {
 		$media = $this->db->query("SELECT * FROM media WHERE secret = ?", $secret)->row();
-		$this->addFiles($media);
 		return $media;
 	}
 
@@ -55,11 +50,13 @@ class Media extends CI_Model {
 			JOIN collections_media cm on cm.media = ? and cm.collection = c.id", $media->id)->result();
 	}
 
-	public function addFiles($media) {
-		if($media)
-			$media->{'files'} = $this->db->query("SELECT f.*, m.path as mediapath FROM files f JOIN media m on m.id = f.media WHERE media = ? order by label", $media->id)->result();
+	public function getFiles($media) {
+		return $this->db->query("SELECT f.*, m.path as mediapath FROM files f JOIN media m on m.id = f.media WHERE media = ? order by label", $media->id)->result();
 	}
 
+	public function uploadPath($media) {
+		return UPLOAD_DIR.$media->path;
+	}
 
 	public function setStatus($media, $status) {
 		//uploading, on queue, processing, ready, failed
@@ -77,8 +74,6 @@ class Media extends CI_Model {
 				break;
 			$label = "$prelabel-$count";
 			$count++;
-			if($count > 10)
-				$this->jsonError('Too many object with the same title.');
 		}
 		return $label;
 	}
@@ -189,7 +184,7 @@ class Media extends CI_Model {
 		return $id;
 	} */
 
-	public function create($media) {
+	public function create($media, $files) {
 		if(!preg_match('/^[\w\(\)\,\.\!\?\:\;`\'"\\s]+$/', $media['title']))
 			return ['error' => "Invalid characters in title, keep it to just text and punctuation."];
 		
@@ -229,7 +224,14 @@ class Media extends CI_Model {
 		}
 
 		$this->db->insert('media', $media);
-		$id = $this->db->insert_id();
+		$id = $media['id'] = $this->db->insert_id();
+		foreach($files as $f) {
+			
+			$result = $this->createFile((object)$media, $f);
+			if(isset($result['error'])) {
+				return $result; //return error
+			}
+		}
 		return ['label'=> $label, 'id' => $id];
 	}
 
@@ -263,6 +265,21 @@ class Media extends CI_Model {
 		return true;
 	}
 
+
+	public function fileUploaded($media, $filename) {
+		$file = $this->db->query("SELECT * FROM files WHERE media = ? AND filename = ?", array($media->id, $filename))->row();
+		if(!$file) {
+			return;
+		}
+		//update file status
+		$this->db->update('files', array('status'=>'ready'), array('id'=>$file->id));
+
+		//check if all files are uploaded
+		$files = $this->db->query("SELECT * FROM files WHERE media = ? AND status != 'ready'", array($media->id))->result();
+		if(count($files) == 0) {
+			$this->db->update('media', array('status'=>'on queue'), array('id'=>$media->id));
+		}
+	}
 //THIS IS TOO DANGEROUS!
 	public function delTree($dir) { 
 		if(!is_dir($dir))
@@ -323,20 +340,18 @@ class Media extends CI_Model {
 		$this->db->delete('media', array('secret' => $secret)); */
 		return NULL;
 	}
+	public function createFile($media, $filename) {
 
-	public function uploadFile($media, $file, $overwrite) {
-
-		$exists = $this->db->query("SELECT id FROM files WHERE original = ? AND media = ?", array($file['name'], $media->id))->row();
-		if($exists && !$overwrite)
+		$exists = $this->db->query("SELECT id FROM files WHERE filename = ? AND media = ?", array($filename, $media->id))->row();
+		if($exists)
 			return ['error' => 'File exists!'];
 
-		$ext  = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+		$ext  = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 		if(!in_array($ext, $this->media->allowed($media)))
 			return ['error' => "Unknown extension: ".$ext];
 	
-		$debug = $file["tmp_name"];
 
-		$prelabel = filenamer(pathinfo($file['name'], PATHINFO_FILENAME));
+		$prelabel = filenamer(pathinfo($filename, PATHINFO_FILENAME));
 		$label = $prelabel;
 		$count = 0;
 		while(1) {
@@ -344,28 +359,9 @@ class Media extends CI_Model {
 				break;
 			$label = "$prelabel-$count";
 			$count++;
-			if($count > 10)
-				return ['error' => 'Too many object with the same title.'];
 		}
 
-		$filename = $file['name'];
-
-
-//			$types[] = $file['type']; What to do with this?
-
-		$path = UPLOAD_DIR.$media->path.$filename;
-
-		try {
-			rename($file['tmp_name'], $path);
-			chmod($path, 0664);
-		} catch(Exception $e) {
-			return ['error' => "Could not upload file."];
-		}
-
-		if($exists)
-			return ['id' => $exists->id];
-
-		//new files
+		$path = $this->uploadPath($media).$filename;
 
 		$formats = array('jpg'=>'img', 'jpeg'=>'img', 'png'=>'img', 'gif'=>'img', 'tif'=>'img', 'tiff'=>'img', 
 			'ply'=>'3d', 'obj'=>'3d', 'nxs' => '3d', 'nxz' => '3d',
@@ -377,13 +373,11 @@ class Media extends CI_Model {
 			'media'    => $media->id,
 			'format'   => $format,
 			'ext'      => $ext,
-			'size'     => $file['size'],
-			'original' => $file['name'],
 			'filename' => $filename,
-			'label'    => $label
+			'label'    => $label,
+			'status'   => 'uploading',
 		);
 
-		$this->media->setStatus($media, 'uploading');
 		$this->db->insert('files', $files);
 		$id = $this->db->insert_id();
 		return ['id' => $id];
@@ -419,20 +413,6 @@ class Media extends CI_Model {
 
 		return NULL;
 	}
-
-
-
-/* UNUSED! 
-
-	public function tags($id) {
-		$query = $this->db->query("SELECT tag FROM tags WHERE media = ?", array($id));
-		$result = 
-	
-		$tags = array();
-		foreach($query->result() as $t)
-				$tags[] = $t->tag;  
-		return $tags;
-	} */
 
 
 

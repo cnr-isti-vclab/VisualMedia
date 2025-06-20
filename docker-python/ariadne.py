@@ -353,7 +353,7 @@ P.S. If you need to contact us write to: %(admin_email)s""" %  media
 #process rti
 				if file["ext"] == 'json':
 					output = subprocess.check_output(['mkdir', '-p', outdir], text=True, )
-					output = subprocess.check_output(['cp info.json plane_*.jpg ' + outdir], shell=True)
+					output = subprocess.check_output(['cp info.json plane_*.jpg ' + outdir], text=True, shell=True)
 				else:
 					logging.debug("RTI process %s %s %s" % (relight, file["filename"], outdir))
 					output = subprocess.check_output([relight, file["filename"], outdir], text=True, stderr=subprocess.STDOUT)

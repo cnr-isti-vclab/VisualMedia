@@ -214,12 +214,10 @@ td.expand { text-overflow: ellipsis; }
 <!--			<th></th> -->
 			<th></th>
 
-			<th><button id="removemultiple" class="btn btn-danger">
-			<i class="fas fa-trash"></i></button></th>
 		</tr>
 	</thead>
 	<tbody>
-<? foreach($media->files as $f) { ?>
+<? foreach($files as $f) { ?>
 		<tr>
 
 		<td class="shrink"><i style="font-size:32px" class="<?=$formats[$f->format]?>"></i></td>
@@ -229,7 +227,6 @@ td.expand { text-overflow: ellipsis; }
 			<i class="fas fa-sync"></i> Replace</button></td> -->
 		<td class="shrink"><button data-filename="<?=$f->filename?>" data-removefile="<?=$f->id?>" class="btn btn-danger removefile">
 			<i class="fas fa-trash"></i></button></td>
-		<td class="shrink"><input type="checkbox" name="removefile" value="<?=$f->id?>"></td>
 		</tr>
 <? } ?>
 
@@ -262,31 +259,6 @@ $(document).ready(function() {
 	});
 });
 </script>
-
-
-<form class="dropzone" id="fileform" style="display:none">
-	<input type="hidden" name="media" value="aa" />
-</form>
-
-
-
-<table style="display:none;">
-	<tr id="template">
-
-	<td class="shrink"><i class=""></i></td>
-	<td class="expand"><p data-dz-name></p><strong class="error text-danger" data-dz-errormessage></strong>
-		<div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-			<div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress>
-		</div>
-	</td>
-	<td class="shrink" data-dz-size></td>
-<!--	<td class="shrink"><button data-filename="" class="btn btn-warning">
-		<i class="fas fa-sync"></i> Replace</button></td> -->
-	<td class="shrink"><button data-filename="" data-removefile="" class="btn btn-danger">
-		<i class="fas fa-trash"></i></button></td>
-	</tr>
-</table>
-
 
 </div> <!-- formcontainer -->
 
@@ -509,91 +481,6 @@ $('#publish').click(function(e) {
 });
 
 
-
-
-//DROPZONE!!!
-
-Dropzone.options.myAwesomeDropzone = false;
-Dropzone.autoDiscover = false;
-
-var previewNode = document.querySelector("#template");
-previewNode.id = "";
-var previewTemplate = previewNode.parentNode.innerHTML;
-previewNode.parentNode.removeChild(previewNode);
-
-var dropzone = new Dropzone(document.body, { // Make the whole body a dropzone
-/*  accept: function(file, done) {
-	console.log(file);
-	  done("Naha, you don't.");
-	 // done(); to accept.
-  }, */
-	timeout: 1000*60*60*8,
-	maxFiles: 100,
-	maxFilesize: 2900, // 2Gb
-	acceptedFiles: "<?=implode(',', array_map(function($a) { return '.'.$a; }, $allowed))?>", //.jpg,.png,.tif,.ply,.zip",
-	url: "/media/upload/file",
-	createImageThumbnails: false,
-	parallelUploads: 4,
-	previewTemplate: previewTemplate,
-	autoQueue: true,               // Make sure the files aren't queued until manually added
-	previewsContainer: ".files", 
-	clickable: "#add-file",  // Define the element that should be used as click trigger to select files.
-
-	addedfile: function(file) {
-		var table = document.createElement("table");
-		table.innerHTML = this.options.previewTemplate.trim();
-		var tr = $(table).find('tr');
-		tr.find('p[data-dz-name]')[0].innerHTML = file.name;
-		tr.find('td[data-dz-size]')[0].innerHTML = file.size;
-		tr.find('button').prop('disabled', true);
-		$('.files').append(tr);
-		file.previewElement = tr[0];
-		$('#process').prop('disabled', true);
-	},
-});
-
-dropzone.on("queuecomplete", function(progress) {
-	$('#process').prop('disabled', false);
-});
-
-dropzone.on("error", function(a, error) {
-	alert(error);
-//	console.log(a, error);
-});
-
-dropzone.on("complete", function(file) {
-	if(file.status == "error" || file.accepted == false) {
-		$(file.previewElement).remove();
-		return;
-	}
-
-	try {
-		var response = JSON.parse(file.xhr.response);
-	} catch(e) {
-		alert("There was a problem uploading the file.");
-		$(file.previewElement).remove();
-		return;
-	}
-	if(response.error) {
-		alert(response.error);
-		$(file.previewElement).remove();
-		return;
-	}
-	var button = $(file.previewElement).find('button[data-removefile]');
-	button.attr('data-removefile', response.id);
-	button.attr('data-filename',  file.name);
-	button.prop('disabled', false);
-});
-
-dropzone.on("sending", function(file, xhr, formData) {
-	formData.append("media", '<?=$media->label?>'); // Append all the additional input data of your form here!
-	$("#total-progress").css('opacity', '1');
-});
-
-
-//dropzone.on("complete", function(file) {
-//	$(file.previewElement).find('button').hide(); 
-//});
 
 
 <? if($media->status != 'ready') { ?>
