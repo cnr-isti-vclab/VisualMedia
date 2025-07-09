@@ -40,9 +40,8 @@
 			<div class="card-body">
 
 				<form id="processForm" method="POST" action="<?= site_url('media/process') ?>">
-					<input type="hidden" name="version" value="">
+					<input type="hidden" name="parent" value="">
 					<input type="hidden" name="label" value="<?= $media->label ?>">
-
 
 					<div class="form-group" id="parameters">
 					</div>
@@ -65,7 +64,7 @@
 
 <script>
 	let status = '<?= $media->status ?>';
-
+//make sure to check ariadne.py in modify reads the correct parameters
 	let parameters = {
 		'simplify': {
 			'triangles': {
@@ -97,14 +96,6 @@
 			}
 		}
 	};
-
-	/*document.querySelectorAll('#versionList .list-group-item').forEach(btn => {
-		btn.addEventListener('click', () => {
-			document.querySelectorAll('#versionList .list-group-item').forEach(b => b.classList.remove('active'));
-			btn.classList.add('active');
-		});
-	}); */
-
 
 	document.querySelectorAll('button.action').forEach(btn => {
 		btn.addEventListener('click', function () {
@@ -181,7 +172,7 @@
 		btn.classList.add('active');
 		//set input with name="version" to the data-version of the button
 		let version = btn.dataset.version;
-		document.querySelector('input[name="version"]').value = version;
+		document.querySelector('input[name="parent"]').value = version;
 	}
 	
 	function fillVariants(variants) {
@@ -189,7 +180,7 @@
 			let btn = document.createElement('button');
 			btn.className = 'list-group-item list-group-item-action';
 			btn.textContent = v.label;
-			btn.dataset.version = v.id;
+			btn.dataset.version = v.version;
 			btn.addEventListener('click', (e) => { setCurrentVersion(e.target); });
 			setCurrentVersion(btn);	
 			document.getElementById('versionList').appendChild(btn);

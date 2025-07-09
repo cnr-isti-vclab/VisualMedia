@@ -652,16 +652,18 @@ P.S. If you need to contact us write to: %(admin_email)s""" %  media
 		#otherwise they are in the data_path/<version>
 		
 		#check version exists\
-		if todo['version'] == 0:
+		if todo['parent'] == 0:
+			logging.debug("Using upload path for version 0")
 			input = upload_path + media["path"]
 		else:
-			input = data_path + media["path"] + version + "/"
+			logging.debug("Using data path for version %s" % todo['parent'])
+			input = data_path + media["path"] + str(todo['parent']) + "/"
 
-		if not os.path.isDir(input):
-			self.fail(media, user, "Parent version does not exists")
+		if not os.path.isdir(input):
+			self.fail(media, user, "Parent version does not exists: " + input)
 			return
 		#find a new id for version
-		new_version = max(item['id'] for item in variants)
+		new_version = max(item['version'] for item in variants) + 1
 		#create a new dir  in upload path
 		output = data-path + media['path'] + new_version + "/"
 
@@ -688,7 +690,7 @@ P.S. If you need to contact us write to: %(admin_email)s""" %  media
 
 		#update the variants with the new version
 		variants.append({
-			'id': new_version,
+			'version': new_version,
 			'path': media['path'] + new_version + '/',
 			'parent': todo['version'],
 			'label': 'Version ' + str(new_version),

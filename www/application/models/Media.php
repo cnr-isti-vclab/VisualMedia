@@ -201,7 +201,7 @@ class Media extends CI_Model {
 		$media['path']     = $path;
 		$media['status']   = 'uploading';
 		if($media_type == '3d') {
-			$media['variants'] = '[{"id": 0, "parent": -1, "label": "Original", "creation": "'.$now.'"}]';
+			$media['variants'] = '[{"version": 0, "parent": -1, "label": "Original", "creation": "'.$now.'"}]';
 		}
 
 		$path = $media['path'];
