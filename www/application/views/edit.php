@@ -38,8 +38,9 @@
 		<div class="card">
 			<div class="card-header">Parameters</div>
 			<div class="card-body">
-				<input type="hidden" name="version" value="">
+
 				<form id="processForm" method="POST" action="<?= site_url('media/process') ?>">
+					<input type="hidden" name="version" value="">
 					<input type="hidden" name="label" value="<?= $media->label ?>">
 
 
@@ -68,7 +69,7 @@
 	let parameters = {
 		'simplify': {
 			'triangles': {
-				'label': 'Number of trianles',
+				'label': 'Number of triangles',
 				'type': 'integer'
 			}
 		},
@@ -127,7 +128,8 @@
 					console.error('Error:', data.error);
 					alert('Error: ' + data.error);
 				} else {
-					console.log('Success:', data);
+					//set status as processing.
+					setStatus('on queue');
 					// do something with result
 				}
 			})
@@ -169,11 +171,9 @@
 	}
 
 	function setStatus(status) {
-		if (status == 'processing') {
-			document.querySelector('#parameters').innerHTML = '<p>Processing...</p>';
-		} else {
-			document.querySelector('#parameters').innerHTML = '';
-		}
+		let statusbar = document.querySelector('#status');
+		statusbar.textContent = data.status;
+		//TODO set class for statusbar depending on status
 	}
 
 	function setCurrentVersion(btn) {
@@ -202,9 +202,7 @@
 		fetch('/media/status/<?= $media->label ?>')
 			.then(response => response.json())
 			.then(data => {
-				console.log(data);
 				if (data.status && data.status != '<?= $media->status ?>') {
-					document.querySelector('#status').textContent = data.status;
 					setStatus(data.status);
 				}
 			});

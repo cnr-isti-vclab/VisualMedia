@@ -23,6 +23,11 @@ Copy the `smtp_template.env` file to `smtp.env` and edit the SMTP settings to yo
 
 To try in your machine the Visual Media Service, you just need to have [docker](https://docs.docker.com/) installed.
 
+It's better to run docker in userspace, in linux:
+```
+sudo usermod -aG docker $USER
+```
+
 Configure the `smtp.env` file. Then, from the root of the repository, just run:
 
 ```

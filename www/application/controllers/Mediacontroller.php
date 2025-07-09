@@ -201,7 +201,8 @@ class Mediacontroller extends MY_Controller {
 	public function uploadFile($key = NULL) {
 		$server = new \TusPhp\Tus\Server('file');
 
-		$server->setApiPath('/media/upload/file');                // path dell'endpoint
+		$server->setApiPath('/media/upload/file');
+		$server->setCache(new \TusPhp\Cache\FileStore('/data/cache/'));
 
 		if ($this->input->method() == 'post') {
 			$rawMetadata = $this->input->get_request_header('Upload-Metadata', TRUE);
@@ -214,7 +215,7 @@ class Mediacontroller extends MY_Controller {
 				exit;
 			}
 			$path = $this->media->uploadPath($media);
-			$server->setUploadDir($path); // cartella dove salvare i file
+			$server->setUploadDir($path);
 		}
 
 		// Listen to the complete event
@@ -433,8 +434,9 @@ class Mediacontroller extends MY_Controller {
 		if($media->status != 'ready') {
 			$this->jsonError("The media is not ready yet. Please wait until the processing is finished.");
 		}
-		$data = $this->input->post('post');
-		$this->media->modify($media, $data);
+		$data = $this->input->post();
+		$result = $this->media->modify($media, $data);
+		$this->render($result, 'json');
 	}
 
 	public function updateConfig($label) {

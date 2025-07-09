@@ -12,5 +12,5 @@ fi
 #python3 /app/ariadne.py
 
 #this is used for development
-python3 /ariadne/ariadne.py
+python3 /app/ariadne.py
 

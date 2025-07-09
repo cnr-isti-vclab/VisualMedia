@@ -201,7 +201,7 @@ class Media extends CI_Model {
 		$media['path']     = $path;
 		$media['status']   = 'uploading';
 		if($media_type == '3d') {
-			$media['variants'] = "[{'id': 0, 'parent': -1, 'label': 'Original'}]";
+			$media['variants'] = '[{"id": 0, "parent": -1, "label": "Original", "creation": "'.$now.'"}]';
 		}
 
 		$path = $media['path'];
@@ -215,11 +215,6 @@ class Media extends CI_Model {
 			umask(0);
 			if(!mkdir($upload_path, 0777, true))    //be sure to have a suid to federico in ariadne1
 				return ['error'=> 'Failed to create upload directory'];
-
-/*			if(!mkdir($data_path, 0770, true)) //be sure to have a suid to federico in ariadne1
-				$this->jsonError("Failed to create data directory $data_path");
-			chmod($data_path, 02770); */
-
 		} catch(Exception $e) {
 			return ['error'=> 'Error while creating dir.'];
 		}
@@ -422,7 +417,8 @@ class Media extends CI_Model {
 			return ['error' => 'Invalid JSON data: '.json_last_error_msg()];
 		}
 		//change status to processing and todo to json
-		$this->db->update('media', array('status'=>'processing', 'todo'=>$json), array('id'=>$media->id));
+		$this->db->update('media', array('status'=>'modify', 'todo'=>$json), array('id'=>$media->id));
+		return [];
 	}
 
 

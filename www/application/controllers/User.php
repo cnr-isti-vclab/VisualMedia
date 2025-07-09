@@ -32,9 +32,6 @@ class User  extends MY_Controller {
 		if(!$this->isValidEmail($email))
 			$this->error("Invalid email");
 
-		if($email == 'erennacak@gmail.com')
-			$this->error("Opted out of passwordless");
-
 
 		$remoteip = $_SERVER['REMOTE_ADDR'];
 		$remote = ip2long($remoteip);
@@ -100,10 +97,8 @@ class User  extends MY_Controller {
 			'charset'   => 'utf-8'
 		);
 
-		echo(var_dump($config));
 		echo(var_dump($body));
-		echo(var_dump($email));
-
+		
 		$this->email->initialize($config);
 
 		$this->email->from('', 'Visual Media Service');

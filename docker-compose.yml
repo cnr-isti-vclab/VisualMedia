@@ -28,7 +28,7 @@ services:
       - postgres
     volumes:
       - ./data:/data
-      - ./docker-python:/ariadne # TODO: remove on production
+      - ./docker-python:/app # TODO: remove on production
     env_file:
     - postgres.env
     - smtp.env

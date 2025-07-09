@@ -2,7 +2,7 @@
 
 import sys, time, psycopg2, logging, signal, os, subprocess, re, json
 import psycopg2.extras
-from pprint import pprint
+import pprint
 #from daemon import Daemon
 from datetime import datetime
 
@@ -14,6 +14,9 @@ import smtplib
 import shutil 
 
 from email.mime.text import MIMEText
+
+#import functions from processing.py
+import processing
 
 quit = False
 
@@ -74,6 +77,8 @@ class Ariadne():
 		return
 
 	def sendMsgFail(self, media, user):
+		media['name'] = user['name']
+		
 		text = """Dear %(name)s,
    unfortunately the media (%(title)s) you uploaded could not be processed.
 
@@ -104,6 +109,7 @@ Visual Media Service.""" % media
 
 
 	def sendMsgSuccess(self, media, user):
+		media['name'] = user['name']
 
 		text = """Dear %(name)s,
    the media (%(title)s) you uploaded has been processed successfully.
@@ -550,6 +556,25 @@ P.S. If you need to contact us write to: %(admin_email)s""" %  media
 
 
 ##### PROCESS JOB ######
+	def getUser(self, userid):
+		self.cur.execute("SELECT * FROM users WHERE id = %s", [userid])
+		user = self.cur.fetchone()
+		if user['name'] is None:
+			user['name'] = user['username']
+		if user['name'] is None:
+			user['name'] = user['email']
+
+		if user is None:
+			logging.error("User with id %s not found." % userid)
+			return None
+		return user
+
+	def fail(self, media, user, error):
+		logging.error("Failed processing job %s: %s" % (media["id"], error))
+		media['error'] = error
+		self.setStatus(media["id"], 'failed', error)
+		self.sendMsgFail(media, user)
+		return
 
 	def processJob(self, media):
 		global upload_path, data_path
@@ -561,14 +586,17 @@ P.S. If you need to contact us write to: %(admin_email)s""" %  media
 		media_type = media["media_type"]
 		logging.debug("Processing job %s: %s %s" % (id, label, media_type))
 
+		user = self.getUser(media["userid"])
+
+
 		try:
 
 			output = subprocess.call(["mkdir", "-p", path])
 			os.chdir(upload_path + media["path"])
 		
 		except subprocess.CalledProcessError as e:
-			logging.error("error %s" % (e.output))
-			error = "Failed to create the output folder."
+			self.fail(media, user, "Failed to create the output folder.")
+			return
 
 		error = None
 		if media_type == '3d':
@@ -578,18 +606,13 @@ P.S. If you need to contact us write to: %(admin_email)s""" %  media
 		elif media_type == 'img' or media_type == 'album':
 			error = self.processImg(media, path)
 
-		self.cur.execute("SELECT * FROM users WHERE id = %s", [media["userid"]])
-		user = self.cur.fetchone()
 		
 		self.cur.execute("SELECT * FROM identities WHERE provider = 'd4science' AND userid = %s", [user["id"]])
 		user["d4science"] = self.cur.fetchone()
 
 
 		if error != None:
-			logging.debug("error processing: %s" %(error))
-			media["error"] = error;
-			self.setStatus(id, 'failed', error)
-			self.sendMsgFail(media, user)
+			self.fail(media, user, error)
 			return
 
 		try:
@@ -601,15 +624,77 @@ P.S. If you need to contact us write to: %(admin_email)s""" %  media
 			error = "Permissions problems. Contact us."
 
 		if error != None:
-			media["error"] = error;
-			self.setStatus(id, 'failed', error)
-			self.sendMsgFail(media, user)
+			self.fail(media, user, error)
 			return
 		
 		self.setStatus(id, 'ready', None)
 		self.sendMsgSuccess(media, user)
 
 		return
+	
+	def modifyJob(self, media):
+		global upload_path, data_path
+
+		id = media["id"]
+		user = self.getUser(media["userid"])
+		
+		label = media["label"]
+		todo = json.loads(media["todo"])
+		#expecting todo to have, version (the parent version!), action and relative parameters.
+
+		if todo is None or todo['version'] is None or todo['action'] is None:
+			self.fail(media, user, 'Invalid todo: ' + media["todo"])
+			return	
+
+		variants = json.loads(media["variants"])
+		logging.debug(json.dumps(variants, indent=2))
+		#if parent version is 0, the input files are in the upload path (the originals)
+		#otherwise they are in the data_path/<version>
+		
+		#check version exists\
+		if todo['version'] == 0:
+			input = upload_path + media["path"]
+		else:
+			input = data_path + media["path"] + version + "/"
+
+		if not os.path.isDir(input):
+			self.fail(media, user, "Parent version does not exists")
+			return
+		#find a new id for version
+		new_version = max(item['id'] for item in variants)
+		#create a new dir  in upload path
+		output = data-path + media['path'] + new_version + "/"
+
+		try:
+			result = subprocess.call(["mkdir", "-p", path])
+			os.chdir(output)
+		
+		except subprocess.CalledProcessError as e:
+			self.fail(media, user, "Failed to create the output folder.")
+			
+			return
+
+		try:
+			#depending on the action call the processing.py relative function
+			if todo['action'] == 'simplify':
+				processing.simplify(input, output, todo['triangles'])
+			elif todo['action'] == 'remesh':
+				processing.remesh(input, output, todo['size'])
+			elif todo['action'] == 'closeholes':
+				processing.close_holes(input, output)
+		except Exception as e:
+			self.fail(media, user, "Failed processing job {}: {}".format(id, e))
+			return
+
+		#update the variants with the new version
+		variants.append({
+			'id': new_version,
+			'path': media['path'] + new_version + '/',
+			'parent': todo['version'],
+			'label': 'Version ' + str(new_version),
+			'creation': datetime.now(),
+		})
+		#now we need to process the nexus
 
 	def removeJob(self, media):
 		global upload_path, data_path
@@ -638,7 +723,7 @@ P.S. If you need to contact us write to: %(admin_email)s""" %  media
 
 	def run(self):
 		global quit
-		logging.basicConfig(filename=log_path,level=logging.DEBUG)
+		logging.basicConfig(filename=log_path, level=logging.DEBUG)
 
 		os.chdir(upload_path)
 		os.umask(0o002)
@@ -653,10 +738,10 @@ P.S. If you need to contact us write to: %(admin_email)s""" %  media
 			while quit == False:
 				try:
 					sql = \
-"SELECT m.id, m.status, m.label, m.title, m.path, m.media_type, m.url, m.set, m.thumbnail, m.secret, m.userid, m.expire < now() as expired, u.name, u.username, u.email \
+"SELECT m.id, m.status, m.todo, m.variants, m.label, m.title, m.path, m.media_type, m.url, m.set, m.thumbnail, m.secret, m.userid, m.expire < now() as expired, u.name, u.username, u.email \
 FROM media m \
 LEFT OUTER JOIN users u on u.id = m.userid  \
-WHERE status in ('on queue', 'processing', 'download', 'remove') OR (expire is not null and expire < now()) ORDER BY creation"
+WHERE status in ('on queue', 'processing', 'modify', 'modifing', 'download', 'remove') OR (expire is not null and expire < now()) ORDER BY creation"
 
 					self.cur.execute(sql)
 					job = self.cur.fetchone()
@@ -682,6 +767,15 @@ WHERE status in ('on queue', 'processing', 'download', 'remove') OR (expire is n
 
 							logging.debug("processjob");
 							self.processJob(job)
+						elif job['status'] == 'modify' or job['status'] == 'modifing':
+							self.cur.execute("SELECT * FROM files WHERE media = %(id)s", job)
+							job['files'] = self.cur.fetchall()
+
+							self.cur.execute("SELECT * FROM identities WHERE userid = %(userid)s", job)
+							job['identity'] = self.cur.fetchall()
+
+							logging.debug("modifyJob");
+							self.modifyJob(job)
 
 
 				except psycopg2.ProgrammingError as e:

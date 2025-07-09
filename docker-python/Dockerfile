@@ -20,13 +20,10 @@ COPY ./ariadne-entrypoint.sh /
 
 RUN chmod +x /ariadne-entrypoint.sh
 
-<<<<<<< Updated upstream
-COPY ./ariadne.py /app
-COPY ./processing.py /app
 
-=======
 #COPY ./ariadne.py /app
->>>>>>> Stashed changes
+#COPY ./processing.py /app
+
 RUN python3 -m venv ariadne-venv && \
     . ariadne-venv/bin/activate && \
     python -m pip install --upgrade pip && \
