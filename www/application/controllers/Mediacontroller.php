@@ -20,7 +20,7 @@ class Mediacontroller extends MY_Controller {
 		}
 		echo('done');
 	}
-	//owns media by label?
+	//TOSDO: wee need to customize the error message
 	public function owns($label, $user = NULL) {
 		if(!$user) $user = $this->user();
 		if(!$user)
@@ -267,11 +267,8 @@ class Mediacontroller extends MY_Controller {
 	}
 
 	public function manage($label) {
-		if(!$this->isLogged())
-			$this->error("</p>It looks like you are not logged in. Maybe the session expired or the cookies were deleted.</p>".
-				"<p>Please login and try again...</p>");
+		$media = $this->owns($label);
 
-		$media = $this->media->ownsByLabel($label, $this->user());
 
 		if(!$media) {
 			$contact = ADMIN_EMAIL;
@@ -345,21 +342,22 @@ class Mediacontroller extends MY_Controller {
 
 	public function process($label) {
 		$media = $this->owns($label);
+		$files = $this->media->getFiles($media);
 		//look at the files and try to guess what it is (3d, img, collection, ptm)
 		$content = array('3d' => 0, 'rti'=>0, 'img'=>0, 'unknown'=>0);
 
 		$error = NULL;
-		foreach($media->files as $file) {
+		foreach($files as $file) {
 			//TODO validate json is actually a relight file.
 			if($file->format)
 				$content[$file->format]++;
 		}
 
 		switch($media->media_type) {
-		case '3d'     : if(!$content['3d'])  $error = 'A 3D model (.ply, .obj, .nxs, .nxz) file is needed.'; break;
-		case 'rti'    : if(!$content['rti']) $error = 'An RTI file (.rti, .ptm, .lp, .json) is needed.'; break;
-		case 'img'    : if(!$content['img']) $error = 'At least an image (.jpg, .png, .tif) is needed.'; break;
-		case 'album'  : if(!$content['img']) $error = 'At least an image (.jpg, .png, .tif) is needed.'; break;
+			case '3d'     : if(!$content['3d'])  $error = 'A 3D model (.ply, .obj, .nxs, .nxz) file is needed.'; break;
+			case 'rti'    : if(!$content['rti']) $error = 'An RTI file (.rti, .ptm, .lp, .json) is needed.'; break;
+			case 'img'    : if(!$content['img']) $error = 'At least an image (.jpg, .png, .tif) is needed.'; break;
+			case 'album'  : if(!$content['img']) $error = 'At least an image (.jpg, .png, .tif) is needed.'; break;
 		}
 
 		if($error) {
@@ -368,7 +366,7 @@ class Mediacontroller extends MY_Controller {
 		}
 
 		$this->media->setStatus($media, 'on queue');
-		$this->render(array(), 'json');
+		$this->render([], 'json');
 	}
 
 	public function config($label) {
@@ -386,6 +384,57 @@ class Mediacontroller extends MY_Controller {
 		}
 
 		$this->load->view('wizard/index', $data);
+	}
+
+	public function edit($label) {
+		if(!$this->isLogged())
+			$this->error("</p>It looks like you are not logged in. Maybe the session expired or the cookies were deleted.</p>".
+				"<p>Please login and try again...</p>");
+
+		$media = $this->media->ownsByLabel($label, $this->user());
+		if(!$media)
+			$this->error("Unauthorized.");
+
+		if(!$media->processed)
+			$this->error('<p>This media has not been processed yet. Please come back shortly.</p>');
+
+		$files = $this->media->getFiles($media);
+
+		if($media->media_type != '3d') {
+			return;
+		}
+		$media->link = $this->media->link($media);
+
+		//find the file of type 3d among the files
+		$file = null;
+		foreach	($files as $f) {
+			if($f->format == '3d') {
+				$file = $f;
+				break;
+			}
+		}
+
+		if	(!$file) {
+			$this->error("No 3D file found. Please upload a 3D file first.");
+		}
+
+		$this->data = array_merge($this->data, [
+			'page' => 'edit',
+			'media' => $media,
+			'files' => $files,
+			'file' => $file,
+			'wide' => true
+		]);
+		$this->render('edit');
+	}
+
+	public function modify($label) {
+		$media = $this->owns($label);
+		if($media->status != 'ready') {
+			$this->jsonError("The media is not ready yet. Please wait until the processing is finished.");
+		}
+		$data = $this->input->post('post');
+		$this->media->modify($media, $data);
 	}
 
 	public function updateConfig($label) {

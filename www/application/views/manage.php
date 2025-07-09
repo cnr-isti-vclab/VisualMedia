@@ -90,6 +90,13 @@ src="http://visual.ariandne-infrastructure.eu<?=$media->link?>?standalone"&gt;&l
 		<button class="btn btn-block <?=$media->publish? 'btn-success':'btn-info'?>" id="publish" data-published="<?=$media->publish?>">
 			<i class="fas fa-toggle-<?=$media->publish?'on':'off'?>"></i> <span><?=$media->publish? 'Published':'Publish'?></span></button>
 
+		<? if($media->media_type == '3d') { ?>
+
+		<a class="btn btn-block btn-info" href="/media/edit/<?=$media->label?>">
+			<i class="fas fa-cog"></i>Edit</a>
+
+		<? } ?>
+
 
 	</div>
 

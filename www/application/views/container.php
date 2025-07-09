@@ -83,7 +83,7 @@ nav { border-bottom: 1px solid #eee; margin-bottom:1em; }
 		</nav>
 	</header>
 
-<div class="container">
+<div class="container<?=($wide??false)?'-fluid':''?>">
 
 <?=$content?>
 

@@ -27,7 +27,9 @@ CREATE TABLE public.media
   creation timestamp without time zone,
   userid integer,
   processed integer DEFAULT 0, --if processed (in case we are reprocessing)
-  status text, --thi is the status of the processing uploading, on queue, processing, ready, failed
+  status text, --thi is the status of the processing uploading, 'on queue', processing, ready, failed
+  todo text, -- operation to be performed on the media, json witth operation and parameters
+  variants text, -- json with info about the variants of the file (size etc)
   error text, --refers to the last processing operation
   publish integer DEFAULT 0,
   path text,  -- path where the files are stored, usually just the label
@@ -53,8 +55,6 @@ CREATE TABLE files
   label text, -- used as a savefile name.
   media integer NOT NULL,
   status text, -- status of the file, such as uploading, processing, ready, failed
-  todo text, -- operation to be performed on the media, json witth operation and parameters
-  variants text,
   format text, -- img 3d rti etc.
   ext text, --extension
   description text, -- used by img collections

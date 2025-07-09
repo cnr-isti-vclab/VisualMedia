@@ -84,7 +84,7 @@ class User  extends MY_Controller {
 
 		$user = $this->auth->createPasswordless($email);
 
-		$user->{'url'} = 'https://'.$_SERVER['HTTP_HOST'].'/login?state=passwordless&code='.$user->validate; 
+		$user->{'url'} = 'http://'.$_SERVER['HTTP_HOST'].'/login?state=passwordless&code='.$user->validate; 
 
 		$body = $this->load->view('passwordless_email.php', (array)$user, TRUE);
 

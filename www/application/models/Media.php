@@ -21,9 +21,7 @@ class Media extends CI_Model {
 		return $media;
 	}
 
-	//TODO: clean up this mess and addFiles should be done where needed.
-
-		public function ownsByLabel($label, $user) {
+	public function ownsByLabel($label, $user) {
 		if(!$user) return null;
 		$label = urldecode($label);
 		return $this->owns('label = ?', $label, $user);
@@ -202,6 +200,9 @@ class Media extends CI_Model {
 		$media['secret']   = md5($now."salt?");
 		$media['path']     = $path;
 		$media['status']   = 'uploading';
+		if($media_type == '3d') {
+			$media['variants'] = "[{'id': 0, 'parent': -1, 'label': 'Original'}]";
+		}
 
 		$path = $media['path'];
 		$upload_path = UPLOAD_DIR.$path;
@@ -414,6 +415,15 @@ class Media extends CI_Model {
 		return NULL;
 	}
 
+	public function modify($media, $data) {
+		//convert data to json
+		$json = json_encode($data);
+		if($json === false) {
+			return ['error' => 'Invalid JSON data: '.json_last_error_msg()];
+		}
+		//change status to processing and todo to json
+		$this->db->update('media', array('status'=>'processing', 'todo'=>$json), array('id'=>$media->id));
+	}
 
 
 	public function jobs($all) {

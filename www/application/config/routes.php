@@ -107,14 +107,20 @@ $route['media/upload/file']        = 'mediacontroller/uploadFile';
 $route['media/upload/file/(:any)']        = 'mediacontroller/uploadFile/%1';
 $route['media/delete/file/(:any)'] = 'mediacontroller/deleteFile/$1';
 
-$route['media/process/(:any)']     = 'mediacontroller/process/$1';
+$route['media/process/(:any)']     = 'mediacontroller/process/$1'; //call this when uploaded 
+$route['media/edit/(:any)']        = 'mediacontroller/edit/$1';
+$route['media/modify/(:any)']      = 'mediacontroller/modify/$1';
+$route['media/setcurrent/(:any)/(:num)']       = 'mediacontroller/set_current/$1/$2';
+
 $route['media/update']             = 'mediacontroller/update';
 $route['media/publish']            = 'mediacontroller/publish';
 $route['media/unpublish']          = 'mediacontroller/unpublish';
+
 $route['media/config/(:any)']      = 'mediacontroller/config/$1';
 $route['media/update/config/(:any)']      = 'mediacontroller/updateConfig/$1';
 $route['media/download/(:any)']    = 'mediacontroller/download/$1';
 $route['media/status/(:any)']      = 'mediacontroller/status/$1';
+
 /* oops if check for reserved routes */
 $route['media/(:any)']             = 'mediacontroller/manage/$1';
 

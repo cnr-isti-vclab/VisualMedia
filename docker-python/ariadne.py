@@ -280,7 +280,6 @@ P.S. If you need to contact us write to: %(admin_email)s""" %  media
 				if not success:
 					return error1
 
-
 			if file["ext"] == "ply" or file["ext"] == "obj":
 				plys.append(file["filename"])
 
