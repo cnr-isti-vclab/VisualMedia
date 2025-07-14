@@ -163,7 +163,7 @@
 
 	function setStatus(status) {
 		let statusbar = document.querySelector('#status');
-		statusbar.textContent = data.status;
+		statusbar.textContent = status;
 		//TODO set class for statusbar depending on status
 	}
 

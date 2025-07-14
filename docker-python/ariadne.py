@@ -260,8 +260,8 @@ P.S. If you need to contact us write to: %(admin_email)s""" %  media
 		return (True, "")
 		
 
-	def process3d(self, media, path):
-
+	def process3d(self, media, output_nxz):
+		logging.debug("process3d to " + output_nxz)
 
 		plys = []
 		for file in media["files"]:
@@ -329,7 +329,7 @@ P.S. If you need to contact us write to: %(admin_email)s""" %  media
 
 #cleanup
 		try:
-			subprocess.check_output(["mv", "test.nxz", path + media["label"] + ".nxz"], text=True, stderr=subprocess.STDOUT)
+			subprocess.check_output(["mv", "test.nxz", output_nxz], text=True, stderr=subprocess.STDOUT)
 			subprocess.check_output(["rm", "test.nxs"], text=True, stderr=subprocess.STDOUT)
 			subprocess.check_output(['rm -f cache_stream* cache_plyvertex* cache_tree*'], shell=True, text=True, stderr=subprocess.STDOUT)
 		except subprocess.CalledProcessError as e:
@@ -600,7 +600,8 @@ P.S. If you need to contact us write to: %(admin_email)s""" %  media
 
 		error = None
 		if media_type == '3d':
-			error = self.process3d(media, path)
+			output_nxz = path + media["label"] + ".nxz"
+			error = self.process3d(media, output_nxz)
 		elif media_type == 'rti':
 			error = self.processRti(media, path)
 		elif media_type == 'img' or media_type == 'album':
@@ -635,14 +636,17 @@ P.S. If you need to contact us write to: %(admin_email)s""" %  media
 	def modifyJob(self, media):
 		global upload_path, data_path
 
+		logging.debug("Modifying job %s" % media["todo"])
+
 		id = media["id"]
 		user = self.getUser(media["userid"])
 		
 		label = media["label"]
 		todo = json.loads(media["todo"])
+		logging.debug("GATTO!" + media['todo']);
 		#expecting todo to have, version (the parent version!), action and relative parameters.
 
-		if todo is None or todo['version'] is None or todo['action'] is None:
+		if todo is None or todo['parent'] is None or todo['action'] is None:
 			self.fail(media, user, 'Invalid todo: ' + media["todo"])
 			return	
 
@@ -652,30 +656,51 @@ P.S. If you need to contact us write to: %(admin_email)s""" %  media
 		#otherwise they are in the data_path/<version>
 		
 		#check version exists\
-		if todo['parent'] == 0:
+		if todo['parent'] == '0':
 			logging.debug("Using upload path for version 0")
-			input = upload_path + media["path"]
+			input_dir = upload_path + media["path"]
 		else:
 			logging.debug("Using data path for version %s" % todo['parent'])
-			input = data_path + media["path"] + str(todo['parent']) + "/"
+			input_dir = data_path + media["path"] + str(todo['parent']) + "/"
 
-		if not os.path.isdir(input):
-			self.fail(media, user, "Parent version does not exists: " + input)
+		if not os.path.isdir(input_dir):
+			self.fail(media, user, "Parent version does not exists: " + input_dir)
 			return
+		#find a 3d file in the input dir (.obj or .ply)
+		input_files = [f for f in os.listdir(input_dir) if os.path.isfile(os.path.join(input_dir, f))]
+		if len(input_files) == 0:
+			self.fail(media, user, "No files found in the input directory: " + input_dir)
+			return
+		
+		input_file = None
+		for file in input_files:
+			if file.endswith('.obj') or file.endswith('.ply'):
+				input_file = file
+				break
+		
+		if input_file is None:
+			self.fail(media, user, "No 3d file found in the input directory: " + input)
+			return
+
+
 		#find a new id for version
 		new_version = max(item['version'] for item in variants) + 1
 		#create a new dir  in upload path
-		output = data-path + media['path'] + new_version + "/"
+		output_dir = data_path + media['path'] + str(new_version) + "/"
 
 		try:
-			result = subprocess.call(["mkdir", "-p", path])
-			os.chdir(output)
+			result = subprocess.call(["mkdir", "-p", output_dir])
+			os.chdir(output_dir)
 		
 		except subprocess.CalledProcessError as e:
-			self.fail(media, user, "Failed to create the output folder.")
+			self.fail(media, user, "Failed to create the output folder:" + output_dir)
 			
 			return
 
+		input = input_dir + input_file
+		output = output_dir + input_file
+
+#		todo['action'] = 'dummy'
 		try:
 			#depending on the action call the processing.py relative function
 			if todo['action'] == 'simplify':
@@ -684,6 +709,8 @@ P.S. If you need to contact us write to: %(admin_email)s""" %  media
 				processing.remesh(input, output, todo['size'])
 			elif todo['action'] == 'closeholes':
 				processing.close_holes(input, output)
+			elif todo['action'] == 'dummy':
+				processing.dummy_processing(input, output)
 		except Exception as e:
 			self.fail(media, user, "Failed processing job {}: {}".format(id, e))
 			return
@@ -691,12 +718,31 @@ P.S. If you need to contact us write to: %(admin_email)s""" %  media
 		#update the variants with the new version
 		variants.append({
 			'version': new_version,
-			'path': media['path'] + new_version + '/',
-			'parent': todo['version'],
+			'path': media['path'] + str(new_version) + '/',
+			'parent': todo['parent'],
 			'label': 'Version ' + str(new_version),
-			'creation': datetime.now(),
+			'creation': str(datetime.now()),
 		})
-		#now we need to process the nexus
+		update_variants = json.dumps(variants, indent=2)
+		logging.debug("Updating variants: " + update_variants)
+		self.cur.execute("UPDATE media SET variants = %s, todo = null WHERE id = %s", [update_variants, id])
+		self.con.commit()
+		#now we need to process the nexus, but we need to modify process3d to take the variants into account.
+		os.chdir(output_dir)
+		output_nxz = data_path + media["path"] + media["label"] + "_" + str(new_version) + ".nxz"
+
+		try:
+			error = self.process3d(media, output_nxz)
+		except Exception as e:
+			error = e.output
+		
+		if error is not None:
+			self.fail(media, user, "Failed processing job {}: {}".format(id, error))
+			return
+		
+		self.setStatus(id, 'ready', None)
+		self.sendMsgSuccess(media, user)
+
 
 	def removeJob(self, media):
 		global upload_path, data_path
@@ -760,6 +806,7 @@ WHERE status in ('on queue', 'processing', 'modify', 'modifing', 'download', 're
 							self.downloadJob(job)
 
 						elif job['status'] == 'on queue' or job['status'] == 'processing':
+							self.setStatus(job['id'], 'processing', None)
 
 							self.cur.execute("SELECT * FROM files WHERE media = %(id)s", job)
 							job['files'] = self.cur.fetchall()
@@ -770,6 +817,8 @@ WHERE status in ('on queue', 'processing', 'modify', 'modifing', 'download', 're
 							logging.debug("processjob");
 							self.processJob(job)
 						elif job['status'] == 'modify' or job['status'] == 'modifing':
+							self.setStatus(job['id'], 'modifying', None)
+							
 							self.cur.execute("SELECT * FROM files WHERE media = %(id)s", job)
 							job['files'] = self.cur.fetchall()
 

@@ -1,5 +1,18 @@
 import pymeshlab
 
+def dummy_processing(input_file, output_file):
+    """
+    A dummy processing function that simply copies the input file to the output file.
+
+    :param input_file: Path to the input mesh file.
+    :param output_file: Path to save the processed mesh.
+    """
+    ms = pymeshlab.MeshSet()
+    ms.load_new_mesh(input_file)
+    
+    # Save the mesh without any processing
+    ms.save_current_mesh(output_file)
+    
 def simplify(input_file, output_file, target_face_num):
     """
     Simplifies a mesh using PyMeshLab.
