@@ -515,7 +515,7 @@ class Mediacontroller extends MY_Controller {
 	}
 
 	//used also for download
-	public function prepareShow($media) {
+	public function prepareShow($media, $version = null) {
 
 		$data = array(
 			'description' => 'Ariadne visual media service',
@@ -604,10 +604,9 @@ EOD;
 
  		switch($media->media_type) {
 		case '3d':
-			if(file_exists(DATA_DIR.$media->path.$media->label.".nxz"))
-				$url = "../data/".$media->path.$media->label.".nxz";
-			else
-				$url = "../data/".$media->path.$media->label."Z.nxs";
+			$version_suffix =  $version ? "_$version" : '';
+			$url = "../data/".$media->path.$media->label.$version_suffix.".nxz";
+
 			$options = $this->update3dConfig($options, $url);
 			break;
 
@@ -653,8 +652,10 @@ EOD;
 		$media->files = $this->media->getFiles($media);
 		$this->media->addCollections($media);
 
-		if($_SERVER['QUERY_STRING'] == 'standalone') {
-			$data = $this->prepareShow($media);
+		$version = $this->input->get('version');
+		$standalone = $this->input->get('standalone');
+		if($standalone !== null) {
+			$data = $this->prepareShow($media, $version);
 			$this->load->view($media->media_type, $data);
 			return;
 		}

@@ -173,6 +173,10 @@
 		//set input with name="version" to the data-version of the button
 		let version = btn.dataset.version;
 		document.querySelector('input[name="parent"]').value = version;
+		//change the iframe src to the version
+		let src = '<?= $media->link ?>?version=' + version + '&standalone=true';
+		document.getElementById('thumb').src = src;
+		
 	}
 	
 	function fillVariants(variants) {
