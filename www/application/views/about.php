@@ -25,6 +25,33 @@ As an example of an archival service which provides features for presentation of
 
 <hr/>
 <h3>Changelog</h3>
+<h5 class="text-info">September 2025.</h5>
+<ul>
+	<li>Integrated H2IOSC single sign-on, extending the authentication options for institutional users.</li>
+	<li>Hardened the editing workflow with better audit trails and safer versioning of published assets.</li>
+</ul>
+
+<h5 class="text-info">July 2025.</h5>
+<ul>
+	<li>Streamlined 3D model editing tools and fixed regressions in the viewer configuration panels.</li>
+	<li>Introduced mesh-processing utilities in the Python pipeline to support automated cleanup steps.</li>
+	<li>Surfaced viewer version information directly in the UI to simplify troubleshooting.</li>
+</ul>
+
+<h5 class="text-info">June 2025.</h5>
+<ul>
+	<li>Swapped the legacy upload handler with the TUS resumable protocol for large file reliability.</li>
+	<li>Upgraded the Docker Python image with Nexus and PyMeshLab while standardising on linux/amd64 builds.</li>
+	<li>Improved developer ergonomics by fixing path constants and supplying default symlinks.</li>
+</ul>
+
+<h5 class="text-info">April 2025.</h5>
+<ul>
+	<li>Added DeepZoom generation and RTI relight tooling to the processing stack.</li>
+	<li>Refactored environment configuration, splitting secrets and aligning credentials with production best practices.</li>
+	<li>Documented the REST API with an initial OpenAPI draft and refreshed deployment guides.</li>
+</ul>
+
 <h5 class="text-info">November 2024</h5>
 <ul>
 	<li>Completed Dockerization</li>
