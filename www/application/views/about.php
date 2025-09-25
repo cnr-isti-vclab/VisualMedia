@@ -10,6 +10,8 @@
 
 <p>This service was developed by:  <a href="http://vcg.isti.cnr.it">Visual Computing Lab - ISTI - CNR</a></p>
 
+<p>We gratefully acknowledge partial funding from the <a href="https://ariadne-infrastructure.eu/" target="_blank" rel="noopener">ARIADNE</a> and <a href="https://www.h2iosc.cnr.it/" target="_blank" rel="noopener">H2IOSC</a> projects, whose support has been instrumental in expanding and maintaining the Visual Media Service.</p>
+
 <p>Note: the Visual Media Server is NOT to be intended as an archive or a repository. It is an instrument to allow scholars/professionals to publish on the web large visual data and to share them with colleagues, to support cooperative work. We do provide a browsing feature, but only with the scope of showing what users have submitted so far (consider that we had more than 400 single submissions, but most of them are not "public" due to confidentiality reasons requested by the owners, e.g. because those data are part of unpublished current research).
 <br/>
 As an example of an archival service which provides features for presentation of 3D data, please check the <a href="http://archaeologydataservice.ac.uk/archives/view/amarna_leap_2011/downloads.cfm?obj=yes&obj_id=38819&CFID=50014&CFTOKEN=33B9F7CC-99E6-479F-BF16E64832956B80">ADS archive</a>, that is also based on 3DHOP.
@@ -17,7 +19,11 @@ As an example of an archival service which provides features for presentation of
 
 <h3>Contacts</h3>
 
-<img width="25%" src="/images/co-funded-h2020-horiz_en.svg" style='float: right; margin-top: -35px;'/>
+<div style="float: right; margin: -35px 0 10px 20px; text-align: right;">
+	<img src="/images/co-funded-h2020-horiz_en.svg" alt="European Union" style="max-width: 160px; width: 100%; height: auto; display: inline-block;"/>
+	<img src="/images/ariadne_logo_0.png" alt="ARIADNE" style="max-width: 120px; width: 100%; height: auto; display: inline-block; margin-left: 12px;"/>
+	<img src="/images/h2iosc_logo.png" alt="H2IOSC" style="max-width: 140px; width: 100%; height: auto; display: inline-block; margin-left: 12px;"/>
+</div>
 <? 		$contact = ADMIN_EMAIL; ?>
 <p>Please send comments or queries to:   <a href="mailto:<?=$contact?>"><?=$contact?></a></p>
 
