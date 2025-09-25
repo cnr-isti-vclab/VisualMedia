@@ -95,6 +95,42 @@ public function initGoogle() {
 	return $client;
 }
 
+function genericAuthenticate($provider, $token, $user_info) {
+	//Token is and array with access_token, refresh_token, uid
+	//info contains email, name
+	//returns a user object
+
+
+	$email = $user_info['email'];
+	$name  = $user_info['name'];
+	$access = $token['access_token'];
+	$refresh = $token['refresh_token'];
+	$uid = $user_info['uid'];
+
+	$identity = array('access_token'=>$access, 'refresh_token'=> $refresh, 'uid'=>$uid);
+
+	//check wether this identity exists.
+	$user = $this->db->query("SELECT * FROM users u LEFT JOIN identities i on i.userid = u.id AND i.provider=? WHERE email=?", [$provider, $email] )->row();
+
+	//var_dump($user);
+	if(!$user) {                       //create user and identity
+		$identity['provider'] = $provider;
+		$this->addUser(array('email'=>$email, 'name'=>$name), $identity);
+
+	} else if(!$user->provider) {      //create identity
+		$identity['userid'] = $user->id;
+		$identity['provider'] = $provider;
+		$this->db->insert('identities', $identity);
+
+	} else {                           //update identity
+		$this->db->where('provider', $provider);
+		$this->db->where('userid', $user->id);
+		$this->db->update('identities', $identity);
+	}
+
+
+	return $this->db->query("SELECT * from users u JOIN identities i on i.userid = u.id WHERE provider=? AND email=?", [$provider, $email] )->row();
+}
 
 
 public function authenticateGoogle($code) {
@@ -113,104 +149,44 @@ public function authenticateGoogle($code) {
 	$email = $info['email'];
 	$name  = $info['given_name'].' '.$info['family_name'];
 
-	$identity = 	array('access_token'=>$access['access_token'], 'refresh_token'=> $access['refresh_token'], 'uid'=>$info['id']);
-
-	//check wether this identity exists.
-	$user = $this->db->query("SELECT * FROM users u LEFT JOIN identities i on i.userid = u.id AND i.provider='google' WHERE email = ?", $email)->row();
-
-	if(!$user) {                       //create user and identity
-		$identity['provider'] = 'google';
-		$this->addUser(array('email'=>$email, 'name'=>$name), $identity);
-
-	} else if(!$user->provider) {      //create identity
-		$identity['userid'] = $user->id;
-		$identity['provider'] = 'google';
-		$this->db->insert('identities', $identity);
-
-	} else {                           //update identity
-		$this->db->where('provider', 'google');
-		$this->db->where('userid', $user->id);
-		$this->db->update('identities', $identity);
-	}
-
-
-	return $this->db->query("SELECT * from users u JOIN identities i on i.userid = u.id WHERE provider='google' AND email = ?", $email)->row();
+	return $this->genericAuthenticate('google', $access, array('email'=>$email, 'name'=>$name, 'uid'=>$info['id']));
 }
 	
+public function authenticateH2IOSC($code) {
+	$token = http_build_query([
+	    'grant_type' => 'authorization_code',
+	    'code' => $code,
+	    'redirect_uri' => 'http://'.$_SERVER['HTTP_HOST'].'/login',
+	    'client_id' => H2IOSC_CLIENT,
+	    'client_secret' => H2IOSC_SECRET,
+		'response_type' => 'code'
+	]);
 
-	//the token is passed when the user is already logged in the d4science.
+	$ch = curl_init(H2IOSC_URL);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $token);
+	$response = curl_exec($ch);
+	$data = json_decode($response, true);
 
-	//this is used for login
-public function authenticateD4Science($code, $redirect) {
-	$client_id = 'a4dcada3-5b17-4b85-8fa4-6281f12507c4';
-	$client_secret = 'f9f058f3-f44d-4ca8-a4c5-c589ee80588c-843339462';
-	$auth_url = 'https://socialnetworking1.d4science.org/gcube-oauth/v2/access-token';
-	$people_url ='https://socialnetworking1.d4science.org/social-networking-library-ws/rest/';
-
-	$headers = array(
-		'Content-Type: application/x-www-form-urlencoded',
-		'gcube-token: '.$client_secret);
-
-
-	if($redirect == 'login') {
-		$params = array(
-			'url'=>$auth_url,
-			'grant_type'=>'authorization_code',
-			'code'=>$code,
-			'redirect_uri' => 'https://'.$_SERVER['HTTP_HOST'].'/login',
-			'client_id'=> $client_id,
-			'client_secret'=>$client_secret);
+	if(isset($data['error'])) {
+		show_error($data['error'].': '.$data['error_description'], 403);
+	}
 	
-		$res = $this->postRequest($auth_url, $params, $headers);
-		$access = json_decode($res);
+	// ID token contains user info in JWT
+	$id_token = $data['id_token'];
+	$access_token = $data['access_token'];
 
-		if(!$access || !isset($access->access_token)) {
-			show_error($access->error.': '.$access->error_description, 403);
-		}
-		$token = $access->access_token;
-
-	} else {
-		$token = $code;
-	}
-
-	$json = file_get_contents($people_url."2/people/profile?gcube-token=".$token);
-	$obj = json_decode($json);
-
-	$success = $obj->success; //true
-	$message = $obj->message; //in case of error
-	$result = $obj->result;
-
-	//preparing data for database insertion
-	$d4user = array(
-		'oauth_provider' => 'd4science',
-		'oauth_uid'      => '',
-		'name'           => $result->fullname,
-		'username'       => $result->username,
-		'email'          => '',
-		'picture_url'    => $result->avatar,
-		'access_token'   => $token,
-		'refresh_token'  => ''
-	);
-		
-
-	$identity = array('access_token'=>$token, 'refresh_token'=> '', 'uid'=>$result->username);
-
-	//check wether this identity exists.
-	$user = $this->db->query("SELECT * FROM users u LEFT JOIN identities i on i.userid = u.id AND i.provider='d4science' WHERE uid = ?", $result->username)->row();
-
-	if(!$user) {                       //create user and identity
-		$identity['provider'] = 'd4science';
-		$this->addUser(array('name'=>$result->fullname, 'username'=>$result->username), $identity);
-	} else {                           //update identity
-		$this->db->where('provider', 'd4science');
-		$this->db->where('userid', $user->id);
-		$this->db->update('identities', $identity);
-	}
-
-
-	$user = $this->db->query("SELECT * FROM users u LEFT JOIN identities i on i.userid = u.id AND i.provider='d4science' WHERE uid = ?", $result->username)->row();
-
-	return $user;
+	// Decode the JWT (basic, not verified here)
+	list($header, $payload, $signature) = explode('.', $id_token);
+	$userinfo = json_decode(base64_decode(strtr($payload, '-_', '+/')), true);
+	$userinfo['name'] = $userinfo['preferred_username'];
+	$userinfo['uid'] = $userinfo['sub'];
+	
+	list($header, $payload, $signature) = explode('.', $access_token);
+	$token = json_decode(base64_decode(strtr($payload, '-_', '+/')), true);
+	$token['access_token'] = $token['refresh_token'] = $token['sub'];
+	
+	return $this->genericAuthenticate('h2iosc', $token, $userinfo);
 }
 
 public function authenticateOrcid($code) {

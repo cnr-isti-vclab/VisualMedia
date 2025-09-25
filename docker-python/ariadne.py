@@ -704,9 +704,9 @@ P.S. If you need to contact us write to: %(admin_email)s""" %  media
 		try:
 			#depending on the action call the processing.py relative function
 			if todo['action'] == 'simplify':
-				processing.simplify(input, output, todo['triangles'])
+				processing.simplify(input, output, int(todo['triangles']))
 			elif todo['action'] == 'remesh':
-				processing.remesh(input, output, todo['size'])
+				processing.remesh(input, output, int(todo['size']))
 			elif todo['action'] == 'closeholes':
 				processing.close_holes(input, output)
 			elif todo['action'] == 'dummy':

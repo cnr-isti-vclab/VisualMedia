@@ -2,7 +2,8 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 foreach(['ADMIN_EMAIL', 'SMTP_PASSWORD', 'SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 
-	'POSTGRES_PASSWORD', 'POSTGRES_USER', 'POSTGRES_DB', 'POSTGRES_HOST'] as $key) {
+	'POSTGRES_PASSWORD', 'POSTGRES_USER', 'POSTGRES_DB', 'POSTGRES_HOST',
+	'H2IOSC_CLIENT', 'H2IOSC_URL', 'H2IOSC_SECRET'] as $key) {
 	if(!getenv($key)) {
 		echo("Environment variable $key not set");
 		exit(0);

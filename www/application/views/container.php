@@ -120,6 +120,14 @@ $orcid_url = 'https://orcid.org/oauth/authorize?'.
 	'client_id=APP-INSSY2VKBR9EV73P&response_type=code&'.
 	'scope=/authenticate&'.
 	'redirect_uri=https://visual.ariadne-infrastructure.isti.cnr.it/login&state=orcid';
+
+$h2iosc_url = 'https://sso.nanotec.cnr.it/realms/apps-le.dariah.cnr.it/protocol/openid-connect/auth?'.
+	'client_id=h2iosc&'.
+	'response_type=code&'.
+	'redirect_uri=http://'.$_SERVER['HTTP_HOST'].'/login&'.
+	'state=h2iosc&'.	
+	'scope=openid email profile';
+
 ?>
 
 <style>
@@ -145,8 +153,10 @@ $orcid_url = 'https://orcid.org/oauth/authorize?'.
 				<h3>Login</h3>
 			</div>
 			<div class="col-4"><a href="<?=$google_url?>" class="btn btn-google social">Google</a></div>
-			<div class="col-4"><a href="<?=$orcid_url?>" class="btn btn-orcid social">Orcid</a></div>
-			<div class="col-4"><a href="<?=$uri?>" class="btn btn-d4science social">D4Science</a></div> 
+			<div class="col-4"><a href="<?=$orcid_url?>" class="btn btn-google social">Orcid</a></div>
+<!--			<div class="col-4"><a href="<?=$uri?>" class="btn btn-d4science social">D4Science</a></div>  -->
+			<div class="col-4"><a href="<?=$h2iosc_url?>" class="btn btn-google social">H2IOSC</a></div> 
+
 
 			<div class="col-12 separator d-flex"><hr style="width:45%"/><p>or</p><hr style="width:45%"/></div>
 
@@ -176,6 +186,7 @@ $orcid_url = 'https://orcid.org/oauth/authorize?'.
 
 <? if(!$user) { ?>
 <script>
+
 $('#upload').click(function(e) {
 	$('#login').modal('toggle');
 	e.preventDefault();

@@ -1,0 +1,6 @@
+{
+    "require": {
+        "jumbojett/openid-connect-php": "^1.0",
+        "ankitpokhrel/tus-php": "^2.4"
+    }
+}

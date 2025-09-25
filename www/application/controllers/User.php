@@ -126,6 +126,11 @@ class User  extends MY_Controller {
 	}
 
 	public function login() {
+		$error = $this->input->get('error');
+		if($error) {
+			$msg = $this->input->get('error_description');
+			$this->error("<p>There was an error during the login, please try again.</p><p>$msg</p>");
+		}
 		$redirect = 'login';
 		if(substr($_SERVER['REQUEST_URI'], 0, 6 ) === '/home?') {
 			$_GET['state'] = 'd4science';
@@ -136,24 +141,26 @@ class User  extends MY_Controller {
 			redirect('/ooops', 'location');
 		}
 
-		$token = $_GET['code'];
+		$code = $_GET['code'];
 		$state = $_GET['state'];
 
 		switch($_GET['state']) {
 
 		case 'google':
-			$user = $this->auth->authenticateGoogle($token);
+			$user = $this->auth->authenticateGoogle($code);
 			break;
 		case 'orcid':
-			$user = $this->auth->authenticateOrcid($token);
+			$user = $this->auth->authenticateOrcid($code);
 			break;
 		case 'passwordless':
-			$user = $this->auth->authenticatePasswordless($token);
-
+			$user = $this->auth->authenticatePasswordless($code);
+			break;
+		case 'h2iosc':
+			$user = $this->auth->authenticateH2IOSC($code);
 			break;
 		case 'd4science':
 		default:
-			$user = $this->authenticateD4Science($token, $redirect);
+			$user = $this->auth->authenticateD4Science($code, $redirect);
 			break;
 		}
 
