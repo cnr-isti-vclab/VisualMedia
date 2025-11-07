@@ -2,6 +2,8 @@ services:
   postgres:
     platform: "linux/amd64"
     image: postgres:17-alpine
+    networks:
+      - internal-net
     volumes:
       - ./dbdata/:/var/lib/postgresql/data
       - ./docs/database.sql:/docker-entrypoint-initdb.d/create_database.sql
@@ -14,8 +16,12 @@ services:
       - postgres
     #ports:
     #  - 80:80
+    networks:
+      - host-proxy-net
+      - internal-net
+
     expose:
-      - "8080"
+      - "80"
     volumes:
       - ./www:/var/www/html # TODO: remove on production
       - ./data:/data
@@ -28,6 +34,8 @@ services:
     build: ./docker-python
     depends_on:
       - postgres
+    networks:
+      - internal-net
     volumes:
       - ./data:/data
       - ./docker-python:/app # TODO: remove on production
@@ -38,6 +46,7 @@ services:
 networks:
   host-proxy-net:
     external: true
-
+  internal-net:
+    driver: bridge
 volumes:
   data:
