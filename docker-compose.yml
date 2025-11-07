@@ -12,8 +12,10 @@ services:
     build: ./docker-php
     depends_on:
       - postgres
-    ports:
-      - 80:80
+    #ports:
+    #  - 80:80
+    expose:
+      - "8080"
     volumes:
       - ./www:/var/www/html # TODO: remove on production
       - ./data:/data
@@ -32,5 +34,10 @@ services:
     env_file:
     - postgres.env
     - smtp.env
+
+networks:
+  host-proxy-net:
+    external: true
+
 volumes:
   data:
